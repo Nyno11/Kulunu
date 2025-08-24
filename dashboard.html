@@ -207,6 +207,13 @@
     background:var(--bg);
   }
 /* ===== Profile Card ===== */
+.profile-wrapper {
+  display: flex;        /* Side by side by default */
+  gap: 20px;
+  max-width: 1000px;
+  margin: 20px auto;
+  align-items: stretch;
+}
     .profile-card {
       background: white;
       border-radius: 12px;
@@ -268,6 +275,56 @@
 .edit-btn:hover {
   background: #007cc2;
 }
+/* Co-travel Card */
+.co-travel-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex: 1;
+  width: 250px;
+  flex-direction: column;
+  justify-content: space-between;
+  float: right;
+}
+
+.co-travel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.co-travel-btn {
+  background: #0CA6EF;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s;
+}
+
+.co-travel-btn:hover {
+  background: #007acc;
+}
+
+/* ✅ Responsive for mobile */
+@media (max-width: 768px) {
+  .profile-wrapper {
+    flex-direction: column;  /* Stack vertically */
+  }
+
+  .profile-card,
+  .co-travel-card {
+    width: 100%;             /* Full width */
+  }
+}
+
 
   /* ✅ Modal Styles */
     .modal {
@@ -611,6 +668,16 @@ p {
   </div>
 </div>
       </section>
+       <!-- Co-travel Card -->
+  <div class="co-travel-card">
+    <div class="co-travel-header">
+      <h2>Co-travelers</h2>
+    </div>
+    <p>You have zero 0 other travelers.</p>
+    <button class="co-travel-btn">
+      <i class="bi bi-person-plus"></i> Add Co-traveler
+    </button>
+  </div>
       </section>
 <!-- ✅ Modal -->
   <div class="modal" id="profileModal">
