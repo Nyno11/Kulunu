@@ -7,106 +7,7 @@
   <!-- Favicons -->
   <link href="assets/img/kulu.png" rel="icon">
   <link href="assets/img/kulu.png" rel="apple-touch-icon">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-
-    header {
-      background-color: #0CA6EF;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .filter-bar {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      background-color: white;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    .filter-option {
-      cursor: pointer;
-      padding: 8px 12px;
-      position: relative;
-      font-weight: bold;
-      color: #555;
-    }
-
-    .filter-option.active {
-      color: #0CA6EF;
-    }
-
-    .indicator {
-      position: absolute;
-      height: 3px;
-      background: #0CA6EF;
-      bottom: 0;
-      transition: all 0.3s ease;
-    }
-
-    .results {
-      padding: 20px;
-    }
-
-    .ticket {
-      background-color: white;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .ticket h3 {
-      margin-top: 0;
-    }
-
-    .flight-info-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin: 1px 0;
-  flex-wrap: wrap;
-}
-
-.flight-info-row p {
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-
-    .buy-button {
-  display: inline-block;
-  padding: 6px 20px;
-  background-color: #0CA6EF;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  margin-top: 10px;
-}
-
-.buy-button:hover {
-  background-color: #0b91d1;
-  transform: scale(1.05);
-}
-  </style>
+  <link href="assets/css/Result.css" rel="stylesheet">
 </head>
 <body>
 
@@ -157,7 +58,7 @@
           <p>⭐ <strong>Rating:</strong> ${flight.rating}</p>
           <p>🌤️ <strong>Weather:</strong> ${flight.weather}</p>
         </div>
-        <a href="${bookingURL}" target="_blank" class="buy-button">Buy</a>
+        <a href="${bookingURL}" target="_blank" class="buy-button">Book Now</a>
       `;
       results.appendChild(div);
     });
