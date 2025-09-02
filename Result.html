@@ -44,25 +44,38 @@
 
       // Airline booking links
       let bookingURL = '#';
-      if (flight.airline === 'Airpeace') bookingURL = 'https://www.flyairpeace.com/';
-      if (flight.airline === 'Ibom Air') bookingURL = 'https://www.ibomair.com/';
-      if (flight.airline === 'Flyaero') bookingURL = 'https://www.flyaero.com/';
+    let logoURL = '';
+    if (flight.airline === 'Airpeace') {
+      bookingURL = 'login.html';
+      logoURL = 'assets/img/airpeace.svg';
+    }
+    if (flight.airline === 'Ibom Air') {
+      bookingURL = 'login.html';
+      logoURL = 'assets/img/ibom-air-logo.png';
+    }
+    if (flight.airline === 'Flyaero') {
+      bookingURL = 'login.html';
+      logoURL = 'assets/img/fly aero.png';
+    }
 
       div.innerHTML = `
+      <div class="airline-header">
+        <img src="${logoURL}" alt="${flight.airline} logo" class="airline-logo">
         <h3>${flight.airline}</h3>
-        <p><strong>From:</strong> ${flight.from}</p>
-        <p><strong>To:</strong> ${flight.to}</p>
-        <div class="flight-info-row">
-          <p>🕒 <strong>Time:</strong> ${flight.time}</p>
-          <p>💰 <strong>Price:</strong> ₦${flight.price}</p>
-          <p>⭐ <strong>Rating:</strong> ${flight.rating}</p>
-          <p>🌤️ <strong>Weather:</strong> ${flight.weather}</p>
-        </div>
-        <a href="${bookingURL}" target="_blank" class="buy-button">Book Now</a>
-      `;
-      results.appendChild(div);
-    });
-  }
+      </div>
+      <p><strong>From:</strong> ${flight.from}</p>
+      <p><strong>To:</strong> ${flight.to}</p>
+      <div class="flight-info-row">
+        <p>🕒 <strong>Time:</strong> ${flight.time}</p>
+        <p>💰 <strong>Price:</strong> ₦${flight.price}</p>
+        <p>⭐ <strong>Rating:</strong> ${flight.rating}</p>
+        <p>🌤️ <strong>Weather:</strong> ${flight.weather}</p>
+      </div>
+      <a href="${bookingURL}" class="buy-button">Book Now</a>
+    `;
+    results.appendChild(div);
+  });
+}
 
   function moveIndicator(target) {
     indicator.style.width = `${target.offsetWidth}px`;
