@@ -258,6 +258,24 @@ body {
 .edit-btn:hover {
   background: #007cc2;
 }
+.book-travel-btn {
+  position: absolute;
+  top: 80px;
+  right: 160px;
+  background: #0CA6EF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  gap: 60px;
+  transition: background 0.2s;
+}
+.book-travel-btn:hover {
+  background: #007cc2;
+}
 /* Co-travel Card */
 .co-travel-card {
   background: #fff;

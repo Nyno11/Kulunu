@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Results</title>
+  <!-- Favicons -->
+  <link href="assets/img/kulu.png" rel="icon">
+  <link href="assets/img/kulu.png" rel="apple-touch-icon">
+  <link href="assets/css/Result.css" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div>Flight Results</div>
+  <a href="dashboard.html">← Back to Dashboard</a>
+</header>
+<div class="filter-bar">
+  <div class="filter-option active" data-filter="price">Price</div>
+  <div class="filter-option" data-filter="rating">Rating</div>
+  <div class="filter-option" data-filter="weather">Weather</div>
+  <div class="filter-option" data-filter="time">Flight Time</div>
+  <div class="indicator"></div>
+</div>
+
+<div class="results" id="results"></div>
+
+<script>
+const flights = [
+  { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: 120000, rating: 4.0, weather: 'Clear', logo: 'assets/img/airpeace.svg' },
+  { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: 110000, rating: 4.7, weather: 'Rainy', logo: 'assets/img/ibom-air-logo.png' },
+  { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: 95000, rating: 4.2, weather: 'Cloudy', logo: 'assets/img/fly aero.png' },
+];
+
+  const indicator = document.querySelector('.indicator');
+  const options = document.querySelectorAll('.filter-option');
+  const results = document.getElementById('results');
+
+  function renderFlights(data) {
+    results.innerHTML = '';
+    data.forEach(flight => {
+      const div = document.createElement('div');
+      div.className = 'ticket';
+
+      // Airline booking links
+      let bookingURL = '#';
+    let logoURL = '';
+    if (flight.airline === 'Airpeace') {
+      bookingURL = 'Confirm.html';
+      logoURL = 'assets/img/airpeace.svg';
+    }
+    if (flight.airline === 'Ibom Air') {
+      bookingURL = 'Confirm.html';
+      logoURL = 'assets/img/ibom-air-logo.png';
+    }
+    if (flight.airline === 'Flyaero') {
+      bookingURL = 'Confirm.html';
+      logoURL = 'assets/img/fly aero.png';
+    }
+
+      div.innerHTML = `
+      <div class="airline-header">
+        <img src="${logoURL}" alt="${flight.airline} logo" class="airline-logo">
+        <h3>${flight.airline}</h3>
+      </div>
+      <p><strong>From:</strong> ${flight.from}</p>
+      <p><strong>To:</strong> ${flight.to}</p>
+      <div class="flight-info-row">
+        <p>🕒 <strong>Time:</strong> ${flight.time}</p>
+        <p>💰 <strong>Price:</strong> ₦${flight.price}</p>
+        <p>⭐ <strong>Rating:</strong> ${flight.rating}</p>
+        <p>🌤️ <strong>Weather:</strong> ${flight.weather}</p>
+      </div>
+      <button class="buy-button" onclick='bookFlight(${JSON.stringify(flight)})'>Book Now</button>
+
+    `;
+    results.appendChild(div);
+  });
+}
+
+  function moveIndicator(target) {
+    indicator.style.width = `${target.offsetWidth}px`;
+    indicator.style.left = `${target.offsetLeft}px`;
+  }
+
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      options.forEach(opt => opt.classList.remove('active'));
+      option.classList.add('active');
+      moveIndicator(option);
+
+      const criteria = option.dataset.filter;
+      const sorted = [...flights];
+      if (criteria === 'price') sorted.sort((a, b) => a.price - b.price);
+      if (criteria === 'rating') sorted.sort((a, b) => b.rating - a.rating);
+      if (criteria === 'weather') sorted.sort((a, b) => a.weather.localeCompare(b.weather));
+      if (criteria === 'time') sorted.sort((a, b) => new Date('1970/01/01 ' + a.time) - new Date('1970/01/01 ' + b.time));
+
+      renderFlights(sorted);
+    });
+  });
+
+  window.onload = () => {
+    moveIndicator(document.querySelector('.filter-option.active'));
+    renderFlights(flights);
+  };
+</script>
+<script>
+function bookFlight(flight) {
+  // Get stored travelers
+  const primary = JSON.parse(localStorage.getItem("primaryTraveler"));
+  const coTravelers = JSON.parse(localStorage.getItem("coTravelers")) || [];
+
+  // Format passengers
+  let passengers = [];
+  if (primary) {
+    passengers.push({
+      name: `${primary.firstName} ${primary.lastName}`,
+      type: primary.travelerType
+    });
+  }
+  coTravelers.forEach(c => {
+    passengers.push({
+      name: `${c.firstName} ${c.lastName}`,
+      type: c.travelerType
+    });
+  });
+
+  // Save booking data
+  const bookingData = {
+    travelInfo: {
+      from: flight.from,
+      to: flight.to,
+      date: new Date().toISOString().split("T")[0], // could pull from search form
+      time: flight.time,
+      cabin: "Economy",
+      price: flight.price,
+      airline: flight.airline
+    },
+    passengers
+  };
+
+  localStorage.setItem("bookingData", JSON.stringify(bookingData));
+  window.location.href = "confirm.html";
+}
+</script>
+
+</body>
+</html>

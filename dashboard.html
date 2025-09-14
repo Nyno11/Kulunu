@@ -41,8 +41,11 @@
       <section id="Profile" class="section active">
         <header>
         <h1>Welcome, Franklin 👋</h1>
-        <p>Here is a summary of your travel account.</p>
+        <p>Here is a summary of your travel account.</p> 
       </header>
+   <button class="book-travel-btn" onclick="navigate('bookings', document.querySelector('.sidebar ul li:nth-child(2)'))">
+  Book travel
+</button> 
   <!-- Profile Card to Display User Details -->
    <div class="d-flex flex-row justify-content-between">
 <div class="profile-card" id="profileDisplay">
@@ -57,6 +60,7 @@
     <p>Save information for fast bookings.</p>
   </div>
 </div>
+
 
 <!-- Co-travel Card -->
 <div class="co-travel-card">
@@ -501,7 +505,7 @@ function openModal(edit = false) {
         <input type="date" id="date">
       </div>
       <div>
-        <button onclick="window.location.href='Result.html'">Search</button>
+        <button onclick="window.location.href='Booking.html'">Search</button>
       </div>
     </div>
   </div>
@@ -694,6 +698,40 @@ function openModal(edit = false) {
     // Initial render
     applyFilter();
   </script>
+  <script>
+function saveProfileToStorage(data) {
+  localStorage.setItem("primaryTraveler", JSON.stringify(data));
+}
+
+function saveCoTravelersToStorage() {
+  localStorage.setItem("coTravelers", JSON.stringify(coTravelers));
+}
+
+// Hook profile save
+document.getElementById("profileForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = {
+    title: document.getElementById("title").value,
+    travelerType: document.getElementById("travelerType").value,
+    firstName: document.getElementById("firstName").value,
+    lastName: document.getElementById("lastName").value,
+    middleName: document.getElementById("middleName").value,
+    gender: document.getElementById("gender").value,
+    dob: document.getElementById("dob").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    nationality: document.getElementById("nationality").value,
+    passportNumber: document.getElementById("passportNumber").value,
+    expiryDate: document.getElementById("expiryDate").value
+  };
+  saveProfileToStorage(data);
+});
+
+// Hook co-travel save
+document.getElementById("coTravelForm").addEventListener("submit", () => {
+  saveCoTravelersToStorage();
+});
+</script>
 </section>
 </section>
       <section id="payments" class="section">
