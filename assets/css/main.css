@@ -586,50 +586,68 @@ section,
   position: relative;
 }
 
-.frame {
-      border: 2px solid #ccc;
-      padding: 5px;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 12px;
-      max-width: 743px;
-      width: 800px;
+ /* container */
+.my-frame {
+  max-width:980px;
+  width:100%;
+  margin:18px auto 18px 0; /* pushes it to the left */
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  border:1px solid #e6eef7;
+  box-shadow:0 6px 18px rgba(12,166,239,0.06);
+}
+
+  /* GRID-based search area: auto fit columns, min 160px each */
+  .search-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap:12px;
+    align-items:center;
+  }
+
+  /* Inputs & selects */
+  .search-grid input[type="text"],
+  .search-grid input[type="date"],
+  .search-grid select {
+    width:100%;
+    padding:10px 12px;
+    border:1.5px solid #cfeffa;
+    border-radius:8px;
+    font-size:15px;
+    background:#fff;
+  }
+
+  /* Primary button - keep visible and usable at small widths */
+  .search-grid .search-btn{
+    padding:11px 14px;
+    border-radius:8px;
+    background:#0CA6EF;
+    color:#fff;
+    border:0;
+    font-weight:600;
+    cursor:pointer;
+    min-width:100%;
+    justify-self:end; /* default (desktop/tablet) */
+  }
+
+  /* make the button easy to tap on very small screens */
+  @media (max-width:420px){
+    .search-grid .search-btn { padding:12px; font-size:15px; }
+  }
+
+  /* On mobile, make the search button span full row */
+  @media (max-width:768px){
+    .search-grid .search-btn{
+      grid-column: 1 / -1;   /* span all grid columns */
+      justify-self: stretch; /* stretch across */
+      width:100%;
     }
-
-.widget-container {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      max-height: 70px;
-      padding-top: 10px;
-    }
-
-.search-box {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  align-items: center;
   }
 
-.search-box input, .search-box button {
-  padding: 0.75rem 1rem;
-  border: 2px solid #0CA6EF;
-  border-radius: 8px;
-  font-size: 1rem;
-  }
-
-.search-box button {
-  background: #0CA6EF;
-  color: white;
-  border: none;
-  cursor: pointer;
-  }
-
-.results {
-  display: grid;
-  gap: 1rem;
-  max-width: 800px;
-  margin: 0 auto;
+  /* Optional: if you want everything stacked on very narrow phones */
+  @media (max-width:360px){
+    .search-grid { grid-template-columns: 1fr; }
   }
 
 .ticket {

@@ -9,8 +9,8 @@
   <meta name="keywords" content="">
 
   <!-- Favicons -->
-  <link href="assets/img/kulu.png" rel="icon">
-  <link href="assets/img/kulu.png" rel="apple-touch-icon">
+  <link href="assets/img/ku.png" rel="icon">
+  <link href="assets/img/ku.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -38,7 +38,7 @@
       <div class="container position-relative d-flex align-items-center justify-content-between">
         <a href="index.html" class="logo d-flex align-items-center">
           <!-- Uncomment the line below if you also wish to use an image logo -->
-          <img src="assets/img/Kulunu logo.png" alt="KULUNU"> 
+          <img src="assets/img/ku.png" alt="KULUNU"> 
         </a>
         <div>
 <img src="C:\Users\frank\Downloads\Vector.png" alt="my account" style="width: 16px;" class="mr-1">
@@ -56,39 +56,22 @@
     <section id="hero" class="hero section light-background">
 
       <div class="container">
+        <div class="my-frame">
+  <!-- search form -->
+  <form class="search-grid" role="search" onsubmit="event.preventDefault();">
+    <input type="text" name="from" placeholder="From (e.g. LOS)" aria-label="From">
+    <input type="text" name="to" placeholder="To (e.g. ABV)" aria-label="To">
+    <input type="date" name="depart" aria-label="Departure date">
+    <select name="cabin" aria-label="Cabin class">
+      <option value="economy">Economy</option>
+      <option value="premium">Premium</option>
+      <option value="business">Business</option>
+    </select>
+    <button class="search-btn" onclick="window.location.href='Result.html'">Search Flights</button>
+  </form>
+</div>
         <div class="row gy-4">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="zoom-out">
-          
-            <div class="frame">
-    <section class="widget-container">
-            <div class="search-box">
-    <input type="text" id="from" placeholder="From" />
-    <input type="text" id="to" placeholder="To" />
-    <input type="date" id="date" />
-    <button onclick="window.location.href='Result.html'">Search</button>
-            </div>
-    </section>
-  </div>
-  <div class="results" id="results">
-    <!-- Search results go here -->
-  </div>
-
-  <script>
-    const dummyFlights = [
-      { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
-      { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
-      { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
-      
-    ];
-
-    function searchFlights() {
-      const from = document.getElementById('from').value;
-      const to = document.getElementById('to').value;
-      const date = document.getElementById('date').value;
-      const resultsContainer = document.getElementById('results');
-    }
-  </script>
-          
             <h1><span>The smart way to find flights</span></h1>
             <p>Easily compare flights, make the best choice, and enjoy your journey.</p>
           </div>
