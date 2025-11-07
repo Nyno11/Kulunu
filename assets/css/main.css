@@ -578,7 +578,7 @@ section,
 
     /* TAB MENU */
     .tab-menu {
-      display:flex; justify-content:center; gap:8px; border-bottom:2px solid #f0f2f6;
+      display:flex; justify-content:center; gap:12px; border-bottom:2px solid #f0f2f6;
       flex-wrap:nowrap; overflow-x:auto; padding:8px;
     }
     .tab-btn {
