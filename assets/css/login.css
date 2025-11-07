@@ -238,3 +238,65 @@ input {
 	height: 40px;
 	width: 40px;
 }
+/* ===== MOBILE RESPONSIVE LOGIN LAYOUT ===== */
+@media (max-width: 768px) {
+  /* Stack forms vertically */
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    min-height: auto;
+  }
+
+  .form-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .sign-in-container,
+  .sign-up-container {
+    width: 100%;
+  }
+
+  /* Hide overlay on small screens */
+  .overlay-container {
+    display: none;
+  }
+
+  /* Adjust form spacing */
+  form {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 10px 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  form {
+    padding: 15px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 11px;
+    padding: 10px 25px;
+  }
+}
