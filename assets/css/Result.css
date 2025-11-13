@@ -2,7 +2,10 @@ body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f9f9f9;
+      padding-top: env(safe-area-inset-top);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+      background-color: #fff;
     }
 
     header {
@@ -12,7 +15,10 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: env(safe-area-inset-top);
+      padding-top: max(12px, env(safe-area-inset-top)); /* ensures visible header below notch */
+      z-index: 1000;
+      position: sticky;
+      top: 0;
     }
 
     header a {

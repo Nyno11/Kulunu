@@ -145,15 +145,18 @@ h6 {
 .header {
   color:#0CA6EF;
   transition: all 0.5s;
-  z-index: 997;
- background-color: #0CA6Ef;
- padding-top: env(safe-area-inset-top);
+  z-index: 1000;
+  background-color: #0CA6Ef;
+  padding-top: max(12px, env(safe-area-inset-top)); /* ensures visible header below notch */
+  position: sticky;
+  top: 0;
 }
 
 .header .branding {
   background-color: #0CA6Ef;
   min-height: 60px;
   padding: 10px 0;
+  padding-top: env(safe-area-inset-top);
 }
 
 .header .logo {
@@ -576,6 +579,14 @@ section,
       border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.08);
       padding:18px;
     }
+   
+    body {
+  margin: 0;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  background-color: #fff;
+}
 
     /* TAB MENU */
     
@@ -659,7 +670,7 @@ section,
       border:1px solid #d8dee9; border-radius:8px;
       padding:10px 12px; min-width:150px; font-size:14px;
     }
-    .small { flex:0 0 130px; max-width:130px; }
+    .small { flex:0 0 150px; min-width:150px; }
 
     .search-btn {
       background:#0CA6EF; color:#fff; border:none;
@@ -839,6 +850,45 @@ section,
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
+/* 🌍 Mobile responsive form fix */
+@media (max-width: 600px) {
+  form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    min-width: unset;
+    font-size: 15px;
+    padding: 12px;
+  }
+
+  .search-btn {
+    width: 100%;
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  /* Fix date input (calendar icon visibility in Safari/iOS) */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    display: block;
+    cursor: pointer;
+    filter: invert(40%) sepia(80%) saturate(300%) hue-rotate(180deg);
+  }
+
+  /* Adjust select dropdown for better visibility */
+  select {
+    background-color: #fff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
+
 
 /*--------------------------------------------------------------
 # Featured Services Section
