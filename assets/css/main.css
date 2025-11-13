@@ -142,49 +142,53 @@ h6 {
 /*--------------------------------------------------------------
 # Global Header
 --------------------------------------------------------------*/
+/* Reset layout safely */
 html, body {
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
-/* Ensure the layout respects iPhone safe area */
-body {
-  padding-top: env(safe-area-inset-top);
-  background-color: #fff;
-}
-
-/* Header */
+/* HEADER FIX FOR NOTCH + MOBILE */
 .header {
-  color: #0CA6EF;
   background-color: #0CA6EF;
-  transition: all 0.5s;
-  z-index: 1000;
+  color: white;
   position: sticky;
   top: 0;
-  /* Add this to respect the notch */
-  padding-top: env(safe-area-inset-top, 12px);
+  z-index: 1000;
+
+  /* Handle iPhone notch safely */
+  padding-top: constant(safe-area-inset-top); /* old iOS fallback */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: 8px;
+
+  /* Optional: subtle shadow for better separation */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Branding inside header */
 .header .branding {
-  background-color: #0CA6EF;
-  min-height: 60px;
-  padding: calc(10px + env(safe-area-inset-top)) 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
 }
 
-/* Logo area */
-.header .logo {
-  line-height: 1;
-}
-
+/* Ensure logo fits properly */
 .header .logo img {
   max-height: 36px;
-  margin-right: 8px;
 }
 
-/* Optional: keep shadow when scrolling */
-.scrolled .header {
-  box-shadow: 0px 0 18px rgba(0, 0, 0, 0.1);
+/* Button style remains clean */
+.account-btn {
+  background: white;
+  color: #0CA6EF;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-weight: 500;
+}
+
+.account-btn i {
+  margin-right: 6px;
 }
 
 /*--------------------------------------------------------------
