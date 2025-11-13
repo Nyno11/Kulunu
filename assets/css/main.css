@@ -142,23 +142,37 @@ h6 {
 /*--------------------------------------------------------------
 # Global Header
 --------------------------------------------------------------*/
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+/* Ensure the layout respects iPhone safe area */
+body {
+  padding-top: env(safe-area-inset-top);
+  background-color: #fff;
+}
+
+/* Header */
 .header {
-  color:#0CA6EF;
+  color: #0CA6EF;
+  background-color: #0CA6EF;
   transition: all 0.5s;
   z-index: 1000;
-  background-color: #0CA6Ef;
-  padding-top: max(12px, env(safe-area-inset-top)); /* ensures visible header below notch */
   position: sticky;
   top: 0;
+  /* Add this to respect the notch */
+  padding-top: env(safe-area-inset-top, 12px);
 }
 
+/* Branding inside header */
 .header .branding {
-  background-color: #0CA6Ef;
+  background-color: #0CA6EF;
   min-height: 60px;
-  padding: 10px 0;
-  padding-top: env(safe-area-inset-top);
+  padding: calc(10px + env(safe-area-inset-top)) 0 10px;
 }
 
+/* Logo area */
 .header .logo {
   line-height: 1;
 }
@@ -168,21 +182,9 @@ h6 {
   margin-right: 8px;
 }
 
-.header .logo h1 {
-  font-size: 30px;
-  margin: 0;
-  font-weight: 700;
-  color: var(--heading-color);
-}
-
+/* Optional: keep shadow when scrolling */
 .scrolled .header {
   box-shadow: 0px 0 18px rgba(0, 0, 0, 0.1);
-}
-
-.scrolled .header .topbar {
-  height: 0;
-  visibility: hidden;
-  overflow: hidden;
 }
 
 /*--------------------------------------------------------------
@@ -850,45 +852,6 @@ section,
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
-/* 🌍 Mobile responsive form fix */
-@media (max-width: 600px) {
-  form {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  input,
-  select {
-    width: 100%;
-    min-width: unset;
-    font-size: 15px;
-    padding: 12px;
-  }
-
-  .search-btn {
-    width: 100%;
-    font-size: 16px;
-    padding: 14px;
-  }
-
-  /* Fix date input (calendar icon visibility in Safari/iOS) */
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 1;
-    display: block;
-    cursor: pointer;
-    filter: invert(40%) sepia(80%) saturate(300%) hue-rotate(180deg);
-  }
-
-  /* Adjust select dropdown for better visibility */
-  select {
-    background-color: #fff;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-}
-
 
 /*--------------------------------------------------------------
 # Featured Services Section
