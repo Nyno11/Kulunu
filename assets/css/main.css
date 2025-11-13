@@ -147,6 +147,7 @@ h6 {
   transition: all 0.5s;
   z-index: 997;
  background-color: #0CA6Ef;
+ padding-top: env(safe-area-inset-top);
 }
 
 .header .branding {
@@ -1508,7 +1509,84 @@ section,
 }
 
 /*--------------------------------------------------------------
-# Login Section Section
+# Authentication Section Section
 --------------------------------------------------------------*/
 
-	
+	/* Scoped header/nav styles to avoid conflicts */
+    .kulunu-header .container { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 18px; }
+    .kulunu-logo { display:flex; align-items:center; gap:10px; }
+    .kulunu-logo img { height:42px; width:auto; display:block; }
+    .kulunu-logo .brand-text { color:#fff; font-weight:700; font-size:1.05rem; letter-spacing:0.2px; }
+
+    /* Nav wrapper */
+    .kulunu-nav { display:flex; align-items:center; gap:12px; }
+
+    /* Nav actions (desktop) */
+    .kulunu-actions { display:flex; align-items:center; gap:12px; }
+
+    /* Profile button / dropdown */
+    .kulunu-profile-btn {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.12);
+      padding:6px 10px;
+      border-radius:999px;
+      color:#fff;
+      cursor:pointer;
+      transition:all .18s ease;
+    }
+    .kulunu-profile-btn:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(0, 0, 0, 0.12); }
+    .kulunu-avatar {
+      width:36px; height:36px; border-radius:50%; overflow:hidden; flex-shrink:0;
+      background:#fff; display:grid; place-items:center;
+    }
+    .kulunu-avatar img { width:100%; height:100%; object-fit:cover; }
+
+    /* Dropdown panel */
+    .kulunu-profile-dropdown {
+      position:absolute;
+      right:18px;
+      top:64px;
+      width:300px;
+      max-width:92vw;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 18px 40px rgba(9,30,66,0.16);
+      padding:14px;
+      display:none;
+      z-index:1200;
+    }
+    .kulunu-profile-dropdown.active { display:block; }
+
+    /* Profile header inside dropdown */
+    .kulunu-profile-head { display:flex; gap:12px; align-items:center; }
+    .kulunu-profile-head .meta { display:flex; flex-direction:column; gap:2px; }
+    .kulunu-profile-head .meta .name { font-weight:700; color:#12263a; }
+    .kulunu-profile-head .meta .email { font-size:13px; color:#667085; }
+
+    /* Wallet */
+    .kulunu-wallet { margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px; border-radius:10px; background:#f6f9fc; }
+    .kulunu-wallet .amount { font-weight:700; color:#0b6fb8; }
+    .kulunu-wallet .add-btn { background:#0CA6EF; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; }
+
+    /* Menu list */
+    .kulunu-menu { margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+    .kulunu-menu a { display:flex; gap:10px; align-items:center; padding:10px; border-radius:8px; color:#0f1724; text-decoration:none; font-weight:600; }
+    .kulunu-menu a:hover { background:#f4f6f9; }
+
+    /* Logout */
+    .kulunu-logout { margin-top:8px; display:block; text-align:center; border-radius:8px; padding:10px; background:#fff8f8; color:#c92a2a; border:1px solid rgba(201,42,42,0.08); font-weight:700; cursor:pointer; text-decoration:none; }
+
+
+    @media (max-width: 860px) {
+      .kulunu-profile-dropdown { right:10px; top:64px; }
+    }
+    @media (max-width: 720px) {
+      .kulunu-nav .kulunu-actions { display:none; }
+      .kulunu-hamburger { display:inline-flex; }
+    }
+
+    /* small safe tweaks so header remains white on dark theme */
+    .kulunu-header { background: linear-gradient(90deg,#0CA6EF,#302B63); }

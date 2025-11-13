@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>KULUNU</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/ku.png" rel="icon">
+  <link href="assets/img/ku.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet"> 
+  
+</head>
+
+<body class="index-page">
+
+<!-- ======= Kulunu Header + Profile Nav (drop-in replacement) ======= -->
+<header id="header" class="header sticky-top kulunu-header">
+  <div class="container">
+    <!-- left: logo -->
+    <a href="index.html" class="kulunu-logo">
+      <img src="assets/img/ku.png" alt="KULUNU logo">
+    </a>
+
+    <!-- right: nav / profile -->
+    <nav class="kulunu-nav">
+      <!-- desktop actions -->
+      
+
+      <!-- profile button -->
+      <div style="position:relative;">
+        <button id="kulunuProfileBtn" class="kulunu-profile-btn" aria-haspopup="true" aria-expanded="false" title="Open account">
+          <div class="kulunu-avatar">
+            <!-- small avatar; replace with real image or initials -->
+            <img src="assets/img/avatar-placeholder.png" alt="avatar">
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
+            <small style="color:rgba(255,255,255,0.95); font-weight:700;">Nonso Chukwu</small>
+            <small style="color:rgba(255,255,255,0.85); font-size:12px;">nonso@kulunu.com</small>
+          </div>
+          <i class="bi bi-chevron-down" style="color:#fff; margin-left:8px;"></i>
+        </button>
+
+        <!-- dropdown -->
+        <div id="kulunuProfileDropdown" class="kulunu-profile-dropdown" role="dialog" aria-label="Account menu">
+          <div class="kulunu-profile-head">
+            <div class="kulunu-avatar" style="width:48px;height:48px;">
+              <img src="assets/img/avatar-placeholder.png" alt="avatar">
+            </div>
+            <div class="meta">
+              <div class="name">Nonso Chukwu</div>
+              <div class="email">nonso@kulunu.com</div>
+            </div>
+          </div>
+
+          <div class="kulunu-wallet" aria-hidden="false">
+            <div>
+              <div style="font-size:12px; color:#667085;">Wallet balance</div>
+              <div class="amount">₦0.00</div>
+            </div>
+            <div>
+              <button class="kulunu-add-btn kulunu-add-small add-btn">+ Add funds</button>
+            </div>
+          </div>
+
+          <nav class="kulunu-menu" aria-label="Account actions">
+            <a href="#" data-action="book-flight"><i class="bi bi-airplane"></i> Book flight ticket</a>
+            <a href="#" data-action="book-road"><i class="bi bi-car-front"></i> Book Road trip ticket</a>
+            <a href="#" data-action="book-train"><i class="bi bi-train-front"></i> Book Train ticket</a>
+            <a href="#" data-action="buy-eticket"><i class="bi bi-ticket-perforated"></i> Purchase E-ticket</a>
+            <a href="#" data-action="settings"><i class="bi bi-gear"></i> Settings</a>
+          </nav>
+
+          <a href="#" class="kulunu-logout" id="kulunuLogoutBtn"><i class="bi bi-box-arrow-right"></i> Log out</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- small script to handle dropdown + mobile actions -->
+  <script>
+    (function(){
+      const profileBtn = document.getElementById('kulunuProfileBtn');
+      const dropdown = document.getElementById('kulunuProfileDropdown');
+      const hamburger = document.getElementById('kulunuHamburger');
+
+      // toggle profile dropdown
+      profileBtn && profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = dropdown.classList.toggle('active');
+        profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      // close when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+          dropdown.classList.remove('active');
+          profileBtn && profileBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // keyboard close (Esc)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          dropdown.classList.remove('active');
+          profileBtn && profileBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // mobile hamburger opens the dropdown as a quick menu
+      hamburger && hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+      });
+
+      // hook menu item clicks (example: route / perform actions)
+      document.querySelectorAll('.kulunu-menu a').forEach(a => {
+        a.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const action = a.dataset.action;
+          // example behavior - replace with real navigation
+          console.log('menu action:', action);
+          // close dropdown after selection
+          dropdown.classList.remove('active');
+          profileBtn && profileBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      // example add funds
+      document.querySelectorAll('.kulunu-add-btn, .kulunu-add-small').forEach(b => {
+        b.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          alert('Open add-funds flow (replace with your implementation).');
+        });
+      });
+
+      // logout
+      document.getElementById('kulunuLogoutBtn').addEventListener('click', (ev) => {
+        ev.preventDefault();
+        // implement logout logic (clear auth, redirect, etc.)
+        alert('Logging out — implement your auth logout.');
+      });
+    })();
+  </script>
+</header>
+<!-- ======= End Kulunu Header + Profile Nav ======= -->
+
+
+  <main class="main">
+   <!-- HERO -->
+  <section class="hero">
+    <h1 style="color: white;"><strong>Your Next Journey with Kulunu</strong></h1>
+    <p>Flights, Road Trips, Trains & E-Tickets — all in one place.</p>
+  </section>
+
+  <!-- BOOKING CARD -->
+  <section class="booking-container">
+    <div class="tab-menu">
+      <button class="tab-btn active" data-target="flight">
+        <i class="bi bi-airplane"></i> Flight
+      </button>
+      <button class="tab-btn" data-target="road">
+        <i class="bi bi-car-front"></i> Road Trip
+      </button>
+      <button class="tab-btn" data-target="train">
+        <i class="bi bi-train-front"></i> Train
+      </button>
+      <button class="tab-btn" data-target="eticket">
+        <i class="bi bi-ticket-perforated"></i> E-Ticket
+      </button>
+    </div>
+
+    <!-- FLIGHT -->
+    <div class="form-section active" id="flight">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-type="oneway">One Way</button>
+        <button class="filter-btn" data-type="round">Round Trip</button>
+        <button class="filter-btn" data-type="multi">Multi-City</button>
+      </div>
+       <form class="search-grid" role="search" onsubmit="event.preventDefault();">
+        <input placeholder="From (e.g. LOS)">
+        <input placeholder="To (e.g. ABV)">
+        <input type="date" class="small">
+        <input type="date" class="small return">
+        <select class="small"><option>1 Adult</option><option>2 Adults</option></select>
+        <button class="search-btn" onclick="window.location.href='Result.html'">Search Flights</button>
+      </form>
+    </div>
+
+    <!-- ROAD -->
+    <div class="form-section" id="road">
+      <form>
+        <input placeholder="From">
+        <input placeholder="Destination">
+        <input type="date">
+        <select class="small"><option>Car</option><option>Bus</option></select>
+        <button class="search-btn">Find Trips</button>
+      </form>
+    </div>
+
+    <!-- TRAIN -->
+    <div class="form-section" id="train">
+      <form>
+        <input placeholder="From Station">
+        <input placeholder="To Station">
+        <input type="date">
+        <select class="small"><option>Economy</option><option>Business</option></select>
+        <button class="search-btn">Search Trains</button>
+      </form>
+    </div>
+
+    <!-- E-TICKET -->
+    <div class="form-section" id="eticket">
+      <form>
+        <input placeholder="Event or Concert">
+        <input placeholder="Location">
+        <input type="date">
+        <select class="small"><option>Regular</option><option>VIP</option></select>
+        <button class="search-btn">Find Events</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
+      });
+    });
+
+    // Filter (flight)
+    const filters = document.querySelectorAll('.filter-btn');
+    filters.forEach(f => f.addEventListener('click', () => {
+      filters.forEach(x => x.classList.remove('active'));
+      f.classList.add('active');
+      const returnField = document.querySelector('.return');
+      returnField.style.display = f.dataset.type === 'oneway' ? 'none' : 'block';
+    }));
+
+    // Initialize return date visibility
+    document.querySelector('.return').style.display = 'none';
+  </script>
+
+<script>
+  // Profile dropdown toggle
+  document.querySelector('.profile-btn').addEventListener('click', () => {
+    document.querySelector('.profile-menu').classList.toggle('active');
+  });
+
+  // Close dropdown when clicking outside
+  window.addEventListener('click', (e) => {
+    if (!document.querySelector('.profile-menu').contains(e.target)) {
+      document.querySelector('.profile-menu').classList.remove('active');
+    }
+  });
+</script>
+
+</body>
+
+</html>
