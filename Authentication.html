@@ -75,7 +75,7 @@
           <div class="kulunu-wallet" aria-hidden="false">
             <div>
               <div style="font-size:12px; color:#667085;">Wallet balance</div>
-              <div class="amount">₦0.00</div>
+              <div class="amount">₦52.800</div>
             </div>
             <div>
               <button class="kulunu-add-btn kulunu-add-small add-btn">+ Add funds</button>
@@ -86,7 +86,7 @@
             <a href="#" data-action="book-flight"><i class="bi bi-airplane"></i> Book flight ticket</a>
             <a href="#" data-action="book-road"><i class="bi bi-car-front"></i> Book Road trip ticket</a>
             <a href="#" data-action="book-train"><i class="bi bi-train-front"></i> Book Train ticket</a>
-            <a href="#" data-action="buy-eticket"><i class="bi bi-ticket-perforated"></i> Purchase E-ticket</a>
+            <a href="Ticket.html" data-action="buy-eticket"><i class="bi bi-ticket-perforated"></i> Purchase E-ticket</a>
             <a href="#" data-action="settings"><i class="bi bi-gear"></i> Settings</a>
           </nav>
 
@@ -135,7 +135,6 @@
       // hook menu item clicks (example: route / perform actions)
       document.querySelectorAll('.kulunu-menu a').forEach(a => {
         a.addEventListener('click', (ev) => {
-          ev.preventDefault();
           const action = a.dataset.action;
           // example behavior - replace with real navigation
           console.log('menu action:', action);
