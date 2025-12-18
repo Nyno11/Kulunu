@@ -482,6 +482,7 @@ Dock / Bottom Navigation
     .modal{padding:14px}
     .dock{height:86px}
   }
+
   .page-section {
     display: none; /* hide all sections by default */
 }
@@ -532,3 +533,153 @@ Dock / Bottom Navigation
 .overlay .modal .btn {
     width: 100%;
 }
+
+  /* Testing css */
+.menu-list {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.menu-box {
+  background: #e6f3ff;          /* light blue */
+  padding: 16px 14px;
+  margin-bottom: 12px;          /* spacing between boxes */
+  border-radius: 12px;
+  border: 1px solid #cfe6ff;
+  font-size: 16px;
+  cursor: pointer;
+  color: #003d80;
+  transition: 0.2s ease;
+}
+
+.menu-box:hover {
+  background: #d9ecff;          /* slightly darker on hover */
+}
+
+.menu-box.active {
+  border: 2px solid #007aff;    /* highlight active menu */
+  background: #d5eaff;
+  font-weight: 600;
+  color: #005cbf;
+}
+
+/* Testing css */
+.hidden {
+  display: none;
+}
+
+.page-section {
+  background: white;
+  padding: 20px;
+  margin-top: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* MENU FRAMES */
+.menu-frame {
+  background: #d9f0ff; /* light blue */
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-frame button {
+  background: white;
+  border: none;
+  padding: 14px;
+  width: 100%;
+  text-align: left;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+
+
+ /* Test css */
+  /* Header layout */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Logo */
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: #0369a1;
+}
+
+/* Desktop menu */
+.menu-desktop {
+  display: flex;
+  gap: 20px;
+}
+
+.menu-desktop a {
+  color: #0369a1;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 12px;
+}
+
+.menu-desktop a:hover {
+  background: #e0f2fe;
+  border-radius: 6px;
+}
+
+/* Mobile icon hidden on desktop */
+.menu-icon {
+  font-size: 26px;
+  cursor: pointer;
+  display: none;
+}
+
+/* Mobile menu container */
+.menu-mobile {
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Individual menu frames */
+.menu-card {
+  background: #e0f2fe;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: #0369a1;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menu-card:hover {
+  background: #bae6fd;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .menu-desktop {
+    display: none; /* Hide desktop menu */
+  }
+
+  .menu-icon {
+    display: block; /* Show mobile icon */
+  }
+
+  .menu-mobile {
+    display: none; /* Will be toggled with JS */
+  }
+}
+
+

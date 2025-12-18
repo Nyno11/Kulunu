@@ -13,10 +13,10 @@
 
 <header>
   <div>Flight Results</div>
-  <a href="dashboard.html">← Back to Dashboard</a>
+  <a href="dashboard.html">← Back</a>
 </header>
 <div class="filter-bar">
-  <div class="filter-option active" data-filter="price">Price</div>
+  <div class="filter-option active" data-filter="price">Cheapest</div>
   <div class="filter-option" data-filter="rating">Rating</div>
   <div class="filter-option" data-filter="weather">Weather</div>
   <div class="filter-option" data-filter="time">Time</div>
@@ -141,7 +141,7 @@ function bookFlight(flight) {
   };
 
   localStorage.setItem("bookingData", JSON.stringify(bookingData));
-  window.location.href = "confirm.html";
+  window.location.href = "dashboard.html";
 }
 </script>
 

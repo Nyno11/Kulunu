@@ -4,244 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Confirm Booking | Kulunu</title>
-  <link rel="stylesheet" href="assets/css/confirm.css">
+
   <link href="assets/img/kulu.png" rel="icon">
   <link href="assets/img/kulu.png" rel="apple-touch-icon">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="assets/css/Confirm.css">
 </head>
-<style>
-  /* ===== General Layout ===== */
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f5f7fa;
-  color: #333;
-}
 
-header {
-  background: #0CA6EF;
-  color: #fff;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 22px;
-}
-
-header a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-/* ===== Container ===== */
-.container {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 0 15px;
-}
-
-/* ===== Card ===== */
-.card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.card h2 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  color: #0CA6EF;
-}
-
-/* ===== Flight Details ===== */
-.flight-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.airline-logo {
-  width: 50px;
-  height: auto;
-}
-
-#flightInfo p {
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-/* ===== Traveler Details ===== */
-.traveler-card {
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 12px;
-}
-
-.traveler-card h4 {
-  margin: 0 0 8px;
-  font-size: 16px;
-  color: #0b2030;
-}
-
-.traveler-card p {
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-.edit-btn {
-  margin-top: 10px;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  background: #0CA6EF;
-  color: #fff;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
-}
-
-.edit-btn:hover {
-  background: #007cc2;
-}
-
-/* ===== Price Summary ===== */
-.price-summary h3 {
-  margin-top: 12px;
-  font-size: 18px;
-  color: #0b2030;
-}
-
-.proceed-btn {
-  margin-top: 15px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #0CA6EF;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
-}
-
-.proceed-btn:hover {
-  background: #007cc2;
-}
-
-/* ===== Modal ===== */
-.modal {
-  display: none;
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.6);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  width: 95%;
-  max-width: 600px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-content h3 {
-  margin-top: 0;
-  color: #0CA6EF;
-}
-
-/* ===== Form ===== */
-.grid-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px 15px;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-}
-
-.field label {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 5px;
-  color: #555;
-}
-
-.field input,
-.field select {
-  padding: 10px;
-  border: 1.5px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.actions {
-  grid-column: span 2;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.btn {
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.btn.primary {
-  background: #0CA6EF;
-  color: #fff;
-}
-
-.btn.ghost {
-  background: #f1f5f9;
-  color: #333;
-}
-
-@media(max-width: 640px) {
-  .grid-form {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ===== Animations ===== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>
 <body>
 
 <header>
   <h1>Review & Confirm</h1>
-  <a href="Booking.html">← Back to Flights</a>
+  <a href="Booking.html">← Back</a>
 </header>
 
 <main class="container">
+
   <!-- Flight Details -->
-  <section class="card" id="flightDetails">
-    <h2>Flight Details</h2>
+  <section class="card">
+    <h2>Trip Details</h2>
     <div id="flightInfo"></div>
   </section>
 
@@ -257,40 +37,52 @@ header a {
     <div id="priceSummary"></div>
     <button class="proceed-btn">Proceed to Payment</button>
   </section>
+
 </main>
 
-<!-- Traveler Edit Modal -->
+<!-- EDIT MODAL -->
 <div class="modal" id="editModal">
   <div class="modal-content">
     <h3>Edit Traveler</h3>
-    <form id="editTravelerForm" class="grid-form">
-      <input type="hidden" id="editIndex" value="-1">
 
-      <div class="field"><label>Title</label>
+    <form id="editTravelerForm" class="grid-form">
+      <input type="hidden" id="editIndex">
+
+      <div class="field">
+        <label>Title</label>
         <select id="editTitle">
           <option>Mr</option><option>Mrs</option><option>Miss</option>
-          <option>Ms</option><option>Dr</option><option>Prof</option>
         </select>
       </div>
-      <div class="field"><label>Traveler Type</label>
+
+      <div class="field">
+        <label>Traveler Type</label>
         <select id="editTravelerType">
           <option>Adult (12y+)</option>
           <option>Child (2y-12y)</option>
           <option>Infant (below 2y)</option>
         </select>
       </div>
-      <div class="field"><label>First Name</label><input type="text" id="editFirstName"></div>
-      <div class="field"><label>Last Name</label><input type="text" id="editLastName"></div>
-      <div class="field"><label>Middle Name</label><input type="text" id="editMiddleName"></div>
-      <div class="field"><label>Email</label><input type="email" id="editEmail"></div>
-      <div class="field"><label>Gender</label>
-        <select id="editGender"><option>Male</option><option>Female</option></select>
+
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" id="editFirstName">
       </div>
-      <div class="field"><label>Date of Birth</label><input type="date" id="editDob"></div>
-      <div class="field"><label>Phone</label><input type="tel" id="editPhone"></div>
-      <div class="field"><label>Nationality</label><input type="text" id="editNationality"></div>
-      <div class="field"><label>Passport No.</label><input type="text" id="editPassport"></div>
-      <div class="field"><label>Expiry Date</label><input type="date" id="editExpiry"></div>
+
+      <div class="field">
+        <label>Last Name</label>
+        <input type="text" id="editLastName">
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="editEmail">
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input type="tel" id="editPhone">
+      </div>
 
       <div class="actions">
         <button type="submit" class="btn primary">Save</button>
@@ -301,65 +93,94 @@ header a {
 </div>
 
 <script>
-let bookingData = JSON.parse(localStorage.getItem("bookingData"));
-let primary = JSON.parse(localStorage.getItem("primaryTraveler"));
-let coTravelers = JSON.parse(localStorage.getItem("coTravelers")) || [];
-let travelers = [];
+/* ===============================
+   LOAD STORAGE SAFELY
+================================ */
+const bookingData = JSON.parse(localStorage.getItem("bookingData"));
+const primary = JSON.parse(localStorage.getItem("primaryTraveler"));
+const coTravelers = JSON.parse(localStorage.getItem("coTravelers")) || [];
 
+if (!bookingData) {
+  alert("Booking data missing. Please start again.");
+  window.location.href = "index.html";
+}
+
+/* ===============================
+   BUILD TRAVELER LIST
+================================ */
+let travelers = [];
 if (primary) travelers.push(primary);
 travelers = travelers.concat(coTravelers);
 
-// Render Flight
+/* ===============================
+   RENDER TRIP DETAILS
+================================ */
+
 function renderFlight() {
   const f = bookingData.travelInfo;
-  document.getElementById("flightInfo").innerHTML = `
-    <div class="flight-header">
-      <img src="assets/img/${f.airline.toLowerCase().replace(/ /g,'-')}.svg" alt="${f.airline} logo" class="airline-logo">
-      <h3>${f.airline}</h3>
-    </div>
-    <p><strong>Route:</strong> ${f.from} → ${f.to}</p>
-    <p><strong>Date:</strong> ${f.date}</p>
-    <p><strong>Time:</strong> ${f.time}</p>
-    <p><strong>Cabin:</strong> ${f.cabin}</p>
-    <p><strong>Price (per traveler):</strong> ₦${f.price}</p>
-  `;
+  const type = bookingData.tripType;
+
+  // FLIGHT
+  if (type === "flight") {
+    document.getElementById("flightInfo").innerHTML = `
+      <p><strong>Airline:</strong> ${f.airline}</p>
+      <p><strong>Route:</strong> ${f.from} → ${f.to}</p>
+      <p><strong>Date:</strong> ${f.date}</p>
+      <p><strong>Time:</strong> ${f.time}</p>
+      <p><strong>Cabin:</strong> ${f.cabin}</p>
+      <p><strong>Price per traveler:</strong> ₦${f.price.toLocaleString()}</p>
+    `;
+  }
+
+  // ROAD TRIP
+  if (type === "road") {
+    document.getElementById("flightInfo").innerHTML = `
+      <p><strong>Transport Company:</strong> ${f.company}</p>
+      <p><strong>Route:</strong> ${f.from} → ${f.to}</p>
+      <p><strong>Date:</strong> ${f.date}</p>
+      <p><strong>Departure Time:</strong> ${f.time}</p>
+      <p><strong>Price per traveler:</strong> ₦${f.price.toLocaleString()}</p>
+    `;
+  }
 }
 
-// Render Travelers
+/* ===============================
+   RENDER TRAVELERS
+================================ */
 function renderTravelers() {
   const list = document.getElementById("travelerList");
   list.innerHTML = "";
+
   travelers.forEach((t, i) => {
-    const card = document.createElement("div");
-    card.className = "traveler-card";
-    card.innerHTML = `
-      <h4>${t.title} ${t.firstName} ${t.lastName}</h4>
-      <p><strong>Type:</strong> ${t.travelerType}</p>
-      <p><strong>Gender:</strong> ${t.gender}</p>
-      <p><strong>DOB:</strong> ${t.dob}</p>
-      <p><strong>Email:</strong> ${t.email}</p>
-      <p><strong>Phone:</strong> ${t.phone}</p>
-      <p><strong>Nationality:</strong> ${t.nationality}</p>
-      <p><strong>Passport:</strong> ${t.passportNumber}</p>
-      <p><strong>Expiry:</strong> ${t.expiryDate}</p>
-      <button onclick="openEdit(${i})" class="edit-btn">Edit</button>
+    list.innerHTML += `
+      <div class="traveler-card">
+        <h4>${t.title} ${t.firstName} ${t.lastName}</h4>
+        <p><strong>Type:</strong> ${t.travelerType}</p>
+        <p><strong>Email:</strong> ${t.email}</p>
+        <p><strong>Phone:</strong> ${t.phone}</p>
+        <button class="edit-btn" onclick="openEdit(${i})">Edit</button>
+      </div>
     `;
-    list.appendChild(card);
   });
 }
 
-// Render Price
+/* ===============================
+   PRICE SUMMARY
+================================ */
 function renderPrice() {
   const price = bookingData.travelInfo.price;
   const total = price * travelers.length;
+
   document.getElementById("priceSummary").innerHTML = `
-    <p><strong>Price per traveler:</strong> ₦${price}</p>
-    <p><strong>No. of Travelers:</strong> ${travelers.length}</p>
-    <h3>Total: ₦${total}</h3>
+    <p><strong>Price per traveler:</strong> ₦${price.toLocaleString()}</p>
+    <p><strong>Travelers:</strong> ${travelers.length}</p>
+    <h3>Total: ₦${total.toLocaleString()}</h3>
   `;
 }
 
-// Modal functions
+/* ===============================
+   MODAL CONTROLS
+================================ */
 function openEdit(i) {
   const t = travelers[i];
   document.getElementById("editIndex").value = i;
@@ -367,14 +188,9 @@ function openEdit(i) {
   document.getElementById("editTravelerType").value = t.travelerType;
   document.getElementById("editFirstName").value = t.firstName;
   document.getElementById("editLastName").value = t.lastName;
-  document.getElementById("editMiddleName").value = t.middleName || "";
   document.getElementById("editEmail").value = t.email;
-  document.getElementById("editGender").value = t.gender;
-  document.getElementById("editDob").value = t.dob;
   document.getElementById("editPhone").value = t.phone;
-  document.getElementById("editNationality").value = t.nationality;
-  document.getElementById("editPassport").value = t.passportNumber;
-  document.getElementById("editExpiry").value = t.expiryDate;
+
   document.getElementById("editModal").style.display = "flex";
 }
 
@@ -382,29 +198,25 @@ function closeModal() {
   document.getElementById("editModal").style.display = "none";
 }
 
-document.getElementById("editTravelerForm").addEventListener("submit", (e) => {
+document.getElementById("editTravelerForm").addEventListener("submit", e => {
   e.preventDefault();
-  const i = parseInt(document.getElementById("editIndex").value);
-  travelers[i] = {
-    title: document.getElementById("editTitle").value,
-    travelerType: document.getElementById("editTravelerType").value,
-    firstName: document.getElementById("editFirstName").value,
-    lastName: document.getElementById("editLastName").value,
-    middleName: document.getElementById("editMiddleName").value,
-    email: document.getElementById("editEmail").value,
-    gender: document.getElementById("editGender").value,
-    dob: document.getElementById("editDob").value,
-    phone: document.getElementById("editPhone").value,
-    nationality: document.getElementById("editNationality").value,
-    passportNumber: document.getElementById("editPassport").value,
-    expiryDate: document.getElementById("editExpiry").value
-  };
+  const i = document.getElementById("editIndex").value;
+
+  travelers[i].title = editTitle.value;
+  travelers[i].travelerType = editTravelerType.value;
+  travelers[i].firstName = editFirstName.value;
+  travelers[i].lastName = editLastName.value;
+  travelers[i].email = editEmail.value;
+  travelers[i].phone = editPhone.value;
+
   closeModal();
   renderTravelers();
   renderPrice();
 });
 
-// Initial render
+/* ===============================
+   INITIAL LOAD
+================================ */
 renderFlight();
 renderTravelers();
 renderPrice();
