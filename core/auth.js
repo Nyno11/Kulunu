@@ -2,7 +2,6 @@
 
 
 
-
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -24,6 +23,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             errorDiv.textContent = data.message;
             errorDiv.classList.remove("d-none");
         } else {
+            // 1. Convert object to JSON string
+            const userString = JSON.stringify(data.data);
+
+            // 2. Save to LocalStorage (Key, Value)
+            localStorage.setItem('user_session', userString);
+
+            // 3. Redirect to dashboard
+            window.location.href = "./dashboard.html";
+            console.log(data);
             console.log(data.data['full_name'])
             alert("Login successful! Welcome " + data.data['full_name']);
             // redirect or save token/session here

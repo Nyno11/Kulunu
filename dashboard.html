@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Dashboard | Kulunu</title>
   <link rel="stylesheet" href="style.css" />
-   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-   <!-- ✅ Bootstrap Icons -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- ✅ Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-   <!-- Favicons -->
+  <!-- Favicons -->
   <link href="assets/img/ku.png" rel="icon">
   <link href="assets/img/ku.png" rel="apple-touch-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -24,6 +27,7 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="assets/css/dashboard.css" rel="stylesheet">
+
 <body>
   <div class="dashboard">
     <aside class="sidebar">
@@ -35,228 +39,229 @@
         <li onclick="navigate('logout', this)"><i class="bi bi-box-arrow-right"></i>Logout</li>
       </ul>
     </aside>
- <!-- Main Content -->
+    <!-- Main Content -->
     <main class="main-content">
-        <!-- Profile Section -->
+      <!-- Profile Section -->
       <section id="Profile" class="section active">
         <header>
-        <h1>Welcome, Franklin 👋</h1>
-        <p>Here is a summary of your travel account.</p> 
-      </header>
-   <button class="book-travel-btn" onclick="navigate('bookings', document.querySelector('.sidebar ul li:nth-child(2)'))">
-  Book travel
-</button> 
-  <!-- Profile Card to Display User Details -->
-   <div class="d-flex flex-row justify-content-between">
-<div class="profile-card" id="profileDisplay">
-  <div class="profile-header">
-    <i class="bi bi-person-circle"></i>
-    <h2 style="font-size: 25px;">primary Traveler</h2>
-    <button class="edit-btn" onclick="openModal(true)">
-   Edit  
-</button>
-  </div>
-  <div class="profile-details" id="profileDetails">
-    <p>Save information for fast bookings.</p>
-  </div>
-</div>
+          <h1>Welcome, <span id="username-display"></span> 👋</h1>
+          <p>Here is a summary of your travel account.</p>
+        </header>
+        <button class="book-travel-btn"
+          onclick="navigate('bookings', document.querySelector('.sidebar ul li:nth-child(2)'))">
+          Book travel
+        </button>
+        <!-- Profile Card to Display User Details -->
+        <div class="d-flex flex-row justify-content-between">
+          <div class="profile-card" id="profileDisplay">
+            <div class="profile-header">
+              <i class="bi bi-person-circle"></i>
+              <h2 style="font-size: 25px;">primary Traveler</h2>
+              <button class="edit-btn" onclick="openModal(true)">
+                Edit
+              </button>
+            </div>
+            <div class="profile-details" id="profileDetails">
+              <p>Save information for fast bookings.</p>
+            </div>
+          </div>
 
 
-<!-- Co-travel Card -->
-<div class="co-travel-card">
-  <div class="co-travel-header">
-    <h2 style="font-size: 25px;">Co-travelers</h2>
-  </div>
-  <div id="coTravelDetails">
-    <p>You have zero <strong>0</strong> other travelers.</p>
-    <ul id="coTravelList"></ul>
-  </div>
-  <button class="co-travel-btn" onclick="openCoTravelModal()">
-    <i class="bi bi-person-plus"></i> Add Co-traveler
-  </button>
-</div>
+          <!-- Co-travel Card -->
+          <div class="co-travel-card">
+            <div class="co-travel-header">
+              <h2 style="font-size: 25px;">Co-travelers</h2>
+            </div>
+            <div id="coTravelDetails">
+              <p>You have zero <strong>0</strong> other travelers.</p>
+              <ul id="coTravelList"></ul>
+            </div>
+            <button class="co-travel-btn" onclick="openCoTravelModal()">
+              <i class="bi bi-person-plus"></i> Add Co-traveler
+            </button>
+          </div>
 
-<!-- ✅ Co-travel Modal -->
-<div class="modal" id="coTravelModal">
-  <div class="modal-content">
-    <h2 id="modalTitle"><i class="bi bi-people"></i>Travel information</h2>
-    <form id="coTravelForm" class="grid-form">
-      <!-- ✅ Hidden index field for editing -->
-      <input type="hidden" id="editIndex" value="-1" />
+          <!-- ✅ Co-travel Modal -->
+          <div class="modal" id="coTravelModal">
+            <div class="modal-content">
+              <h2 id="modalTitle"><i class="bi bi-people"></i>Travel information</h2>
+              <form id="coTravelForm" class="grid-form">
+                <!-- ✅ Hidden index field for editing -->
+                <input type="hidden" id="editIndex" value="-1" />
 
-      <div class="field">
-        <label for="coTitle">Title</label>
-        <select id="coTitle" name="coTitle" required>
-          <option>Mr</option>
-          <option>Mrs</option>
-          <option>Miss</option>
-          <option>Ms</option>
-          <option>Prof</option>
-          <option>Hon</option>
-          <option>Sir</option>
-          <option>Pst</option>
-          <option>Dr</option>
-          <option>Sen</option>
-          <option>Gov</option>
-          <option>Bar</option>
-        </select>
-      </div>
+                <div class="field">
+                  <label for="coTitle">Title</label>
+                  <select id="coTitle" name="coTitle" required>
+                    <option>Mr</option>
+                    <option>Mrs</option>
+                    <option>Miss</option>
+                    <option>Ms</option>
+                    <option>Prof</option>
+                    <option>Hon</option>
+                    <option>Sir</option>
+                    <option>Pst</option>
+                    <option>Dr</option>
+                    <option>Sen</option>
+                    <option>Gov</option>
+                    <option>Bar</option>
+                  </select>
+                </div>
 
-      <div class="field">
-        <label for="coTravelerType">Traveler Type</label>
-        <select id="coTravelerType" name="coTravelerType" required>
-          <option>Adult (12y +)</option>
-          <option>Child (2y-12y)</option>
-          <option>Infant (below 2y)</option>
-        </select>
-      </div>
+                <div class="field">
+                  <label for="coTravelerType">Traveler Type</label>
+                  <select id="coTravelerType" name="coTravelerType" required>
+                    <option>Adult (12y +)</option>
+                    <option>Child (2y-12y)</option>
+                    <option>Infant (below 2y)</option>
+                  </select>
+                </div>
 
-      <div class="field">
-        <label for="coFirstName">First Name</label>
-        <input type="text" id="coFirstName" name="coFirstName" required>
-      </div>
-      
-      <div class="field">
-        <label for="coLastName">Last Name</label>
-        <input type="text" id="coLastName" name="coLastName" required>
-      </div>
+                <div class="field">
+                  <label for="coFirstName">First Name</label>
+                  <input type="text" id="coFirstName" name="coFirstName" required>
+                </div>
 
-      <div class="field">
-        <label for="coMiddleName">Middle Name</label>
-        <input type="text" id="coMiddleName" name="coMiddleName">
-      </div>
+                <div class="field">
+                  <label for="coLastName">Last Name</label>
+                  <input type="text" id="coLastName" name="coLastName" required>
+                </div>
 
-      <div class="field">
-        <label for="coEmail">Email</label>
-        <!-- ✅ changed to type="email" -->
-        <input type="email" id="coEmail" name="coEmail" required>
-      </div>
+                <div class="field">
+                  <label for="coMiddleName">Middle Name</label>
+                  <input type="text" id="coMiddleName" name="coMiddleName">
+                </div>
 
-      <div class="field">
-        <label for="coGender">Gender</label>
-        <select id="coGender" name="coGender" required>
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-      </div>
+                <div class="field">
+                  <label for="coEmail">Email</label>
+                  <!-- ✅ changed to type="email" -->
+                  <input type="email" id="coEmail" name="coEmail" required>
+                </div>
 
-      <div class="field">
-        <label for="coRelationship">Relationship</label>
-        <select id="coRelationship" name="coRelationship" required>
-          <option>Spouse</option>
-          <option>Child</option>
-          <option>Sibling</option>
-          <option>Friend</option>
-          <option>Other</option>
-        </select>
-      </div>
+                <div class="field">
+                  <label for="coGender">Gender</label>
+                  <select id="coGender" name="coGender" required>
+                    <option>Male</option>
+                    <option>Female</option>
+                  </select>
+                </div>
 
-      <div class="field">
-        <label for="coDob">Date of Birth</label>
-        <input type="date" id="coDob" name="coDob" required>
-      </div>
+                <div class="field">
+                  <label for="coRelationship">Relationship</label>
+                  <select id="coRelationship" name="coRelationship" required>
+                    <option>Spouse</option>
+                    <option>Child</option>
+                    <option>Sibling</option>
+                    <option>Friend</option>
+                    <option>Other</option>
+                  </select>
+                </div>
 
-      <div class="field">
-        <!-- ✅ fixed label "for" attribute -->
-        <label for="coPhone">Mobile Number</label>
-        <input type="tel" id="coPhone" name="coPhone" placeholder="+234..." required>
-      </div>
+                <div class="field">
+                  <label for="coDob">Date of Birth</label>
+                  <input type="date" id="coDob" name="coDob" required>
+                </div>
 
-      <!-- Actions -->
-      <div class="actions">
-        <button type="submit" class="btn primary">Save</button>
-        <button type="button" class="btn ghost" onclick="closeCoTravelModal()">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+                <div class="field">
+                  <!-- ✅ fixed label "for" attribute -->
+                  <label for="coPhone">Mobile Number</label>
+                  <input type="tel" id="coPhone" name="coPhone" placeholder="+234..." required>
+                </div>
 
-<script>
-const coTravelModal = document.getElementById("coTravelModal");
-const coTravelDetails = document.getElementById("coTravelDetails");
-const coTravelList = document.getElementById("coTravelList");
-const modalTitle = document.getElementById("modalTitle");
+                <!-- Actions -->
+                <div class="actions">
+                  <button type="submit" class="btn primary">Save</button>
+                  <button type="button" class="btn ghost" onclick="closeCoTravelModal()">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
 
-let coTravelers = []; // ✅ store travelers globally
+          <script>
+            const coTravelModal = document.getElementById("coTravelModal");
+            const coTravelDetails = document.getElementById("coTravelDetails");
+            const coTravelList = document.getElementById("coTravelList");
+            const modalTitle = document.getElementById("modalTitle");
 
-// Open & close modal
-function openCoTravelModal(index = -1) {
-  document.getElementById("editIndex").value = index;
+            let coTravelers = []; // ✅ store travelers globally
 
-  if (index >= 0) {
-    // ✅ Prefill form for editing
-    const traveler = coTravelers[index];
-    document.getElementById("coTitle").value = traveler.title;
-    document.getElementById("coTravelerType").value = traveler.travelerType;
-    document.getElementById("coFirstName").value = traveler.firstName;
-    document.getElementById("coLastName").value = traveler.lastName;
-    document.getElementById("coMiddleName").value = traveler.middleName;
-    document.getElementById("coEmail").value = traveler.email;
-    document.getElementById("coGender").value = traveler.gender;
-    document.getElementById("coPhone").value = traveler.phone;
-    document.getElementById("coRelationship").value = traveler.relation;
-    document.getElementById("coDob").value = traveler.dob;
+            // Open & close modal
+            function openCoTravelModal(index = -1) {
+              document.getElementById("editIndex").value = index;
 
-    modalTitle.innerHTML = `<i class="bi bi-people"></i> Edit Co-traveler`; // ✅ dynamic title
-  } else {
-    document.getElementById("coTravelForm").reset();
-    modalTitle.innerHTML = `<i class="bi bi-people"></i> Add Co-traveler`; // ✅ reset title
-  }
+              if (index >= 0) {
+                // ✅ Prefill form for editing
+                const traveler = coTravelers[index];
+                document.getElementById("coTitle").value = traveler.title;
+                document.getElementById("coTravelerType").value = traveler.travelerType;
+                document.getElementById("coFirstName").value = traveler.firstName;
+                document.getElementById("coLastName").value = traveler.lastName;
+                document.getElementById("coMiddleName").value = traveler.middleName;
+                document.getElementById("coEmail").value = traveler.email;
+                document.getElementById("coGender").value = traveler.gender;
+                document.getElementById("coPhone").value = traveler.phone;
+                document.getElementById("coRelationship").value = traveler.relation;
+                document.getElementById("coDob").value = traveler.dob;
 
-  coTravelModal.style.display = "flex";
-}
+                modalTitle.innerHTML = `<i class="bi bi-people"></i> Edit Co-traveler`; // ✅ dynamic title
+              } else {
+                document.getElementById("coTravelForm").reset();
+                modalTitle.innerHTML = `<i class="bi bi-people"></i> Add Co-traveler`; // ✅ reset title
+              }
 
-function closeCoTravelModal() {
-  coTravelModal.style.display = "none";
-}
+              coTravelModal.style.display = "flex";
+            }
 
-// Handle form submit
-document.getElementById("coTravelForm").addEventListener("submit", (e) => {
-  e.preventDefault();
+            function closeCoTravelModal() {
+              coTravelModal.style.display = "none";
+            }
 
-  const index = parseInt(document.getElementById("editIndex").value);
+            // Handle form submit
+            document.getElementById("coTravelForm").addEventListener("submit", (e) => {
+              e.preventDefault();
 
-  const traveler = {
-    title: document.getElementById("coTitle").value,
-    travelerType: document.getElementById("coTravelerType").value,
-    firstName: document.getElementById("coFirstName").value,
-    lastName: document.getElementById("coLastName").value,
-    middleName: document.getElementById("coMiddleName").value,
-    email: document.getElementById("coEmail").value,
-    gender: document.getElementById("coGender").value,
-    phone: document.getElementById("coPhone").value,
-    relation: document.getElementById("coRelationship").value,
-    dob: document.getElementById("coDob").value, 
-  };
+              const index = parseInt(document.getElementById("editIndex").value);
 
-  if (index >= 0) {
-    coTravelers[index] = traveler;
-  } else {
-    coTravelers.push(traveler);
-  }
+              const traveler = {
+                title: document.getElementById("coTitle").value,
+                travelerType: document.getElementById("coTravelerType").value,
+                firstName: document.getElementById("coFirstName").value,
+                lastName: document.getElementById("coLastName").value,
+                middleName: document.getElementById("coMiddleName").value,
+                email: document.getElementById("coEmail").value,
+                gender: document.getElementById("coGender").value,
+                phone: document.getElementById("coPhone").value,
+                relation: document.getElementById("coRelationship").value,
+                dob: document.getElementById("coDob").value,
+              };
 
-  renderCoTravelers();
-  e.target.reset();
-  closeCoTravelModal();
-});
+              if (index >= 0) {
+                coTravelers[index] = traveler;
+              } else {
+                coTravelers.push(traveler);
+              }
 
-// Render travelers with Edit & Delete
-function renderCoTravelers() {
-  coTravelList.innerHTML = "";
+              renderCoTravelers();
+              e.target.reset();
+              closeCoTravelModal();
+            });
 
-  if (coTravelers.length === 0) {
-    coTravelDetails.querySelector("p")?.remove();
-    const msg = document.createElement("p");
-    msg.innerHTML = `You have zero <strong>0</strong> other travelers.`;
-    coTravelDetails.insertBefore(msg, coTravelList);
-    return;
-  } else {
-    coTravelDetails.querySelector("p")?.remove();
-  }
+            // Render travelers with Edit & Delete
+            function renderCoTravelers() {
+              coTravelList.innerHTML = "";
 
-  coTravelers.forEach((traveler, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
+              if (coTravelers.length === 0) {
+                coTravelDetails.querySelector("p")?.remove();
+                const msg = document.createElement("p");
+                msg.innerHTML = `You have zero <strong>0</strong> other travelers.`;
+                coTravelDetails.insertBefore(msg, coTravelList);
+                return;
+              } else {
+                coTravelDetails.querySelector("p")?.remove();
+              }
+
+              coTravelers.forEach((traveler, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
       <strong>${traveler.title} ${traveler.firstName} ${traveler.lastName}</strong> (${traveler.relation}) <br>
       <small>Type: ${traveler.travelerType} | Gender: ${traveler.gender} | Phone: ${traveler.phone}</small><br>
       <small>Email: ${traveler.email} | DOB: ${traveler.dob}</small>
@@ -266,169 +271,170 @@ function renderCoTravelers() {
         <i class="bi bi-trash" style="color:red;cursor:pointer;" onclick="deleteCoTraveler(${index})"></i>
       </div>
     `;
-    coTravelList.appendChild(li);
-  });
-}
+                coTravelList.appendChild(li);
+              });
+            }
 
-function deleteCoTraveler(index) {
-  if (confirm("Are you sure you want to delete this co-traveler?")) {
-    coTravelers.splice(index, 1);
-    renderCoTravelers();
-  }
-}
+            function deleteCoTraveler(index) {
+              if (confirm("Are you sure you want to delete this co-traveler?")) {
+                coTravelers.splice(index, 1);
+                renderCoTravelers();
+              }
+            }
 
-// Close modal if clicked outside
-window.addEventListener("click", (e) => {
-  if (e.target === coTravelModal) closeCoTravelModal();
-});
-</script>
+            // Close modal if clicked outside
+            window.addEventListener("click", (e) => {
+              if (e.target === coTravelModal) closeCoTravelModal();
+            });
+          </script>
       </section>
-      
-<!-- ✅ Modal -->
-  <div class="modal" id="profileModal">
-  <div class="modal-content">
-    <h2><i class="bi bi-person-circle"></i>Travel Information</h2>
-    <p>Your travel details will be used for all bookings. Ensure they match your government-issued ID.</p>
-    <form id="profileForm" class="grid-form">
 
-      <div class="field">
-        <label for="title">Title</label>
-        <select id="title" name="title">
-          <option>Mr</option>
-          <option>Mrs</option>
-          <option>Miss</option>
-          <option>Ms</option>
-          <option>Prof</option>
-          <option>Hon</option>
-          <option>Sir</option>
-          <option>Pst</option>
-          <option>Dr</option>
-          <option>Sen</option>
-          <option>Gov</option>
-          <option>Bar</option>
-        </select>
+      <!-- ✅ Modal -->
+      <div class="modal" id="profileModal">
+        <div class="modal-content">
+          <h2><i class="bi bi-person-circle"></i>Travel Information</h2>
+          <p>Your travel details will be used for all bookings. Ensure they match your government-issued ID.</p>
+          <form id="travelInfoForm" class="grid-form">
+
+            <div class="field">
+              <label for="title">Title</label>
+              <select id="title" name="title">
+                <option>Mr</option>
+                <option>Mrs</option>
+                <option>Miss</option>
+                <option>Ms</option>
+                <option>Prof</option>
+                <option>Hon</option>
+                <option>Sir</option>
+                <option>Pst</option>
+                <option>Dr</option>
+                <option>Sen</option>
+                <option>Gov</option>
+                <option>Bar</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="travelerType">Traveler Type</label>
+              <select id="travelerType" name="travelerType">
+                <option value="Adult">Adult(12y +)</option>
+                <option value="Child">Child(2y-12y)</option>
+                <option value="Infant">Infant(below 2y)</option>
+              </select>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="field">
+              <label for="firstName">First Name</label>
+              <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="field">
+              <label for="lastName">Last Name</label>
+              <input type="text" id="lastName" name="lastName" required>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="field">
+              <label for="middleName">Middle Name</label>
+              <input type="text" id="middleName" name="middleName">
+            </div>
+            <div class="field">
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="field">
+              <label for="dob">Date of Birth</label>
+              <input type="date" id="dob" name="dob" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+
+            <!-- Row 5 -->
+            <div class="field">
+              <label for="phone">Mobile Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="+234..." required>
+            </div>
+            <div class="field">
+              <label for="nationality">Nationality</label>
+              <input type="text" id="nationality" name="nationality" required>
+            </div>
+
+            <!-- Row 6 -->
+            <div class="field">
+              <label for="passportNumber">Passport Number</label>
+              <input type="text" id="passportNumber" name="passportNumber" required>
+            </div>
+            <div class="field">
+              <label for="expiryDate">Passport Expiry Date</label>
+              <input type="date" id="expiryDate" name="expiryDate" required>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+              <button type="submit" class="btn primary">Save Profile</button>
+              <button type="button" class="btn ghost" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        </div>
       </div>
 
-      <div class="field">
-        <label for="travelerType">Traveler Type</label>
-        <select id="travelerType" name="travelerType">
-          <option>Adult(12y +)</option>
-          <option>Child(2y-12y)</option>
-          <option>Infant(below 2y)</option>
-        </select>
-      </div>
 
-      <!-- Row 2 -->
-      <div class="field">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" name="firstName" required>
-      </div>
-      <div class="field">
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" name="lastName" required>
-      </div>
+      <script>
+        function navigate(sectionId, element) {
+          const sections = document.querySelectorAll('.section');
+          sections.forEach(sec => sec.classList.remove('active'));
+          document.getElementById(sectionId).classList.add('active');
 
-      <!-- Row 3 -->
-      <div class="field">
-        <label for="middleName">Middle Name</label>
-        <input type="text" id="middleName" name="middleName">
-      </div>
-      <div class="field">
-        <label for="gender">Gender</label>
-        <select id="gender" name="gender">
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-      </div>
+          const navItems = document.querySelectorAll('.sidebar ul li');
+          navItems.forEach(item => item.classList.remove('active'));
+          element.classList.add('active');
+        }
 
-      <!-- Row 4 -->
-      <div class="field">
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" name="dob" required>
-      </div>
-      <div class="field">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-      </div>
+        // ✅ Modal functions
+        const modal = document.getElementById("profileModal");
 
-      <!-- Row 5 -->
-      <div class="field">
-        <label for="phone">Mobile Number</label>
-        <input type="tel" id="phone" name="phone" placeholder="+234..." required>
-      </div>
-      <div class="field">
-        <label for="nationality">Nationality</label>
-        <input type="text" id="nationality" name="nationality" required>
-      </div>
+        function openModal() {
+          modal.style.display = "flex";
+        }
+        function closeModal() {
+          modal.style.display = "none";
+        }
 
-      <!-- Row 6 -->
-      <div class="field">
-        <label for="passportNumber">Passport Number</label>
-        <input type="text" id="passportNumber" name="passportNumber" required>
-      </div>
-      <div class="field">
-        <label for="expiryDate">Passport Expiry Date</label>
-        <input type="date" id="expiryDate" name="expiryDate" required>
-      </div>
+        // Auto open modal after 2 seconds on dashboard load
+        window.addEventListener("load", () => {
+          setTimeout(() => {
+            openModal();
+          }, 2000);
+        });
 
-      <!-- Actions -->
-      <div class="actions">
-        <button type="submit" class="btn primary">Save Profile</button>
-        <button type="button" class="btn ghost" onclick="closeModal()">Cancel</button>
-      </div>
-    </form>
-  </div>
-</div>
+        // Handle form submit
+        document.getElementById("travelInfoForm").addEventListener("submit", (e) => {
+          e.preventDefault();
+          const data = {
+            title: document.getElementById("title").value,
+            travelerType: document.getElementById("travelerType").value,
+            firstName: document.getElementById("firstName").value,
+            lastName: document.getElementById("lastName").value,
+            middleName: document.getElementById("middleName").value,
+            gender: document.getElementById("gender").value,
+            dob: document.getElementById("dob").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            nationality: document.getElementById("nationality").value,
+            passportNumber: document.getElementById("passportNumber").value,
+            expiryDate: document.getElementById("expiryDate").value
+          };
 
- <script>
-  function navigate(sectionId, element) {
-    const sections = document.querySelectorAll('.section');
-    sections.forEach(sec => sec.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
-
-    const navItems = document.querySelectorAll('.sidebar ul li');
-    navItems.forEach(item => item.classList.remove('active'));
-    element.classList.add('active');
-  }
-
-  // ✅ Modal functions
-  const modal = document.getElementById("profileModal");
-
-  function openModal() {
-    modal.style.display = "flex";
-  }
-  function closeModal() {
-    modal.style.display = "none";
-  }
-
-  // Auto open modal after 2 seconds on dashboard load
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      openModal();
-    }, 2000);
-  });
-
-  // Handle form submit
-    document.getElementById("profileForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const data = {
-        title: document.getElementById("title").value,
-        travelerType: document.getElementById("travelerType").value,
-        firstName: document.getElementById("firstName").value,
-        lastName: document.getElementById("lastName").value,
-        middleName: document.getElementById("middleName").value,
-        gender: document.getElementById("gender").value,
-        dob: document.getElementById("dob").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        nationality: document.getElementById("nationality").value,
-        passportNumber: document.getElementById("passportNumber").value,
-        expiryDate: document.getElementById("expiryDate").value
-      };
-
-      // Render into profile card
-      const profileDetails = document.getElementById("profileDetails");
-      profileDetails.innerHTML = `
+          // Render into profile card
+          const profileDetails = document.getElementById("profileDetails");
+          profileDetails.innerHTML = `
         <div class="detail"><strong>Title</strong><span>${data.title}</span></div>
         <div class="detail"><strong>Traveler Type</strong><span>${data.travelerType}</span></div>
         <div class="detail"><strong>First Name</strong><span>${data.firstName}</span></div>
@@ -442,317 +448,139 @@ window.addEventListener("click", (e) => {
         <div class="detail"><strong>Passport No.</strong><span>${data.passportNumber}</span></div>
         <div class="detail"><strong>Expiry Date</strong><span>${data.expiryDate}</span></div>
       `;
-      closeModal();
-    });
+          closeModal();
+        });
 
 
-  // Close modal on outside click
-  window.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
+        // Close modal on outside click
+        window.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal();
+        });
 
-  // ✅ Edit button pre-fills form with saved profile data
-function openModal(edit = false) {
-  if (edit) {
-    const details = document.querySelectorAll("#profileDetails p strong");
-    if (details.length > 0) {
-      // Fill fields only if data exists
-      document.getElementById("title").value = details[0].nextSibling.textContent.trim();
-      document.getElementById("travelerType").value = details[1].nextSibling.textContent.trim();
-      document.getElementById("firstName").value = details[2].nextSibling.textContent.trim();
-      document.getElementById("lastName").value = details[3].nextSibling.textContent.trim();
-      document.getElementById("middleName").value = details[4].nextSibling.textContent.trim();
-      document.getElementById("gender").value = details[5].nextSibling.textContent.trim();
-      document.getElementById("dob").value = details[6].nextSibling.textContent.trim();
-      document.getElementById("email").value = details[7].nextSibling.textContent.trim();
-      document.getElementById("phone").value = details[8].nextSibling.textContent.trim();
-      document.getElementById("nationality").value = details[9].nextSibling.textContent.trim();
-      document.getElementById("passportNumber").value = details[10].nextSibling.textContent.trim();
-      document.getElementById("expiryDate").value = details[11].nextSibling.textContent.trim();
-    }
-  }
-  modal.style.display = "flex";
-}
+        // ✅ Edit button pre-fills form with saved profile data
+        function openModal(edit = false) {
+          if (edit) {
+            const details = document.querySelectorAll("#profileDetails p strong");
+            if (details.length > 0) {
+              // Fill fields only if data exists
+              document.getElementById("title").value = details[0].nextSibling.textContent.trim();
+              document.getElementById("travelerType").value = details[1].nextSibling.textContent.trim();
+              document.getElementById("firstName").value = details[2].nextSibling.textContent.trim();
+              document.getElementById("lastName").value = details[3].nextSibling.textContent.trim();
+              document.getElementById("middleName").value = details[4].nextSibling.textContent.trim();
+              document.getElementById("gender").value = details[5].nextSibling.textContent.trim();
+              document.getElementById("dob").value = details[6].nextSibling.textContent.trim();
+              document.getElementById("email").value = details[7].nextSibling.textContent.trim();
+              document.getElementById("phone").value = details[8].nextSibling.textContent.trim();
+              document.getElementById("nationality").value = details[9].nextSibling.textContent.trim();
+              document.getElementById("passportNumber").value = details[10].nextSibling.textContent.trim();
+              document.getElementById("expiryDate").value = details[11].nextSibling.textContent.trim();
+            }
+          }
+          modal.style.display = "flex";
+        }
 
-</script>
+      </script>
 
-     <section id="bookings" class="section">
-  <div class="wrap">
-    <h1 class="page-title">My Trips</h1>
-    <p class="sub">Find and manage your bookings. Change dates, download invoices, or request a refund.</p>
-    <!--- flight search dashboard --->
-    <div class="container">
-  <div class="search-panel">
-    <!-- Trip type selection -->
-    <div class="trip-types">
-      <label><input type="radio" name="tripType" value="oneway"> One Way</label>
-      <label><input type="radio" name="tripType" value="round" checked> Round Trip</label>
-      <label><input type="radio" name="tripType" value="multi"> Multicity</label>
-    </div>
+      <section id="bookings" class="section">
+        <div class="wrap">
+          <h1 class="page-title">My Trips</h1>
+          <p class="sub">Find and manage your bookings. Change dates, download invoices, or request a refund.</p>
+          <!--- flight search dashboard --->
+          <div class="container">
+            <div class="search-panel">
+              <!-- Trip type selection -->
+              <div class="trip-types">
+                <label><input type="radio" name="tripType" value="oneway"> One Way</label>
+                <label><input type="radio" name="tripType" value="round" checked> Round Trip</label>
+                <label><input type="radio" name="tripType" value="multi"> Multicity</label>
+              </div>
 
-    <!-- Search fields -->
-    <div class="form-grid">
-      <div>
-        <label>From</label>
-        <input type="text" id="from" placeholder="Origin">
-      </div>
-      <div>
-        <label>To</label>
-        <input type="text" id="to" placeholder="Destination">
-      </div>
-      <div>
-        <label>Date</label>
-        <input type="date" id="date">
-      </div>
-      <div>
-        <button onclick="window.location.href='Booking.html'">Search</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <script>
-    const dummyFlights = [
-      { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
-      { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
-      { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
-      
-    ];
-
-    function searchFlights() {
-      const from = document.getElementById('from').value;
-      const to = document.getElementById('to').value;
-      const date = document.getElementById('date').value;
-      const resultsContainer = document.getElementById('results');
-    }
-  </script>
-
-    <!-- Lookup -->
-    <section class="card lookup" aria-label="Manage Booking">
-      <div class="row">
-        <div class="field">
-          <label for="bookingId">Booking ID</label>
-          <input id="bookingId" placeholder="e.g., WK123ABC" autocomplete="off">
-        </div>
-        <div class="field">
-          <label for="lastName">Last Name</label>
-          <input id="lastName" placeholder="e.g., Okafor" autocomplete="off">
-        </div>
-        <div class="actions" style="align-self:end">
-          <button class="btn primary" id="findBtn">Find Booking</button>
-          <button class="btn ghost" id="resetBtn" type="button">Reset</button>
-        </div>
-      </div>
-      <div class="tabs" role="tablist" aria-label="Filter trips">
-        <button class="tab active" data-filter="upcoming" role="tab" aria-selected="true">Upcoming</button>
-        <button class="tab" data-filter="completed" role="tab" aria-selected="false">Completed</button>
-        <button class="tab" data-filter="cancelled" role="tab" aria-selected="false">Cancelled</button>
-        <button class="tab" data-filter="all" role="tab" aria-selected="false">All</button>
-      </div>
-      <!-- ✅ Changed ID so it doesn't clash -->
-      <div id="booking-results" class="grid" aria-live="polite"></div>
-    </section>
-  </div>
-
-  <script>
-    // -------- Mock bookings --------
-    const BOOKINGS = [
-      {
-        id:"WK123ABC",
-        lastName:"Okafor",
-        status:"upcoming",
-        from:"LOS (Lagos)",
-        to:"ABV (Abuja)",
-        date:"2025-09-12",
-        time:"09:35",
-        airline:"Air Peace",
-        pnr:"8Y3KDL"
-      },
-      {
-        id:"WK456DEF",
-        lastName:"Adebayo",
-        status:"completed",
-        from:"ABV (Abuja)",
-        to:"PHC (Port Harcourt)",
-        date:"2025-06-03",
-        time:"14:05",
-        airline:"Arik Air",
-        pnr:"M1ZTQX"
-      },
-      {
-        id:"WK789GHI",
-        lastName:"Okafor",
-        status:"cancelled",
-        from:"LOS (Lagos)",
-        to:"ACC (Accra)",
-        date:"2025-05-21",
-        time:"19:15",
-        airline:"Ibom Air",
-        pnr:"Q9P2AA"
-      },
-      {
-        id:"WK111JKL",
-        lastName:"Oluwole",
-        status:"upcoming",
-        from:"LOS (Lagos)",
-        to:"DXB (Dubai)",
-        date:"2025-10-04",
-        time:"22:30",
-        airline:"Qatar Airways",
-        pnr:"L7N3VR"
-      }
-    ];
-
-    // -------- State --------
-    let currentFilter = "upcoming";
-    const $results = document.getElementById('booking-results'); // ✅ fixed
-    const $tabs = document.querySelectorAll('.tab');
-    const $bookingId = document.getElementById('bookingId');
-    const $lastName = document.getElementById('lastName');
-
-    // -------- Helpers --------
-    function formatDate(iso){
-      try{
-        const d = new Date(iso + "T00:00:00");
-        return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
-      }catch{ return iso }
-    }
-
-    function render(list){
-      $results.innerHTML = '';
-      if(!list.length){
-        $results.innerHTML = `
-          <div class="empty">
-            <strong>No trips found.</strong><br/>
-            Try a different filter or search with your Booking ID & Last Name.
-          </div>`;
-        return;
-      }
-      const frag = document.createDocumentFragment();
-      list.forEach(b => {
-        const el = document.createElement('article');
-        el.className = 'booking';
-        el.innerHTML = `
-          <div class="booking-header">
-            <div>
-              <div class="route">${b.from} → ${b.to}</div>
-              <div class="meta">${b.airline} • ${formatDate(b.date)} • ${b.time}</div>
+              <!-- Search fields -->
+              <div class="form-grid">
+                <div>
+                  <label>From</label>
+                  <input type="text" id="from" placeholder="Origin">
+                </div>
+                <div>
+                  <label>To</label>
+                  <input type="text" id="to" placeholder="Destination">
+                </div>
+                <div>
+                  <label>Date</label>
+                  <input type="date" id="date">
+                </div>
+                <div>
+                  <button onclick="window.location.href='Booking.html'">Search</button>
+                </div>
+              </div>
             </div>
-            <span class="badge ${b.status}">${b.status[0].toUpperCase()+b.status.slice(1)}</span>
           </div>
-          <div class="booking-body">
-            <div><strong>Booking ID:</strong> ${b.id}</div>
-            <div><strong>PNR:</strong> ${b.pnr}</div>
-            <div><strong>Passenger:</strong> ${b.lastName}</div>
-          </div>
-          <div class="booking-actions">
-            <button class="btn small gray" data-action="invoice" data-id="${b.id}">Download Invoice</button>
-            <button class="btn small ${b.status==='completed' || b.status==='cancelled' ? 'ghost' : 'primary'}" 
-                    ${b.status!=='upcoming' ? 'disabled' : ''} 
-                    data-action="change" data-id="${b.id}">Change Flight</button>
-          </div>
-        `;
-        frag.appendChild(el);
-      });
-      $results.appendChild(frag);
-    }
 
-    function applyFilter(){
-      let visible = BOOKINGS.filter(b => currentFilter==='all' ? true : b.status===currentFilter);
-      const id = $bookingId.value.trim().toLowerCase();
-      const ln = $lastName.value.trim().toLowerCase();
-      if(id) visible = visible.filter(b => b.id.toLowerCase() === id);
-      if(ln) visible = visible.filter(b => b.lastName.toLowerCase() === ln);
-      render(visible);
-    }
+          <script>
+            const dummyFlights = [
+              { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
+              { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
+              { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
 
-    // -------- Events --------
-    $tabs.forEach(t => t.addEventListener('click', () => {
-      $tabs.forEach(x => x.classList.remove('active'));
-      t.classList.add('active');
-      currentFilter = t.dataset.filter;
-      applyFilter();
-    }));
+            ];
 
-    document.getElementById('findBtn').addEventListener('click', applyFilter);
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      $bookingId.value = '';
-      $lastName.value = '';
-      currentFilter = 'upcoming';
-      $tabs.forEach(x => x.classList.toggle('active', x.dataset.filter==='upcoming'));
-      applyFilter();
-    });
+            function searchFlights() {
+              const from = document.getElementById('from').value;
+              const to = document.getElementById('to').value;
+              const date = document.getElementById('date').value;
+              const resultsContainer = document.getElementById('results');
+            }
+          </script>
 
-    $results.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-action]');
-      if(!btn) return;
-      const id = btn.dataset.id;
-      const action = btn.dataset.action;
-      const map = {
-        invoice: `Preparing invoice PDF for ${id}...`,
-        change: `Starting change flow for ${id} (date/route)...`,
-      };
-      alert(map[action] || 'Action clicked');
-    });
+          <!-- Lookup -->
+          <section class="card lookup" aria-label="Manage Booking">
+            <div class="row">
+              <div class="field">
+                <label for="bookingId">Booking ID</label>
+                <input id="bookingId" placeholder="e.g., WK123ABC" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="lastName">Last Name</label>
+                <input id="lastName" placeholder="e.g., Okafor" autocomplete="off">
+              </div>
+              <div class="actions" style="align-self:end">
+                <button class="btn primary" id="findBtn">Find Booking</button>
+                <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+              </div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Filter trips">
+              <button class="tab active" data-filter="upcoming" role="tab" aria-selected="true">Upcoming</button>
+              <button class="tab" data-filter="completed" role="tab" aria-selected="false">Completed</button>
+              <button class="tab" data-filter="cancelled" role="tab" aria-selected="false">Cancelled</button>
+              <button class="tab" data-filter="all" role="tab" aria-selected="false">All</button>
+            </div>
+            <!-- ✅ Changed ID so it doesn't clash -->
+            <div id="booking-results" class="grid" aria-live="polite"></div>
+          </section>
+        </div>
 
-    // Initial render
-    applyFilter();
-  </script>
-  <script>
-function saveProfileToStorage(data) {
-  localStorage.setItem("primaryTraveler", JSON.stringify(data));
-}
-
-function saveCoTravelersToStorage() {
-  localStorage.setItem("coTravelers", JSON.stringify(coTravelers));
-}
-
-// Hook profile save
-document.getElementById("profileForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const data = {
-    title: document.getElementById("title").value,
-    travelerType: document.getElementById("travelerType").value,
-    firstName: document.getElementById("firstName").value,
-    lastName: document.getElementById("lastName").value,
-    middleName: document.getElementById("middleName").value,
-    gender: document.getElementById("gender").value,
-    dob: document.getElementById("dob").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    nationality: document.getElementById("nationality").value,
-    passportNumber: document.getElementById("passportNumber").value,
-    expiryDate: document.getElementById("expiryDate").value
-  };
-  saveProfileToStorage(data);
-});
-
-// Hook co-travel save
-document.getElementById("coTravelForm").addEventListener("submit", () => {
-  saveCoTravelersToStorage();
-});
-</script>
-</section>
-</section>
+      </section>
+      </section>
       <section id="payments" class="section">
         <h2>Payment History</h2>
         <section class="bookings">
-        <div class="booking-entry">
-          <p><strong>Lagos → Abuja</strong> | Air Peace | 22 Jul 2025</p>
-          <p style="padding-left: 500px; font-size: large;"><strong>₦120,000</strong></p>
-          <span class="status confirmed">Confirmed</span>
-        </div>
-        <div class="booking-entry">
-          <p><strong>Abuja → PHC</strong> | Flyaero | 05 Jun 2025</p>
-          <p style="padding-left: 500px; font-size: large;"><strong>₦95,000</strong></p>
-          <span class="status completed">Completed</span>
-        </div>
-        <div class="booking-entry">
-          <p><strong>Abuja → PHC</strong> | Ibom Air | 05 Jun 2025</p>
-          <p style="padding-left: 500px; font-size: large;"><strong>₦110,000</strong></p>
-          <span class="status completed">Completed</span>
-        </div>
-      </section>
+          <div class="booking-entry">
+            <p><strong>Lagos → Abuja</strong> | Air Peace | 22 Jul 2025</p>
+            <p style="padding-left: 500px; font-size: large;"><strong>₦120,000</strong></p>
+            <span class="status confirmed">Confirmed</span>
+          </div>
+          <div class="booking-entry">
+            <p><strong>Abuja → PHC</strong> | Flyaero | 05 Jun 2025</p>
+            <p style="padding-left: 500px; font-size: large;"><strong>₦95,000</strong></p>
+            <span class="status completed">Completed</span>
+          </div>
+          <div class="booking-entry">
+            <p><strong>Abuja → PHC</strong> | Ibom Air | 05 Jun 2025</p>
+            <p style="padding-left: 500px; font-size: large;"><strong>₦110,000</strong></p>
+            <span class="status completed">Completed</span>
+          </div>
+        </section>
       </section>
 
       <section id="logout" class="section">
@@ -773,5 +601,8 @@ document.getElementById("coTravelForm").addEventListener("submit", () => {
       element.classList.add('active');
     }
   </script>
+  <script src="./core/storedUser.js"></script>
+  <script src="./core/dashboard.js"></script>
 </body>
+
 </html>
