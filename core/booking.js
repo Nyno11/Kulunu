@@ -1,5 +1,5 @@
 
-const API_URL_AUTOCOMPLETE = "http://localhost:8080/api/airports/autocomplete";
+const API_URL_AUTOCOMPLETE = "https://api.kulunu.app/api/airports/autocomplete";
 
 let departureIATA = "";
 let arrivalIATA = "";
@@ -81,7 +81,7 @@ searchBtn.addEventListener("click", async () => {
     }
 
     try {
-        const res = await fetch("http://localhost:8080/api/search", {
+        const res = await fetch("https://api.kulunu.app/api/search", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -196,7 +196,7 @@ function bookFlight(flight) {
 }
 
 // try {
-//     const res = await fetch("http://localhost:8080/api/airports/autocomplete", {
+//     const res = await fetch("https://api.kulunu.app/api/airports/autocomplete", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({

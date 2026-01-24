@@ -33,7 +33,7 @@ document.getElementById("travelInfoForm").addEventListener("submit", async (e) =
 
     try {
         // 3. Submit to your backend endpoint
-        const res = await fetch("http://localhost:8080/add-traveler", {
+        const res = await fetch("https://api.kulunu.app/add-traveler", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

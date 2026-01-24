@@ -11,7 +11,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     errorDiv.classList.add("d-none");
 
     try {
-        const res = await fetch("http://localhost:8080/login", {
+        const res = await fetch("https://api.kulunu.app/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -55,7 +55,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     errorDiv.classList.add("d-none");
 
     try {
-        const res = await fetch("http://localhost:8080/register", {
+        const res = await fetch("https://api.kulunu.app/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ full_name, email, password, role: "customer" })
