@@ -653,7 +653,7 @@ section,
   }
 
   .tab-menu {
-    gap: 6px;
+    gap: 32px;
     justify-content: flex-start;
   }
 }

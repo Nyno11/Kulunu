@@ -58,7 +58,7 @@
     <!-- HERO -->
     <section class="hero">
       <h1 style="color: white;"><strong>Your Next Journey with Kulunu</strong></h1>
-      <p>Flights, Road Trips, Trains & E-Tickets — all in one place.</p>
+      <p>Secure your tickets, lock in your travel. All in one seamless platform.</p>
     </section>
 
     <!-- BOOKING CARD -->
@@ -70,11 +70,9 @@
         <button class="tab-btn" data-target="road">
           <i class="bi bi-car-front"></i> Road Trip
         </button>
-        <button class="tab-btn" data-target="train">
-          <i class="bi bi-train-front"></i> Train
-        </button>
+
         <button class="tab-btn" data-target="eticket">
-          <i class="bi bi-ticket-perforated"></i> E-Ticket
+          <i class="bi bi-ticket-perforated"></i> Event
         </button>
       </div>
 
@@ -86,56 +84,36 @@
           <button class="filter-btn" data-type="multi">Multi-City</button>
         </div>
         <form class="search-grid" role="search" onsubmit="event.preventDefault();">
-          <div class="autocomplete">
-            <input id="departure" placeholder="From (e.g. LOS)" autocomplete="off">
-            <div id="departure-dropdown" class="dropdown"></div>
-          </div>
-
-          <div class="autocomplete">
-            <input id="arrival" placeholder="To (e.g. ABV)" autocomplete="off">
-            <div id="arrival-dropdown" class="dropdown"></div>
-          </div>
-
+          <input placeholder="From (e.g. LOS)">
+          <input placeholder="To (e.g. ABV)">
           <input type="date" class="small">
           <input type="date" class="small return">
-
           <select class="small">
-            <option value="1">1 Adult</option>
-            <option value="2">2 Adults</option>
+            <option>1 Adult</option>
+            <option>2 Adults</option>
+            <option>3 Adults</option>
+            <option>4 Adults</option>
+            <option>5 Adults</option>
+            <option>6 Adults</option>
+            <option>7 Adults</option>
+            <option>8 Adults</option>
+            <option>9 Adults</option>
+            <option>10 Adults</option>
           </select>
-
-          <button class="search-btn">Search Flights</button>
+          <button class="search-btn" onclick="window.location.href='Result.html'">Search Flights</button>
         </form>
-
       </div>
 
       <!-- ROAD -->
       <div class="form-section" id="road">
-        <form>
+        <form class="search-grid" role="search" onsubmit="event.preventDefault();">
           <input placeholder="From">
           <input placeholder="Destination">
           <input type="date">
-          <select class="small">
-            <option>Car</option>
-            <option>Bus</option>
-          </select>
-          <button class="search-btn">Find Trips</button>
+          <button class="search-btn" onclick="window.location.href='Search.html'">Find Trips</button>
         </form>
       </div>
 
-      <!-- TRAIN -->
-      <div class="form-section" id="train">
-        <form>
-          <input placeholder="From Station">
-          <input placeholder="To Station">
-          <input type="date">
-          <select class="small">
-            <option>Economy</option>
-            <option>Business</option>
-          </select>
-          <button class="search-btn">Search Trains</button>
-        </form>
-      </div>
 
       <!-- E-TICKET -->
       <div class="form-section" id="eticket">
@@ -143,10 +121,6 @@
           <input placeholder="Event or Concert">
           <input placeholder="Location">
           <input type="date">
-          <select class="small">
-            <option>Regular</option>
-            <option>VIP</option>
-          </select>
           <button class="search-btn">Find Events</button>
         </form>
       </div>
@@ -226,7 +200,7 @@
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-search icon"></i></div>
               <h4><a href="" class="stretched-link">Search</a></h4>
-              <p>Multiple Airline Flight Schedules in one click.</p>
+              <p>Find events, flight and road-trips tickets across Africa.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -241,16 +215,16 @@
           <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-recycle icon"></i></div>
-              <h4><a href="" class="stretched-link">Redirect</a></h4>
-              <p>Redirect to your chosen airline to book your ticket.</p>
+              <h4><a href="" class="stretched-link">Purchase</a></h4>
+              <p>Purchase your ticket to your favorite event.</p>
             </div>
           </div><!-- End Service Item -->
 
           <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-airplane-engines icon"></i></div>
-              <h4><a href="" class="stretched-link">Fly</a></h4>
-              <p>Relax and enjoy your trip.</p>
+              <h4><a href="" class="stretched-link">Travels</a></h4>
+              <p>Relax, manage and enjoy your trip.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -281,28 +255,29 @@
             <div class="about-content ps-0 ps-lg-3">
               <h3>KULUNU</h3>
               <p class="fst-italic">
-                Kulunu is Nigeria’s premier flight aggregator web application, designed to simplify the way travelers
-                find and book flights across all domestic airlines. Our platform brings together flight schedules,
-                pricing, and availability from multiple carriers into one user-friendly interface, helping passengers
-                easily compare options and choose the flight that best fits their schedule, budget, and preferences.
+                Kulunu is an all-in-one event and travel platform that empowers organizers with end-to-end ticketing,
+                analytics, and audience engagement, while enabling attendees to seamlessly purchase tickets and book all
+                necessary travel logistics (flights, road-trips) in a single place. Kulunu delivers a unified
+                event–travel ecosystem that simplifies mobility across Africa by integrating event ticketing with
+                real-time travel options (flights, buses, and road trips) into one seamless platform.
               </p>
               <ul>
                 <li>
                   <i class="bi bi-alarm-fill"></i>
                   <div>
                     <h4>Hassle free</h4>
-                    <p>We understand the stress and confusion that often come with searching for flights across
-                      different airline websites. Kulunu eliminates that hassle by providing real-time access to
-                      flights, making your travel planning seamless, transparent, and efficient.</p>
+                    <p>Kulunu introduces digital infrastructure that connects fragmented industries (events + travel) to
+                      improve efficiency, reduce friction, and stimulate innovation in Africa’s mobility and
+                      entertainment ecosystem.</p>
                   </div>
                 </li>
                 <li>
                   <i class="bi bi-airplane-engines-fill"></i>
                   <div>
                     <h4>Ease</h4>
-                    <p>Whether you’re traveling for business, leisure, or emergencies, Kulunu is your reliable travel
-                      companion, offering you speed, convenience, and clarity in one place. Our mission is to empower
-                      every traveler in Nigeria with the right tools to make smarter and faster travel decisions.</p>
+                    <p>By making movement to events, cultural festivals, and sports gatherings easier, more predictable,
+                      and more coordinated, Kulunu supports inclusive access to public events and strengthens community
+                      participation.</p>
                   </div>
                 </li>
               </ul>
@@ -315,56 +290,6 @@
       </div>
 
     </section><!-- /About Section -->
-
-    <!-- Stats Section -->
-    <section id="stats" class="stats section">
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-emoji-smile"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="2320" data-purecounter-duration="1"
-                class="purecounter"></span>
-              <p>Happy Passengers</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-journal-richtext"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="21" data-purecounter-duration="1"
-                class="purecounter"></span>
-              <p>Airline Partners</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-headset"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="2163" data-purecounter-duration="1"
-                class="purecounter"></span>
-              <p>Hours Of Support</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-          <div class="col-lg-3 col-md-6 d-flex flex-column align-items-center">
-            <i class="bi bi-people"></i>
-            <div class="stats-item">
-              <span data-purecounter-start="0" data-purecounter-end="20" data-purecounter-duration="1"
-                class="purecounter"></span>
-              <p>Hard Workers</p>
-            </div>
-          </div><!-- End Stats Item -->
-
-        </div>
-
-      </div>
-
-    </section><!-- /Stats Section -->
-
 
 
     <!-- Services Section -->
@@ -388,8 +313,8 @@
               <a href="#" class="stretched-link">
                 <h3>Transparency</h3>
               </a>
-              <p>Provide clear, accurate, and honest information about flight options, pricing, fees, and booking terms
-                to build trust with users.</p>
+              <p>Provide clear, accurate, and honest information about event or concert ticktet, flight and road-trip
+                options, pricing, fees, and booking terms to build trust with users.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -401,8 +326,8 @@
               <a href="#" class="stretched-link">
                 <h3>Convenience</h3>
               </a>
-              <p>Our carefully designed flights aggregator helps users explore flight options based on multiple
-                criteria, including preferred airlines, price range, and class of service.</p>
+              <p>Our carefully designed flights aggregator helps users to purchase, sell and distribute event or concert
+                tickets. Instantly their entire journey on a single platform, without switching apps or websites</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -433,8 +358,8 @@
         <div class="content-wrapper">
           <div class="text-block">
             <h2 style="color: white;">Download the Kulunu App</h2>
-            <p>Book flights, road trips, trains, and events on the go. Experience fast, easy, and secure travel
-              management with the Kulunu mobile app.</p>
+            <p>Purchase events and concerts tickets and manage your travels on the go. Experience fast, easy, and secure
+              event management and travel logistics with the Kulunu mobile app.</p>
             <div class="badges">
               <a href="https://play.google.com/store/apps/details?id=YOUR_APP_ID" class="badge-link" target="_blank"
                 rel="noopener">
@@ -448,7 +373,7 @@
             </div>
           </div>
           <div class="image-block">
-            <img src="assets/img/iPhone 13 Pro.png" alt="Kulunu App on mobile" class="app-mockup">
+            <img src="assets/img/Mobile app.png" alt="Kulunu App on mobile" class="app-mockup">
           </div>
         </div>
       </div>
@@ -598,9 +523,9 @@
               <div class="faq-item faq-active">
                 <h3>What is Kulunu and how does it work?</h3>
                 <div class="faq-content">
-                  <p>Kulunu is a flight ticket aggregator that helps passengers find and compare available flights
-                    across all airlines operating in Nigeria. Simply enter your travel details, and Kulunu will show you
-                    the best flight options in one place.</p>
+                  <p>Kulunu is a centralized ecosystem that seamlessly connects event ticketing with travel logistics
+                    across Africa by helping Africans to purchase event and concert tickets, instantly find affordable
+                    flights and road-trip options across African airlines and operators.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -608,8 +533,7 @@
               <div class="faq-item">
                 <h3>Can I book flights directly through Kulunu?</h3>
                 <div class="faq-content">
-                  <p>Kulunu connects you with trusted airline and booking partners. Once you select a flight, you’ll be
-                    redirected to the appropriate platform to complete your booking securely.</p>
+                  <p>Kulunu is a platform that enable you book your flight ticket across all listed African airline.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -633,10 +557,11 @@
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Which Nigerian airlines are featured on Kulunu?</h3>
+                <h3>Can I sell and buy event tickets on Kulunu?</h3>
                 <div class="faq-content">
-                  <p>Kulunu aggregates flights from major Nigerian carriers including Air Peace, Dana Air, Arik Air,
-                    Ibom Air, United Nigeria Airlines, and more.</p>
+                  <p>Kulunu is an all-in-one event and travel platform that empowers organizers with end-to-end
+                    ticketing, analytics, and audience engagement, while enabling attendees to seamlessly purchase
+                    tickets and book all necessary travel logistics (flights, road-trips) in a single place.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -650,7 +575,7 @@
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
               <div class="faq-item">
-                <h3>What if I need help during the booking process?</h3>
+                <h3>What if I need help during purchasing tickets?</h3>
                 <div class="faq-content">
                   <p>Our support team is available to guide you. Use the chat feature or visit the Help Center for quick
                     answers and assistance.</p>
@@ -696,7 +621,7 @@
                 <i class="bi bi-geo-alt flex-shrink-0"></i>
                 <div>
                   <h3>Address</h3>
-                  <p>A108 Adam Street, New York, NY 535022</p>
+                  <p>574, Yakubu Gowon Crescent, Asokoro-Abuja, Nigeria</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -704,7 +629,7 @@
                 <i class="bi bi-telephone flex-shrink-0"></i>
                 <div>
                   <h3>Call Us</h3>
-                  <p>+1 5589 55488 55</p>
+                  <p>+2347026165056</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -712,13 +637,13 @@
                 <i class="bi bi-envelope flex-shrink-0"></i>
                 <div>
                   <h3>Email Us</h3>
-                  <p>info@example.com</p>
+                  <p>info@Kulunu.com</p>
                 </div>
               </div><!-- End Info Item -->
 
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus"
-                frameborder="0" style="border:0; width: 100%; height: 270px;" allowfullscreen="" loading="lazy"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.178053466518!2d7.513733773528653!3d9.047517588701856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0bdd746d7011%3A0xc70d1a953f74b9db!2s574%20Yakubu%20Gowon%20Cres%2C%20Asokoro%2C%20Abuja%20900103%2C%20Federal%20Capital%20Territory!5e0!3m2!1sen!2sng!4v1765380630049!5m2!1sen!2sng"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>

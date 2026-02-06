@@ -13,12 +13,17 @@
 
 <body>
 
+
+
+
+
   <header>
     <div>Flight Results</div>
     <a href="dashboard.html">← Back to Dashboard</a>
   </header>
+
   <div class="filter-bar">
-    <div class="filter-option active" data-filter="price">Price</div>
+    <div class="filter-option active" data-filter="price">Cheapest</div>
     <div class="filter-option" data-filter="rating">Rating</div>
     <div class="filter-option" data-filter="weather">Weather</div>
     <div class="filter-option" data-filter="time">Time</div>
@@ -106,7 +111,27 @@
       moveIndicator(document.querySelector('.filter-option.active'));
       renderFlights(flights);
     };
+
+
+    // Save booking data
+    const bookingData = {
+      travelInfo: {
+        from: flight.from,
+        to: flight.to,
+        date: new Date().toISOString().split("T")[0], // could pull from search form
+        time: flight.time,
+        cabin: "Economy",
+        price: flight.price,
+        airline: flight.airline
+      },
+      passengers
+    };
+
+    localStorage.setItem("bookingData", JSON.stringify(bookingData));
+    window.location.href = "dashboard.html";
   </script>
+
+
 
 
 </body>
