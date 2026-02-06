@@ -58,7 +58,7 @@
     <!-- HERO -->
     <section class="hero">
       <h1 style="color: white;"><strong>Your Next Journey with Kulunu</strong></h1>
-      <p>Secure your tickets, lock in your travel. All in one seamless platform.</p>
+      <p>Flights, Road Trips, Trains & E-Tickets — all in one place.</p>
     </section>
 
     <!-- BOOKING CARD -->
@@ -72,7 +72,7 @@
         </button>
 
         <button class="tab-btn" data-target="eticket">
-          <i class="bi bi-ticket-perforated"></i> Event
+          <i class="bi bi-ticket-perforated"></i> E-Ticket
         </button>
       </div>
 
@@ -84,10 +84,20 @@
           <button class="filter-btn" data-type="multi">Multi-City</button>
         </div>
         <form class="search-grid" role="search" onsubmit="event.preventDefault();">
-          <input placeholder="From (e.g. LOS)">
-          <input placeholder="To (e.g. ABV)">
+          <div class="autocomplete">
+            <input id="departure" placeholder="From (e.g. LOS)" autocomplete="off">
+            <div id="departure-dropdown" class="dropdown"></div>
+          </div>
+
+          <div class="autocomplete">
+            <input id="arrival" placeholder="To (e.g. ABV)" autocomplete="off">
+            <div id="arrival-dropdown" class="dropdown"></div>
+          </div>
+
           <input type="date" class="small">
           <input type="date" class="small return">
+
+
           <select class="small">
             <option>1 Adult</option>
             <option>2 Adults</option>
@@ -100,7 +110,10 @@
             <option>9 Adults</option>
             <option>10 Adults</option>
           </select>
-          <button class="search-btn" onclick="window.location.href='Result.html'">Search Flights</button>
+
+
+          <button class="search-btn">Search Flights</button>
+        </form>
         </form>
       </div>
 
@@ -124,6 +137,42 @@
           <button class="search-btn">Find Events</button>
         </form>
       </div>
+    </section>
+
+
+
+
+    </div>
+
+    <!-- ROAD -->
+    <div class="form-section" id="road">
+      <form>
+        <input placeholder="From">
+        <input placeholder="Destination">
+        <input type="date">
+        <select class="small">
+          <option>Car</option>
+          <option>Bus</option>
+        </select>
+        <button class="search-btn">Find Trips</button>
+      </form>
+    </div>
+
+
+
+    <!-- E-TICKET -->
+    <div class="form-section" id="eticket">
+      <form>
+        <input placeholder="Event or Concert">
+        <input placeholder="Location">
+        <input type="date">
+        <select class="small">
+          <option>Regular</option>
+          <option>VIP</option>
+        </select>
+        <button class="search-btn">Find Events</button>
+      </form>
+    </div>
     </section>
 
     <script>
