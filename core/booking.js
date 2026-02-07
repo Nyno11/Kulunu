@@ -95,26 +95,41 @@ searchBtn.addEventListener("click", async () => {
         });
 
         const data = await res.json();
+
         renderFlights(data);
+
 
     } catch (err) {
         console.error(err);
-        errorDiv.textContent = "Server error";
+        // errorDiv.textContent = "Server error";
         errorDiv.classList.remove("d-none");
     }
 });
 
+function getRating() {
+    const bias = Math.random() ** 0.6; // lower = more high ratings
+    const rating = 3.5 + bias * (5.0 - 3.5);
+    return Number(rating.toFixed(1));
+}
+
+function getTimeEmoji(takeOffTime) {
+    const hour = new Date(takeOffTime).getHours();
+    return (hour >= 18 || hour < 6) ? "🌙" : "☀️";
+}
 
 
 function renderFlights(response) {
 
     const offers = response.data;
-    const carriers = response.dictionaries.carriers;
 
     if (!offers || offers.length === 0) {
-        flightsList.innerHTML = "<p>No flights found</p>";
+        flightsList.innerHTML = "<div class='card m-4 p-3'><p>No flights found</p></div>";
         return;
     }
+
+
+    const carriers = response.dictionaries.carriers;
+
 
     offers.forEach(offer => {
         const itinerary = offer.itineraries[0];
@@ -124,11 +139,11 @@ function renderFlights(response) {
         const airlineName = carriers[airlineCode] || airlineCode;
 
         const flightCard = document.createElement("div");
-        flightCard.className = "flight-card ticket";
+        flightCard.className = "flight-card ticket card m-4 p-3";
 
         flightCard.innerHTML = `
   
-      <div class="airline-header">
+      <div class="airline-header ">
         <h3>    <strong>${airlineName}</strong> (${airlineCode} ${segment.number})</h3>
       </div>
           <div>
@@ -144,9 +159,12 @@ function renderFlights(response) {
       <div class="flight-info-row">
         <p>🕒 <strong>Time:</strong> ${itinerary.duration.replace("PT", "").replace("H", "h ").replace("M", "m")}</p>
         <p>💰 <strong>Price:</strong> ${offer.price.currency} ${offer.price.total}</p>
+  
+        <p>⭐ <strong>Rating:</strong> ${getRating()}</p>
+        <p>  <strong>Weather:</strong>${getTimeEmoji(segment.departure.at)}</p>
 
       </div>
-      <button class="buy-button" onclick='bookFlight(${segment})'>Book Now</button>
+      <button class="buy-button primary-btn" onclick='bookFlight(${segment})'>Book Now</button>
 
 
 

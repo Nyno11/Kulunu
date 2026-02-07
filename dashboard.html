@@ -765,22 +765,26 @@
               <div class="route">${b.from} → ${b.to}</div>
               <div class="meta">${b.airline} • ${formatDate(b.date)} • ${b.time}</div>
             </div>
-          </div>
+          </div>`;
+          });
+        }
+      </script>
 
-          <script>
-            const dummyFlights = [
-              { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
-              { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
-              { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
 
-            ];
+      <script>
+        const dummyFlights = [
+          { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
+          { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
+          { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
 
-            function searchFlights() {
-              const from = document.getElementById('from').value;
-              const to = document.getElementById('to').value;
-              const date = document.getElementById('date').value;
-              const resultsContainer = document.getElementById('results');
-            }
+        ];
+
+        function searchFlights() {
+          const from = document.getElementById('from').value;
+          const to = document.getElementById('to').value;
+          const date = document.getElementById('date').value;
+          const resultsContainer = document.getElementById('results');
+        }
       </script>
 
       <!-- Lookup -->
@@ -810,7 +814,7 @@
       </section>
     </div>
 
-    // -------- Events --------
+    <!-- // -------- Events --------
     $tabs.forEach(t => t.addEventListener('click', () => {
     $tabs.forEach(x => x.classList.remove('active'));
     t.classList.add('active');
@@ -840,7 +844,7 @@
     });
 
     // Initial render
-    applyFilter();
+    applyFilter(); -->
     </script>
   </div>
 
@@ -870,27 +874,27 @@
   </div>
 
   <script>
-function navigate(sectionId, element) {
-    // Remove active class from all menu items
-    document.querySelectorAll("ul li").forEach(li => li.classList.remove("active"));
+    function navigate(sectionId, element) {
+      // Remove active class from all menu items
+      document.querySelectorAll("ul li").forEach(li => li.classList.remove("active"));
 
-    // Add active class to clicked item
-    element.classList.add("active");
+      // Add active class to clicked item
+      element.classList.add("active");
 
-    // Hide all sections
-    document.querySelectorAll(".section").forEach(sec => {
+      // Hide all sections
+      document.querySelectorAll(".section").forEach(sec => {
         sec.style.display = "none";
-    });
+      });
 
-    // Show selected section
-    document.getElementById(sectionId).style.display = "block";
+      // Show selected section
+      document.getElementById(sectionId).style.display = "block";
 
-    // Special case: logout behavior
-    if (sectionId === "logout") {
+      // Special case: logout behavior
+      if (sectionId === "logout") {
         // OPTIONAL: redirect, clear session, etc.
         console.log("User logged out.");
+      }
     }
-}
   </script>
 
 
