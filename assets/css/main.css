@@ -851,6 +851,13 @@ section,
   text-decoration: underline;
 }
 
+.forgot-form,
+.verify-form,
+.reset-form {
+  display: none;
+}
+
+
 /* Animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
