@@ -117,6 +117,24 @@ function getTimeEmoji(takeOffTime) {
     return (hour >= 18 || hour < 6) ? "🌙" : "☀️";
 }
 
+const options = document.querySelectorAll('.filter-option');
+options.forEach(option => {
+    option.addEventListener('click', () => {
+        options.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        moveIndicator(option);
+
+        const criteria = option.dataset.filter;
+        const sorted = [...flights];
+        if (criteria === 'price') sorted.sort((a, b) => a.price - b.price);
+        if (criteria === 'rating') sorted.sort((a, b) => b.rating - a.rating);
+        if (criteria === 'weather') sorted.sort((a, b) => a.weather.localeCompare(b.weather));
+        if (criteria === 'time') sorted.sort((a, b) => new Date('1970/01/01 ' + a.time) - new Date('1970/01/01 ' + b.time));
+
+        renderFlights(sorted);
+    });
+});
+
 
 function renderFlights(response) {
 
@@ -127,6 +145,8 @@ function renderFlights(response) {
         return;
     }
 
+    const filterBar = document.getElementById("filterBar");
+    filterBar.classList.remove("d-none");
 
     const carriers = response.dictionaries.carriers;
 
