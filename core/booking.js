@@ -117,28 +117,62 @@ function getTimeEmoji(takeOffTime) {
     return (hour >= 18 || hour < 6) ? "🌙" : "☀️";
 }
 
+let currentDictionaries = null;
+
+let allAvailableFlights = [];
 const options = document.querySelectorAll('.filter-option');
 options.forEach(option => {
     option.addEventListener('click', () => {
         options.forEach(opt => opt.classList.remove('active'));
         option.classList.add('active');
-        moveIndicator(option);
+
+        if (!allAvailableFlights || allAvailableFlights.length === 0) return;
 
         const criteria = option.dataset.filter;
-        const sorted = [...flights];
-        if (criteria === 'price') sorted.sort((a, b) => a.price - b.price);
-        if (criteria === 'rating') sorted.sort((a, b) => b.rating - a.rating);
-        if (criteria === 'weather') sorted.sort((a, b) => a.weather.localeCompare(b.weather));
-        if (criteria === 'time') sorted.sort((a, b) => new Date('1970/01/01 ' + a.time) - new Date('1970/01/01 ' + b.time));
+        const sorted = [...allAvailableFlights];
 
-        renderFlights(sorted);
+        if (criteria === 'price') {
+            // Descending: highest price first
+            sorted.sort((a, b) => parseFloat(b.price.total) - parseFloat(a.price.total));
+        } else if (criteria === 'rating') {
+            // Descending: highest rating first
+            sorted.sort((a, b) => (b._rating || 0) - (a._rating || 0));
+        } else if (criteria === 'weather') {
+            // Descending: treat night as higher; night first
+            sorted.sort((a, b) => (b._isNight ? 1 : 0) - (a._isNight ? 1 : 0));
+        } else if (criteria === 'time') {
+            // Descending: latest departure first
+            sorted.sort((a, b) => (b._depTimeMs ?? Date.parse(b.itineraries[0].segments[0].departure.at)) - (a._depTimeMs ?? Date.parse(a.itineraries[0].segments[0].departure.at)));
+        }
+
+        // Update in-memory list to reflect current ordering
+        allAvailableFlights = sorted;
+
+        renderFlights({ data: sorted, dictionaries: currentDictionaries || undefined });
     });
 });
 
 
 function renderFlights(response) {
 
+    // Clear previous results to avoid accumulating cards on each render
+    flightsList.innerHTML = "";
+
     const offers = response.data;
+    // Enrich and store for filtering/sorting later
+    const enriched = (offers || []).map(offer => {
+        try {
+            const seg = offer.itineraries?.[0]?.segments?.[0];
+            const depAt = seg?.departure?.at;
+            const depMs = depAt ? Date.parse(depAt) : null;
+            const rating = offer._rating ?? getRating();
+            const isNight = depMs !== null ? (new Date(depMs).getHours() >= 18 || new Date(depMs).getHours() < 6) : false;
+            return { ...offer, _rating: rating, _depTimeMs: depMs, _isNight: isNight };
+        } catch (_) {
+            return { ...offer, _rating: getRating() };
+        }
+    });
+    allAvailableFlights = enriched;
 
     if (!offers || offers.length === 0) {
         flightsList.innerHTML = "<div class='card m-4 p-3'><p>No flights found</p></div>";
@@ -148,10 +182,11 @@ function renderFlights(response) {
     const filterBar = document.getElementById("filterBar");
     filterBar.classList.remove("d-none");
 
-    const carriers = response.dictionaries.carriers;
+    currentDictionaries = response.dictionaries || currentDictionaries;
+    const carriers = (response.dictionaries && response.dictionaries.carriers) || (currentDictionaries && currentDictionaries.carriers) || {};
 
 
-    offers.forEach(offer => {
+    enriched.forEach(offer => {
         const itinerary = offer.itineraries[0];
         const segment = itinerary.segments[0];
 
@@ -180,7 +215,7 @@ function renderFlights(response) {
         <p>🕒 <strong>Time:</strong> ${itinerary.duration.replace("PT", "").replace("H", "h ").replace("M", "m")}</p>
         <p>💰 <strong>Price:</strong> ${offer.price.currency} ${offer.price.total}</p>
   
-        <p>⭐ <strong>Rating:</strong> ${getRating()}</p>
+        <p>⭐ <strong>Rating:</strong> ${offer._rating ?? getRating()}</p>
         <p>  <strong>Weather:</strong>${getTimeEmoji(segment.departure.at)}</p>
 
       </div>

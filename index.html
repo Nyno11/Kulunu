@@ -47,7 +47,7 @@
           <img src="assets/img/ku.png" alt="KULUNU">
         </a>
         <div>
-          <button class="account-btn" id="openLoginModal"><i class="bi bi-person"></i>My Account</button>
+          <button class="kulunu-profile-btn" id="openLoginModal"><i class="bi bi-person"></i>My Account</button>
         </div>
       </div>
     </div>
@@ -979,6 +979,144 @@
 
   <script src="./core/auth.js"></script>
   <script src="./core/booking.js"></script>
+
+  <script>
+    (function () {
+      // If user is logged in, replace the login button with the profile dropdown
+      const sessionStr = localStorage.getItem('user_session');
+      const loginBtn = document.getElementById('openLoginModal');
+      if (!loginBtn) return;
+
+      if (sessionStr) {
+        let user = {};
+        try { user = JSON.parse(sessionStr) || {}; } catch (e) { user = {}; }
+
+        const container = loginBtn.parentElement;
+        container.innerHTML = `
+          <!-- profile button -->
+          <div style="position:relative;">
+            <button id="kulunuProfileBtn" class="kulunu-profile-btn" aria-haspopup="true" aria-expanded="false" title="Open account">
+              <div class="kulunu-avatar">
+                <!-- small avatar; replace with real image or initials -->
+                <img src="assets/img/avatar-placeholder.png" alt="avatar">
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
+                <small style="color:rgba(255,255,255,0.95); font-weight:700;">Nonso Chukwu</small>
+                <small style="color:rgba(255,255,255,0.85); font-size:12px;">nonso@kulunu.com</small>
+              </div>
+              <i class="bi bi-chevron-down" style="color:#fff; margin-left:8px;"></i>
+            </button>
+
+            <!-- dropdown -->
+            <div id="kulunuProfileDropdown" class="kulunu-profile-dropdown" role="dialog" aria-label="Account menu">
+              <div class="kulunu-profile-head">
+                <div class="kulunu-avatar" style="width:48px;height:48px;">
+                  <img src="assets/img/avatar-placeholder.png" alt="avatar">
+                </div>
+                <div class="meta">
+                  <div class="name">Nonso Chukwu</div>
+                  <div class="email">nonso@kulunu.com</div>
+                </div>
+              </div>
+
+              <div class="kulunu-wallet" aria-hidden="false">
+                <div>
+                  <div style="font-size:12px; color:#667085;">Wallet balance</div>
+                  <div class="amount">₦52.800</div>
+                </div>
+                <div>
+                  <button class="kulunu-add-btn kulunu-add-small add-btn">+ Add funds</button>
+                </div>
+              </div>
+
+              <nav class="kulunu-menu" aria-label="Account actions">
+                <a href="dashboard.html" data-action="book-flight"><i class="bi bi-airplane"></i>Find Flights</a>
+                <a href="Roadtrip.html" data-action="book-road"><i class="bi bi-car-front"></i>Find Trips</a>
+                <a href="Ticket.html" data-action="buy-eticket"><i class="bi bi-ticket-perforated"></i>Ticketing</a>
+                <a href="#" data-action="settings"><i class="bi bi-gear"></i> Settings</a>
+              </nav>
+
+              <a href="#" class="kulunu-logout" id="kulunuLogoutBtn"><i class="bi bi-box-arrow-right"></i> Log out</a>
+            </div>
+          </div>
+        `;
+
+        // Fill user meta
+        const nameEl = container.querySelector('.kulunu-profile-head .name');
+        const emailEl = container.querySelector('.kulunu-profile-head .email');
+        const btnNameEl = container.querySelector('#kulunuProfileBtn small:nth-of-type(1)');
+        const btnEmailEl = container.querySelector('#kulunuProfileBtn small:nth-of-type(2)');
+        const amountEl = container.querySelector('.kulunu-wallet .amount');
+        const displayName = user.full_name || user.name || 'User';
+        const displayEmail = user.email || '';
+        if (nameEl) nameEl.textContent = displayName;
+        if (emailEl) emailEl.textContent = displayEmail;
+        if (btnNameEl) btnNameEl.textContent = displayName;
+        if (btnEmailEl) btnEmailEl.textContent = displayEmail;
+        if (amountEl) {
+          const n = Number(user.wallet || user.wallet_balance || 0);
+          amountEl.textContent = `₦${isNaN(n) ? '0' : n.toLocaleString('en-NG')}`;
+        }
+
+        // Initialize dropdown behavior
+        const dropdown = container.querySelector('#kulunuProfileDropdown');
+        const profileBtn = document.getElementById('kulunuProfileBtn'); // may not exist on this page
+        const hamburger = document.getElementById('kulunuHamburger'); // may not exist
+
+        if (profileBtn) {
+          profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const open = dropdown.classList.toggle('active');
+            profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        }
+
+        document.addEventListener('click', (e) => {
+          if (!dropdown.contains(e.target) && !(profileBtn && profileBtn.contains(e.target))) {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        if (hamburger) {
+          hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+          });
+        }
+
+        container.querySelectorAll('.kulunu-menu a').forEach(a => {
+          a.addEventListener('click', (ev) => {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          });
+        });
+
+        container.querySelectorAll('.kulunu-add-btn, .kulunu-add-small').forEach(b => {
+          b.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            alert('Open add-funds flow (replace with your implementation).');
+          });
+        });
+
+        const logoutBtn = container.querySelector('#kulunuLogoutBtn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            localStorage.removeItem('user_session');
+            location.reload();
+          });
+        }
+      }
+    })();
+  </script>
 
 </body>
 
