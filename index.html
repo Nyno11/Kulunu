@@ -47,7 +47,7 @@
           <img src="assets/img/ku.png" alt="KULUNU">
         </a>
         <div>
-          <button class="account-btn" id="openLoginModal"><i class="bi bi-person"></i>My Account</button>
+          <button class="kulunu-profile-btn" id="openLoginModal"><i class="bi bi-person"></i>My Account</button>
         </div>
       </div>
     </div>
@@ -230,6 +230,15 @@
         </div>
       </div>
     </section>
+
+
+    <div class="filter-bar d-none" id="filterBar">
+      <div class="filter-option active" data-filter="price">Cheapest</div>
+      <div class="filter-option" data-filter="rating">Rating</div>
+      <div class="filter-option" data-filter="weather">Weather</div>
+      <div class="filter-option" data-filter="time">Time</div>
+      <div class="indicator"></div>
+    </div>
 
     <div id="flightsList"></div>
     <div id="errorDiv" class="d-none"></div>
@@ -912,165 +921,202 @@
         <p class="signup-link">Already have an account? <a href="#" id="toLogin">Login</a></p>
       </form>
 
-<!-- Forgot Password -->
-<form class="forgot-form form" id="forgotForm">
-  <h2>Forgot Password</h2>
-  <p class="subtitle">Enter your email to receive a code</p>
+      <!-- Forgot Password -->
+      <form class="forgot-form form" id="forgotForm">
+        <h2>Forgot Password</h2>
+        <p class="subtitle">Enter your email to receive a code</p>
 
-  <div class="input-group">
-    <input type="email" id="forgotEmail" placeholder="Email Address" required>
-  </div>
+        <div class="input-group">
+          <input type="email" id="forgotEmail" placeholder="Email Address" required>
+        </div>
 
-  <button type="button" class="login-btn" id="sendCodeBtn">Send Code</button>
+        <button type="submit" class="login-btn">Send Code</button>
 
-  <p class="signup-link">
-    <a href="#" id="backToLogin">Back to Login</a>
-  </p>
-</form>
+        <h4 id="forgotError"></h4>
 
-<!-- Verify Code -->
-<form class="verify-form form" id="verifyForm">
-  <h2>Verify Code</h2>
-  <p class="subtitle">Enter the code sent to your email</p>
+        <p class="signup-link">
+          <a href="#" id="backToLogin">Back to Login</a>
+        </p>
+      </form>
 
-  <div class="input-group">
-    <input type="text" id="verifyCode" placeholder="Enter Code" required>
-  </div>
 
-  <button type="button" class="login-btn" id="confirmCodeBtn">Confirm Code</button>
-</form>
 
-<!-- Create New Password -->
-<form class="reset-form form" id="resetForm">
-  <h2>Create New Password</h2>
-  <p class="subtitle">Set your new password</p>
+      <!-- Verify Code -->
+      <form class="verify-form form" id="verifyForm">
+        <h2>Verify Code</h2>
+        <p class="subtitle">Enter the code sent to your email</p>
 
-  <div class="input-group">
-    <input type="password" id="newPassword" placeholder="New Password" required>
-  </div>
+        <div class="input-group">
+          <input type="text" id="verifyCode" placeholder="Enter Code" required>
+        </div>
 
-  <div class="input-group">
-    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-  </div>
+        <button type="submit" class="login-btn">Confirm Code</button>
 
-  <button type="button" class="login-btn" id="resetPasswordBtn">Reset Password</button>
-</form>
+        <h4 id="verifyError"></h4>
+      </form>
+
+      <!-- Create New Password -->
+      <form class="reset-form form" id="resetForm">
+        <h2>Create New Password</h2>
+        <p class="subtitle">Set your new password</p>
+
+        <div class="input-group">
+          <input type="password" id="newPassword" placeholder="New Password" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+        </div>
+
+        <button type="submit" class="login-btn">Reset Password</button>
+
+        <h4 id="resetError"></h4>
+      </form>
 
 
     </div>
   </div>
 
-  <script>
-  const modal = document.getElementById('loginModal');
-const openBtn = document.getElementById('openLoginModal');
-const closeBtn = document.getElementById('closeLoginModal');
-
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
-const forgotForm = document.getElementById('forgotForm');
-const verifyForm = document.getElementById('verifyForm');
-const resetForm = document.getElementById('resetForm');
-
-const loginTab = document.getElementById('loginTab');
-const signupTab = document.getElementById('signupTab');
-
-const toSignup = document.getElementById('toSignup');
-const toLogin = document.querySelectorAll('#toLogin');
-const backToLogin = document.getElementById('backToLogin');
-
-const sendCodeBtn = document.getElementById('sendCodeBtn');
-const confirmCodeBtn = document.getElementById('confirmCodeBtn');
-const resetPasswordBtn = document.getElementById('resetPasswordBtn');
-
-// Open modal
-openBtn.addEventListener('click', () => {
-  modal.style.display = 'flex';
-});
-
-// Close modal
-closeBtn.addEventListener('click', () => {
-  modal.style.display = 'none';
-});
-
-window.addEventListener('click', e => {
-  if (e.target === modal) modal.style.display = 'none';
-});
-
-// Utility
-function hideAllForms() {
-  loginForm.classList.remove('active');
-  signupForm.classList.remove('active');
-  forgotForm.classList.remove('active');
-  verifyForm.classList.remove('active');
-  resetForm.classList.remove('active');
-}
-
-// Tabs
-loginTab.addEventListener('click', () => {
-  hideAllForms();
-  loginForm.classList.add('active');
-  loginTab.classList.add('active');
-  signupTab.classList.remove('active');
-});
-
-signupTab.addEventListener('click', () => {
-  hideAllForms();
-  signupForm.classList.add('active');
-  signupTab.classList.add('active');
-  loginTab.classList.remove('active');
-});
-
-// Switch links
-toSignup.addEventListener('click', e => {
-  e.preventDefault();
-  signupTab.click();
-});
-
-toLogin.forEach(link => {
-  link.addEventListener('click', e => {
-    e.preventDefault();
-    loginTab.click();
-  });
-});
-
-// Forgot Password
-document.getElementById('toLogin').addEventListener('click', e => {
-  e.preventDefault();
-  hideAllForms();
-  forgotForm.classList.add('active');
-  loginTab.classList.remove('active');
-  signupTab.classList.remove('active');
-});
-
-// Back to login
-backToLogin.addEventListener('click', e => {
-  e.preventDefault();
-  loginTab.click();
-});
-
-// Send code
-sendCodeBtn.addEventListener('click', () => {
-  hideAllForms();
-  verifyForm.classList.add('active');
-});
-
-// Confirm code
-confirmCodeBtn.addEventListener('click', () => {
-  hideAllForms();
-  resetForm.classList.add('active');
-});
-
-// Reset password
-resetPasswordBtn.addEventListener('click', () => {
-  alert("Password successfully reset!");
-  modal.style.display = "none";
-  loginTab.click();
-});
-
-
-  </script>
   <script src="./core/auth.js"></script>
   <script src="./core/booking.js"></script>
+
+  <script>
+    (function () {
+      // If user is logged in, replace the login button with the profile dropdown
+      const sessionStr = localStorage.getItem('user_session');
+      const loginBtn = document.getElementById('openLoginModal');
+      if (!loginBtn) return;
+
+      if (sessionStr) {
+        let user = {};
+        try { user = JSON.parse(sessionStr) || {}; } catch (e) { user = {}; }
+
+        const container = loginBtn.parentElement;
+        container.innerHTML = `
+          <!-- profile button -->
+          <div style="position:relative;">
+            <button id="kulunuProfileBtn" class="kulunu-profile-btn" aria-haspopup="true" aria-expanded="false" title="Open account">
+              <div class="kulunu-avatar">
+                <!-- small avatar; replace with real image or initials -->
+                <img src="assets/img/avatar-placeholder.png" alt="avatar">
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
+                <small style="color:rgba(255,255,255,0.95); font-weight:700;">Nonso Chukwu</small>
+                <small style="color:rgba(255,255,255,0.85); font-size:12px;">nonso@kulunu.com</small>
+              </div>
+              <i class="bi bi-chevron-down" style="color:#fff; margin-left:8px;"></i>
+            </button>
+
+            <!-- dropdown -->
+            <div id="kulunuProfileDropdown" class="kulunu-profile-dropdown" role="dialog" aria-label="Account menu">
+              <div class="kulunu-profile-head">
+                <div class="kulunu-avatar" style="width:48px;height:48px;">
+                  <img src="assets/img/avatar-placeholder.png" alt="avatar">
+                </div>
+                <div class="meta">
+                  <div class="name">Nonso Chukwu</div>
+                  <div class="email">nonso@kulunu.com</div>
+                </div>
+              </div>
+
+              <div class="kulunu-wallet" aria-hidden="false">
+                <div>
+                  <div style="font-size:12px; color:#667085;">Wallet balance</div>
+                  <div class="amount">₦52.800</div>
+                </div>
+                <div>
+                  <button class="kulunu-add-btn kulunu-add-small add-btn">+ Add funds</button>
+                </div>
+              </div>
+
+              <nav class="kulunu-menu" aria-label="Account actions">
+                <a href="dashboard.html" data-action="book-flight"><i class="bi bi-airplane"></i>Find Flights</a>
+                <a href="Roadtrip.html" data-action="book-road"><i class="bi bi-car-front"></i>Find Trips</a>
+                <a href="Ticket.html" data-action="buy-eticket"><i class="bi bi-ticket-perforated"></i>Ticketing</a>
+                <a href="#" data-action="settings"><i class="bi bi-gear"></i> Settings</a>
+              </nav>
+
+              <a href="#" class="kulunu-logout" id="kulunuLogoutBtn"><i class="bi bi-box-arrow-right"></i> Log out</a>
+            </div>
+          </div>
+        `;
+
+        // Fill user meta
+        const nameEl = container.querySelector('.kulunu-profile-head .name');
+        const emailEl = container.querySelector('.kulunu-profile-head .email');
+        const btnNameEl = container.querySelector('#kulunuProfileBtn small:nth-of-type(1)');
+        const btnEmailEl = container.querySelector('#kulunuProfileBtn small:nth-of-type(2)');
+        const amountEl = container.querySelector('.kulunu-wallet .amount');
+        const displayName = user.full_name || user.name || 'User';
+        const displayEmail = user.email || '';
+        if (nameEl) nameEl.textContent = displayName;
+        if (emailEl) emailEl.textContent = displayEmail;
+        if (btnNameEl) btnNameEl.textContent = displayName;
+        if (btnEmailEl) btnEmailEl.textContent = displayEmail;
+        if (amountEl) {
+          const n = Number(user.wallet || user.wallet_balance || 0);
+          amountEl.textContent = `₦${isNaN(n) ? '0' : n.toLocaleString('en-NG')}`;
+        }
+
+        // Initialize dropdown behavior
+        const dropdown = container.querySelector('#kulunuProfileDropdown');
+        const profileBtn = document.getElementById('kulunuProfileBtn'); // may not exist on this page
+        const hamburger = document.getElementById('kulunuHamburger'); // may not exist
+
+        if (profileBtn) {
+          profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const open = dropdown.classList.toggle('active');
+            profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        }
+
+        document.addEventListener('click', (e) => {
+          if (!dropdown.contains(e.target) && !(profileBtn && profileBtn.contains(e.target))) {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        if (hamburger) {
+          hamburger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('active');
+          });
+        }
+
+        container.querySelectorAll('.kulunu-menu a').forEach(a => {
+          a.addEventListener('click', (ev) => {
+            dropdown.classList.remove('active');
+            if (profileBtn) profileBtn.setAttribute('aria-expanded', 'false');
+          });
+        });
+
+        container.querySelectorAll('.kulunu-add-btn, .kulunu-add-small').forEach(b => {
+          b.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            alert('Open add-funds flow (replace with your implementation).');
+          });
+        });
+
+        const logoutBtn = container.querySelector('#kulunuLogoutBtn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            localStorage.removeItem('user_session');
+            location.reload();
+          });
+        }
+      }
+    })();
+  </script>
 
 </body>
 
