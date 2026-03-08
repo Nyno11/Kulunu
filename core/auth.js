@@ -123,7 +123,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             localStorage.setItem('user_session', userString);
 
             // 3. Redirect to dashboard
-            window.location.href = "./dashboard.html";
+            window.location.href = "./index.html";
             console.log(data);
             console.log(data.data['full_name'])
             alert("Login successful! Welcome " + data.data['full_name']);

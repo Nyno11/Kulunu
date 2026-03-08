@@ -113,8 +113,12 @@
           </select>
 
 
-          <button class="search-btn">Search Flights</button>
-        </form>
+          <button class="search-btn" id="flightSearchBtn">Search Flights</button>
+
+          <div id="flightSearchLoader" aria-live="polite" style="display:none; margin-top:10px; text-align:center;">
+            <span class="spinner-border text-primary" role="status" aria-hidden="true"></span>
+            <span style="margin-left:8px;">Searching flights...</span>
+          </div>
         </form>
       </div>
 
@@ -242,6 +246,7 @@
 
     <div id="flightsList"></div>
     <div id="errorDiv" class="d-none"></div>
+
 
 
     <!-- Featured Services Section -->
