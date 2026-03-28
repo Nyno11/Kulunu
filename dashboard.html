@@ -4,29 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Dashboard | Kulunu</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <!-- ✅ Bootstrap Icons -->
+  <title>Dashboard</title>
+
+  <!-- Bootstrap + Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <!-- Favicons -->
-  <link href="assets/img/ku.png" rel="icon">
-  <link href="assets/img/ku.png" rel="apple-touch-icon">
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <!-- Main CSS File -->
   <link href="assets/css/dashboard.css" rel="stylesheet">
+</head>
 
 <body>
   <!-- HAMBURGER -->
@@ -94,71 +79,6 @@
             <ul id="coTravelList" style="margin-top:10px;"></ul>
           </div>
         </div>
-    </main>
-
-    <!-- ✅ Co-travel Modal -->
-    <div class="modal" id="coTravelModal">
-      <div class="modal-content">
-        <h2 id="modalTitle"><i class="bi bi-people"></i>Travel information</h2>
-        <form id="coTravelForm" class="grid-form">
-          <!-- ✅ Hidden index field for editing -->
-          <input type="hidden" id="editIndex" value="-1" />
-
-          <div class="field">
-            <label for="coTitle">Title</label>
-            <select id="coTitle" name="coTitle" required>
-              <option>Mr</option>
-              <option>Mrs</option>
-              <option>Miss</option>
-              <option>Ms</option>
-              <option>Prof</option>
-              <option>Hon</option>
-              <option>Sir</option>
-              <option>Pst</option>
-              <option>Dr</option>
-              <option>Sen</option>
-              <option>Gov</option>
-              <option>Bar</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="coTravelerType">Traveler Type</label>
-            <select id="coTravelerType" name="coTravelerType" required>
-              <option>Adult (12y +)</option>
-              <option>Child (2y-12y)</option>
-              <option>Infant (below 2y)</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="coFirstName">First Name</label>
-            <input type="text" id="coFirstName" name="coFirstName" required>
-          </div>
-
-          <div class="field">
-            <label for="coLastName">Last Name</label>
-            <input type="text" id="coLastName" name="coLastName" required>
-          </div>
-
-          <div class="field">
-            <label for="coMiddleName">Middle Name</label>
-            <input type="text" id="coMiddleName" name="coMiddleName">
-          </div>
-
-          <div class="field">
-            <label for="coEmail">Email</label>
-            <!-- ✅ changed to type="email" -->
-            <input type="email" id="coEmail" name="coEmail" required>
-          </div>
-
-          <div class="field">
-            <label for="coGender">Gender</label>
-            <select id="coGender" name="coGender" required>
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
 
     
 
@@ -378,95 +298,97 @@
                     </p>
                     <form id="travelInfoForm" class="grid-form">
 
-            <div class="field">
-              <label for="title">Title</label>
-              <select id="title" name="title">
-                <option>Mr</option>
-                <option>Mrs</option>
-                <option>Miss</option>
-                <option>Ms</option>
-                <option>Prof</option>
-                <option>Hon</option>
-                <option>Sir</option>
-                <option>Pst</option>
-                <option>Dr</option>
-                <option>Sen</option>
-                <option>Gov</option>
-                <option>Bar</option>
-              </select>
-            </div>
+                      <div class="field">
+                        <label for="title">Title</label>
+                        <select id="title" name="title">
+                          <option>Mr</option>
+                          <option>Mrs</option>
+                          <option>Miss</option>
+                          <option>Ms</option>
+                          <option>Prof</option>
+                          <option>Hon</option>
+                          <option>Sir</option>
+                          <option>Pst</option>
+                          <option>Dr</option>
+                          <option>Sen</option>
+                          <option>Gov</option>
+                          <option>Bar</option>
+                        </select>
+                      </div>
 
-            <div class="field">
-              <label for="travelerType">Traveler Type</label>
-              <select id="travelerType" name="travelerType">
-                <option value="Adult">Adult(12y +)</option>
-                <option value="Child">Child(2y-12y)</option>
-                <option value="Infant">Infant(below 2y)</option>
-              </select>
-            </div>
+                      <div class="field">
+                        <label for="travelerType">Traveler Type</label>
+                        <select id="travelerType" name="travelerType">
+                          <option value="Adult">Adult(12y +)</option>
+                          <option value="Child">Child(2y-12y)</option>
+                          <option value="Infant">Infant(below 2y)</option>
+                        </select>
+                      </div>
 
-            <!-- Row 2 -->
-            <div class="field">
-              <label for="firstName">First Name</label>
-              <input type="text" id="firstName" name="firstName" required>
-            </div>
-            <div class="field">
-              <label for="lastName">Last Name</label>
-              <input type="text" id="lastName" name="lastName" required>
-            </div>
+                      <!-- Row 2 -->
+                      <div class="field">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                      </div>
+                      <div class="field">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                      </div>
 
-            <!-- Row 3 -->
-            <div class="field">
-              <label for="middleName">Middle Name</label>
-              <input type="text" id="middleName" name="middleName">
-            </div>
-            <div class="field">
-              <label for="gender">Gender</label>
-              <select id="gender" name="gender">
-                <option>Male</option>
-                <option>Female</option>
-              </select>
-            </div>
+                      <!-- Row 3 -->
+                      <div class="field">
+                        <label for="middleName">Middle Name</label>
+                        <input type="text" id="middleName" name="middleName">
+                      </div>
+                      <div class="field">
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender">
+                          <option>Male</option>
+                          <option>Female</option>
+                        </select>
+                      </div>
 
-            <!-- Row 4 -->
-            <div class="field">
-              <label for="dob">Date of Birth</label>
-              <input type="date" id="dob" name="dob" required>
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" required>
-            </div>
+                      <!-- Row 4 -->
+                      <div class="field">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                      </div>
+                      <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                      </div>
 
-            <!-- Row 5 -->
-            <div class="field">
-              <label for="phone">Mobile Number</label>
-              <input type="tel" id="phone" name="phone" placeholder="+234..." required>
-            </div>
-            <div class="field">
-              <label for="nationality">Nationality</label>
-              <input type="text" id="nationality" name="nationality" required>
-            </div>
+                      <!-- Row 5 -->
+                      <div class="field">
+                        <label for="phone">Mobile Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+234..." required>
+                      </div>
+                      <div class="field">
+                        <label for="nationality">Nationality</label>
+                        <input type="text" id="nationality" name="nationality" required>
+                      </div>
 
-            <!-- Row 6 -->
-            <div class="field">
-              <label for="passportNumber">Passport Number</label>
-              <input type="text" id="passportNumber" name="passportNumber" required>
-            </div>
-            <div class="field">
-              <label for="expiryDate">Passport Expiry Date</label>
-              <input type="date" id="expiryDate" name="expiryDate" required>
-            </div>
+                      <!-- Row 6 -->
+                      <div class="field">
+                        <label for="passportNumber">Passport Number</label>
+                        <input type="text" id="passportNumber" name="passportNumber" required>
+                      </div>
+                      <div class="field">
+                        <label for="expiryDate">Passport Expiry Date</label>
+                        <input type="date" id="expiryDate" name="expiryDate" required>
+                      </div>
 
-            <!-- Actions -->
-            <div class="actions">
-              <button type="submit" class="btn primary">Save Profile</button>
-              <button type="button" class="btn ghost" onclick="closeModal()">Cancel</button>
+                      <!-- Actions -->
+                      <div class="actions">
+                        <button type="submit" class="btn primary">Save Profile</button>
+                        <button type="button" class="btn ghost" onclick="closeModal()">Cancel</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
-      </div>
-
+          </div>
 
           <script>
            // ===============================
@@ -508,12 +430,13 @@ function closeModal() {
   modal.style.display = "none";
 }
 
-            // Auto open modal after 2 seconds on dashboard load
-            window.addEventListener("load", () => {
-              setTimeout(() => {
-                openModal();
-              }, 2000);
-            });
+
+// Auto open modal on first load
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    openModal();
+  }, 2000);
+});
 
 
 // ===============================
@@ -623,7 +546,7 @@ window.addEventListener("click", function (e) {
             hamburger?.addEventListener('click', toggleSidebar);
             overlay?.addEventListener('click', closeSidebar);
 
-      </script>
+          </script>
 
 
       <div id="bookings" class="section" style="display:none;">
@@ -752,21 +675,21 @@ window.addEventListener("click", function (e) {
       </script>
 
 
-          <script>
-            const dummyFlights = [
-              { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
-              { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
-              { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
+      <script>
+        const dummyFlights = [
+          { airline: 'Airpeace', from: 'Abuja', to: 'Lagos', time: '10:30 AM', price: '$120' },
+          { airline: 'Ibom Air', from: 'Abuja', to: 'Lagos', time: '1:00 PM', price: '$110' },
+          { airline: 'Flyaero', from: 'Abuja', to: 'Lagos', time: '3:45 PM', price: '$130' }
 
-            ];
+        ];
 
-            function searchFlights() {
-              const from = document.getElementById('from').value;
-              const to = document.getElementById('to').value;
-              const date = document.getElementById('date').value;
-              const resultsContainer = document.getElementById('results');
-            }
-          </script>
+        function searchFlights() {
+          const from = document.getElementById('from').value;
+          const to = document.getElementById('to').value;
+          const date = document.getElementById('date').value;
+          const resultsContainer = document.getElementById('results');
+        }
+      </script>
 
       
     <!-- // -------- Events --------
@@ -831,13 +754,25 @@ window.addEventListener("click", function (e) {
 
   <script>
     function navigate(sectionId, element) {
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(sec => sec.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
+      // Remove active class from all menu items
+      document.querySelectorAll("ul li").forEach(li => li.classList.remove("active"));
 
-      const navItems = document.querySelectorAll('.sidebar ul li');
-      navItems.forEach(item => item.classList.remove('active'));
-      element.classList.add('active');
+      // Add active class to clicked item
+      element.classList.add("active");
+
+      // Hide all sections
+      document.querySelectorAll(".section").forEach(sec => {
+        sec.style.display = "none";
+      });
+
+      // Show selected section
+      document.getElementById(sectionId).style.display = "block";
+
+      // Special case: logout behavior
+      if (sectionId === "logout") {
+        // OPTIONAL: redirect, clear session, etc.
+        console.log("User logged out.");
+      }
     }
   </script>
 </main>
