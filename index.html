@@ -1126,57 +1126,57 @@
 
     // ================= SHOW / HIDE PASSWORD (correct icon behaviour) =================
 
-// get all password inputs
-const loginPassword = document.getElementById("password");
-const signupPassword = document.getElementById("passwordsignup");
-const newPassword = document.getElementById("newPassword");
-const confirmPassword = document.getElementById("confirmPassword");
+    // get all password inputs
+    const loginPassword = document.getElementById("password");
+    const signupPassword = document.getElementById("passwordsignup");
+    const newPassword = document.getElementById("newPassword");
+    const confirmPassword = document.getElementById("confirmPassword");
 
-// function that adds eye icon and controls behaviour
-function addEyeIcon(input) {
-  if (!input) return;
+    // function that adds eye icon and controls behaviour
+    function addEyeIcon(input) {
+      if (!input) return;
 
-  // create icon
-  const eye = document.createElement("i");
+      // create icon
+      const eye = document.createElement("i");
 
-  // default state = hidden password
-  eye.className = "fa-solid fa-eye-slash";
+      // default state = hidden password
+      eye.className = "fa-solid fa-eye-slash";
 
-  eye.style.position = "absolute";
-  eye.style.right = "15px";
-  eye.style.top = "50%";
-  eye.style.transform = "translateY(-50%)";
-  eye.style.cursor = "pointer";
-  eye.style.color = "#777";
+      eye.style.position = "absolute";
+      eye.style.right = "15px";
+      eye.style.top = "50%";
+      eye.style.transform = "translateY(-50%)";
+      eye.style.cursor = "pointer";
+      eye.style.color = "#777";
 
-  // make parent relative
-  input.parentElement.style.position = "relative";
-  input.style.paddingRight = "40px";
+      // make parent relative
+      input.parentElement.style.position = "relative";
+      input.style.paddingRight = "40px";
 
-  input.parentElement.appendChild(eye);
+      input.parentElement.appendChild(eye);
 
-  // toggle logic
-  eye.addEventListener("click", () => {
+      // toggle logic
+      eye.addEventListener("click", () => {
 
-    // if password is hidden
-    if (input.type === "password") {
-      input.type = "text";                 // show password
-      eye.className = "fa-solid fa-eye";   // remove line
-    } 
-    
-    // if password is visible
-    else {
-      input.type = "password";             // hide password
-      eye.className = "fa-solid fa-eye-slash";  // add line
+        // if password is hidden
+        if (input.type === "password") {
+          input.type = "text";                 // show password
+          eye.className = "fa-solid fa-eye";   // remove line
+        }
+
+        // if password is visible
+        else {
+          input.type = "password";             // hide password
+          eye.className = "fa-solid fa-eye-slash";  // add line
+        }
+      });
     }
-  });
-}
 
-// apply to all password fields
-addEyeIcon(loginPassword);
-addEyeIcon(signupPassword);
-addEyeIcon(newPassword);
-addEyeIcon(confirmPassword);
+    // apply to all password fields
+    addEyeIcon(loginPassword);
+    addEyeIcon(signupPassword);
+    addEyeIcon(newPassword);
+    addEyeIcon(confirmPassword);
   </script>
 
 </body>

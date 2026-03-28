@@ -67,7 +67,7 @@ searchBtn.addEventListener("click", async () => {
     const loader = document.getElementById('flightSearchLoader');
     const flightsList = document.getElementById('flightsList');
     const errorDiv = document.getElementById('errorDiv');
-    if (!btn) return;
+    if (!searchBtn) return;
 
     // Utility to toggle loader
     function setLoading(state) {
@@ -91,32 +91,32 @@ searchBtn.addEventListener("click", async () => {
         errorDiv._kulunuObserver = mo2;
     }
 
-    searchBtn.addEventListener('click', async (e) => {
-        // Clear previous outputs
-        if (flightsList) flightsList.innerHTML = '';
-        if (errorDiv) { errorDiv.textContent = ''; errorDiv.classList.add('d-none'); }
-        setLoading(true);
 
-        try {
-            // Trigger existing search logic if present
-            // Many implementations bind listeners in core/booking.js; if it's using a button listener itself,
-            // let it proceed naturally. We ensure loader stays until DOM updates via observers above.
-            // If no external handler exists, we fallback to a simple fetch placeholder to demonstrate loader.
+    // Clear previous outputs
+    if (flightsList) flightsList.innerHTML = '';
+    if (errorDiv) { errorDiv.textContent = ''; errorDiv.classList.add('d-none'); }
+    setLoading(true);
 
-            // If booking.js defines a global function to start search, call it here instead (optional):
-            // if (window.startFlightSearch) await window.startFlightSearch();
-        } catch (err) {
-            if (errorDiv) {
-                errorDiv.textContent = 'Failed to search flights. Please try again.';
-                errorDiv.classList.remove('d-none');
-            }
-        } finally {
-            // If booking.js updates flightsList or errorDiv, MutationObserver will hide loader.
-            // As a safety timeout, hide loader after 15s to avoid indefinite spinner.
-            setTimeout(() => setLoading(false), 15000);
+    try {
+        // Trigger existing search logic if present
+        // Many implementations bind listeners in core/booking.js; if it's using a button listener itself,
+        // let it proceed naturally. We ensure loader stays until DOM updates via observers above.
+        // If no external handler exists, we fallback to a simple fetch placeholder to demonstrate loader.
+
+        // If booking.js defines a global function to start search, call it here instead (optional):
+        // if (window.startFlightSearch) await window.startFlightSearch();
+    } catch (err) {
+        if (errorDiv) {
+            errorDiv.textContent = 'Failed to search flights. Please try again.';
+            errorDiv.classList.remove('d-none');
         }
+    } finally {
+        // If booking.js updates flightsList or errorDiv, MutationObserver will hide loader.
+        // As a safety timeout, hide loader after 15s to avoid indefinite spinner.
+        setTimeout(() => setLoading(false), 15000);
+    }
 
-    })();
+
 
     errorDiv.classList.add("d-none");
     flightsList.innerHTML = "";
