@@ -14,12 +14,11 @@
 </head>
 
 <body>
-
   <!-- HAMBURGER -->
   <button class="hamburger" id="hamburger"><i class="bi bi-list"></i></button>
 
   <!-- SIDEBAR -->
-  <aside id="sidebar">
+  <div id="sidebar">
     <div class="sidebar-header d-flex justify-content-between align-items-center px-3">
       <h2>Dashboard</h2>
     </div>
@@ -36,14 +35,16 @@
       <button type="submit" class="btn-brand" onclick="window.location.href='Confirm.html'" style="width:100%;">Book
         Travel</button>
     </div>
-  </aside>
+ </div>
 
+<main>
+  <!-- Main content -->
+  <main class="main-content" id="content">
   <div id="profile" class="section">
-    <!-- Main content -->
-    <main class="main-content" id="content">
+      <div class="welcome-text">
       <h1>Welcome, Franklin 👋</h1>
       <p>Your dashboard is ready.</p>
-
+</div>
       <div class="grid-2">
         <!-- Profile Card -->
         <div class="profile-card">
@@ -78,86 +79,8 @@
             <ul id="coTravelList" style="margin-top:10px;"></ul>
           </div>
         </div>
-    </main>
 
-    <!-- ✅ Co-travel Modal -->
-    <div class="modal" id="coTravelModal">
-      <div class="modal-content">
-        <h2 id="modalTitle"><i class="bi bi-people"></i>Travel information</h2>
-        <form id="coTravelForm" class="grid-form">
-          <!-- ✅ Hidden index field for editing -->
-          <input type="hidden" id="editIndex" value="-1" />
-
-          <div class="field">
-            <label for="coTitle">Title</label>
-            <select id="coTitle" name="coTitle" required>
-              <option>Mr</option>
-              <option>Mrs</option>
-              <option>Miss</option>
-              <option>Ms</option>
-              <option>Prof</option>
-              <option>Hon</option>
-              <option>Sir</option>
-              <option>Pst</option>
-              <option>Dr</option>
-              <option>Sen</option>
-              <option>Gov</option>
-              <option>Bar</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="coTravelerType">Traveler Type</label>
-            <select id="coTravelerType" name="coTravelerType" required>
-              <option>Adult (12y +)</option>
-              <option>Child (2y-12y)</option>
-              <option>Infant (below 2y)</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="coFirstName">First Name</label>
-            <input type="text" id="coFirstName" name="coFirstName" required>
-          </div>
-
-          <div class="field">
-            <label for="coLastName">Last Name</label>
-            <input type="text" id="coLastName" name="coLastName" required>
-          </div>
-
-          <div class="field">
-            <label for="coMiddleName">Middle Name</label>
-            <input type="text" id="coMiddleName" name="coMiddleName">
-          </div>
-
-          <div class="field">
-            <label for="coEmail">Email</label>
-            <!-- ✅ changed to type="email" -->
-            <input type="email" id="coEmail" name="coEmail" required>
-          </div>
-
-          <div class="field">
-            <label for="coGender">Gender</label>
-            <select id="coGender" name="coGender" required>
-              <option>Male</option>
-              <option>Female</option>
-            </select>
-          </div>
-
-
-          <!-- Co-travel Card -->
-          <div class="co-travel-card">
-            <div class="co-travel-header">
-              <h2 style="font-size: 25px;">Co-travelers</h2>
-            </div>
-            <div id="coTravelDetails">
-              <p>You have zero <strong>0</strong> other travelers.</p>
-              <ul id="coTravelList"></ul>
-            </div>
-            <button class="co-travel-btn" onclick="openCoTravelModal()">
-              <i class="bi bi-person-plus"></i> Add Co-traveler
-            </button>
-          </div>
+    
 
           <!-- ✅ Co-travel Modal -->
           <div class="modal" id="coTravelModal">
@@ -368,31 +291,6 @@
 
 
           <!-- ✅Traveler Modal -->
-          <div class="modal" id="profileModal">
-            <div class="modal-content">
-              <h2><i class="bi bi-person-circle"></i>Travel Information</h2>
-              <p>Your travel details will be used for all bookings. Ensure they match your government-issued ID.</p>
-              <form id="profileForm" class="grid-form">
-
-                <div class="field">
-                  <label for="title">Title</label>
-                  <select id="title" name="title">
-                    <option>Mr</option>
-                    <option>Mrs</option>
-                    <option>Miss</option>
-                    <option>Ms</option>
-                    <option>Prof</option>
-                    <option>Hon</option>
-                    <option>Sir</option>
-                    <option>Pst</option>
-                    <option>Dr</option>
-                    <option>Sen</option>
-                    <option>Gov</option>
-                    <option>Bar</option>
-                  </select>
-                </div>
-
-                <!-- ✅ Modal -->
                 <div class="modal" id="profileModal">
                   <div class="modal-content">
                     <h2><i class="bi bi-person-circle"></i>Travel Information</h2>
@@ -493,88 +391,107 @@
           </div>
 
           <script>
-            // ✅ Modal functions
-            const modal = document.getElementById("profileModal");
+           // ===============================
+// PROFILE MODAL
+// ===============================
 
-            function openModal() {
-              modal.style.display = "flex";
-            }
-            function closeModal() {
-              modal.style.display = "none";
-            }
+const modal = document.getElementById("profileModal");
+const profileForm = document.getElementById("travelInfoForm");
+const profileDetails = document.getElementById("profileDetails");
 
-            // Auto open modal after 2 seconds on dashboard load
-            window.addEventListener("load", () => {
-              setTimeout(() => {
-                openModal();
-              }, 2000);
-            });
-
-            // Handle form submit
-            document.getElementById("profileForm").addEventListener("submit", (e) => {
-              e.preventDefault();
-              const data = {
-                title: document.getElementById("title").value,
-                travelerType: document.getElementById("travelerType").value,
-                firstName: document.getElementById("firstName").value,
-                lastName: document.getElementById("lastName").value,
-                middleName: document.getElementById("middleName").value,
-                gender: document.getElementById("gender").value,
-                dob: document.getElementById("dob").value,
-                email: document.getElementById("email").value,
-                phone: document.getElementById("phone").value,
-                nationality: document.getElementById("nationality").value,
-                passportNumber: document.getElementById("passportNumber").value,
-                expiryDate: document.getElementById("expiryDate").value
-              };
-
-              // Render into profile card
-              const profileDetails = document.getElementById("profileDetails");
-              profileDetails.innerHTML = `
-        <div class="detail"><strong>Title</strong><span>${data.title}</span></div>
-        <div class="detail"><strong>Traveler Type</strong><span>${data.travelerType}</span></div>
-        <div class="detail"><strong>First Name</strong><span>${data.firstName}</span></div>
-        <div class="detail"><strong>Last Name</strong><span>${data.lastName}</span></div>
-        <div class="detail"><strong>Middle Name</strong><span>${data.middleName || '-'}</span></div>
-        <div class="detail"><strong>Gender</strong><span>${data.gender}</span></div>
-        <div class="detail"><strong>Date of Birth</strong><span>${data.dob}</span></div>
-        <div class="detail"><strong>Email</strong><span>${data.email}</span></div>
-        <div class="detail"><strong>Mobile</strong><span>${data.phone}</span></div>
-        <div class="detail"><strong>Nationality</strong><span>${data.nationality}</span></div>
-        <div class="detail"><strong>Passport No.</strong><span>${data.passportNumber}</span></div>
-        <div class="detail"><strong>Expiry Date</strong><span>${data.expiryDate}</span></div>
-      `;
-              closeModal();
-            });
+let profileData = null;
 
 
-            // Close modal on outside click
-            window.addEventListener("click", (e) => {
-              if (e.target === modal) closeModal();
-            });
+// Open Modal
+function openModal(edit = false) {
 
-            // ✅ Edit button pre-fills form with saved profile data
-            function openModal(edit = false) {
-              if (edit) {
-                const details = document.querySelectorAll("#profileDetails p strong");
-                if (details.length > 0) {
-                  // Fill fields only if data exists
-                  document.getElementById("title").value = details[0].nextSibling.textContent.trim();
-                  document.getElementById("travelerType").value = details[1].nextSibling.textContent.trim();
-                  document.getElementById("firstName").value = details[2].nextSibling.textContent.trim();
-                  document.getElementById("lastName").value = details[3].nextSibling.textContent.trim();
-                  document.getElementById("middleName").value = details[4].nextSibling.textContent.trim();
-                  document.getElementById("gender").value = details[5].nextSibling.textContent.trim();
-                  document.getElementById("dob").value = details[6].nextSibling.textContent.trim();
-                  document.getElementById("email").value = details[7].nextSibling.textContent.trim();
-                  document.getElementById("phone").value = details[8].nextSibling.textContent.trim();
-                  document.getElementById("nationality").value = details[9].nextSibling.textContent.trim();
-                  document.getElementById("passportNumber").value = details[10].nextSibling.textContent.trim();
-                  document.getElementById("expiryDate").value = details[11].nextSibling.textContent.trim();
-                }
-              }
-              modal.style.display = "flex";
-            }
+  // If editing, prefill form with saved data
+  if (edit && profileData) {
+    document.getElementById("title").value = profileData.title;
+    document.getElementById("travelerType").value = profileData.travelerType;
+    document.getElementById("firstName").value = profileData.firstName;
+    document.getElementById("lastName").value = profileData.lastName;
+    document.getElementById("middleName").value = profileData.middleName;
+    document.getElementById("gender").value = profileData.gender;
+    document.getElementById("dob").value = profileData.dob;
+    document.getElementById("email").value = profileData.email;
+    document.getElementById("phone").value = profileData.phone;
+    document.getElementById("nationality").value = profileData.nationality;
+    document.getElementById("passportNumber").value = profileData.passportNumber;
+    document.getElementById("expiryDate").value = profileData.expiryDate;
+  }
+
+  modal.style.display = "flex";
+}
+
+
+// Close Modal
+function closeModal() {
+  modal.style.display = "none";
+}
+
+
+// Auto open modal on first load
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    openModal();
+  }, 2000);
+});
+
+
+// ===============================
+// SAVE PROFILE
+// ===============================
+
+profileForm.addEventListener("submit", function (e) {
+
+  e.preventDefault();
+
+  profileData = {
+    title: document.getElementById("title").value,
+    travelerType: document.getElementById("travelerType").value,
+    firstName: document.getElementById("firstName").value,
+    lastName: document.getElementById("lastName").value,
+    middleName: document.getElementById("middleName").value,
+    gender: document.getElementById("gender").value,
+    dob: document.getElementById("dob").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    nationality: document.getElementById("nationality").value,
+    passportNumber: document.getElementById("passportNumber").value,
+    expiryDate: document.getElementById("expiryDate").value
+  };
+
+
+  // Display on Profile Card
+  profileDetails.innerHTML = `
+    <div class="detail"><strong>Title:</strong> ${profileData.title}</div>
+    <div class="detail"><strong>Traveler Type:</strong> ${profileData.travelerType}</div>
+    <div class="detail"><strong>First Name:</strong> ${profileData.firstName}</div>
+    <div class="detail"><strong>Last Name:</strong> ${profileData.lastName}</div>
+    <div class="detail"><strong>Middle Name:</strong> ${profileData.middleName || "-"}</div>
+    <div class="detail"><strong>Gender:</strong> ${profileData.gender}</div>
+    <div class="detail"><strong>Date of Birth:</strong> ${profileData.dob}</div>
+    <div class="detail"><strong>Email:</strong> ${profileData.email}</div>
+    <div class="detail"><strong>Mobile:</strong> ${profileData.phone}</div>
+    <div class="detail"><strong>Nationality:</strong> ${profileData.nationality}</div>
+    <div class="detail"><strong>Passport No:</strong> ${profileData.passportNumber}</div>
+    <div class="detail"><strong>Expiry Date:</strong> ${profileData.expiryDate}</div>
+  `;
+
+  closeModal();
+});
+
+
+// ===============================
+// CLOSE MODAL WHEN CLICKING OUTSIDE
+// ===============================
+
+window.addEventListener("click", function (e) {
+  if (e.target === modal) {
+    closeModal();
+  }
+});
           </script>
 
 
@@ -625,31 +542,18 @@
             });
 
 
-            // === NAVIGATION FUNCTION (SHOWS RELEVANT SECTION) ===
-            function navigate(pageName) {
-
-              // Hide all pages
-              document.querySelectorAll('.page').forEach(p => {
-                p.style.display = 'none';
-              });
-
-              // Show selected page
-              const activePage = document.getElementById(pageName);
-              if (activePage) activePage.style.display = 'block';
-            }
-
-
             // === CLICK LISTENERS ===
             hamburger?.addEventListener('click', toggleSidebar);
             overlay?.addEventListener('click', closeSidebar);
 
           </script>
 
-          </main>
-      </div>
+
       <div id="bookings" class="section" style="display:none;">
+        <div class="page-title">
         <h1 class="page-title">My Trips</h1>
         <p class="sub">Find and manage your bookings. Change dates, download invoices, or request a refund.</p>
+        </div>
         <!--- flight search dashboard --->
 
         <!-- Lookup -->
@@ -787,33 +691,7 @@
         }
       </script>
 
-      <!-- Lookup -->
-      <section class="card lookup" aria-label="Manage Booking">
-        <div class="row">
-          <div class="field">
-            <label for="bookingId">Booking ID</label>
-            <input id="bookingId" placeholder="e.g., WK123ABC" autocomplete="off">
-          </div>
-          <div class="field">
-            <label for="lastName">Last Name</label>
-            <input id="lastName" placeholder="e.g., Okafor" autocomplete="off">
-          </div>
-          <div class="actions" style="align-self:end">
-            <button class="btn primary" id="findBtn">Find Booking</button>
-            <button class="btn ghost" id="resetBtn" type="button">Reset</button>
-          </div>
-        </div>
-        <div class="tabs" role="tablist" aria-label="Filter trips">
-          <button class="tab active" data-filter="upcoming" role="tab" aria-selected="true">Upcoming</button>
-          <button class="tab" data-filter="completed" role="tab" aria-selected="false">Completed</button>
-          <button class="tab" data-filter="cancelled" role="tab" aria-selected="false">Cancelled</button>
-          <button class="tab" data-filter="all" role="tab" aria-selected="false">All</button>
-        </div>
-        <!-- ✅ Changed ID so it doesn't clash -->
-        <div id="booking-results" class="grid" aria-live="polite"></div>
-      </section>
-    </div>
-
+      
     <!-- // -------- Events --------
     $tabs.forEach(t => t.addEventListener('click', () => {
     $tabs.forEach(x => x.classList.remove('active'));
@@ -845,11 +723,12 @@
 
     // Initial render
     applyFilter(); -->
-    </script>
-  </div>
+
 
   <div id="payments" class="section" style="display:none;">
+     <div class="page-title">
     <h2 style="margin-left: 20px;">Payment History</h2>
+    </div>
     <section class="bookings">
       <div class="booking-entry">
         <p><strong>Lagos → Abuja</strong> | Air Peace | 22 Jul 2025</p>
@@ -896,7 +775,7 @@
       }
     }
   </script>
-
+</main>
 
 </body>
 

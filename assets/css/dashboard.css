@@ -1,4 +1,6 @@
-/* RESET */
+/* =========================
+   RESET
+========================= */
 * {
   margin:0;
   padding:0;
@@ -12,7 +14,6 @@ body {
 
 ul { list-style:none; }
 
-/* ROOT VARS FIX (you used them but never declared) */
 :root {
   --brand: #0CA6EF;
   --muted: #64748b;
@@ -21,16 +22,18 @@ ul { list-style:none; }
   --ink: #0b2030;
 }
 
-/* SIDEBAR */
+/* =========================
+   SIDEBAR
+========================= */
 #sidebar {
   position: fixed;
   top:0;
-  right:0;
+  left:0; /* moved to left */
   width:260px;
   height:100%;
   background:#0CA6EF;
   color:white;
-  transform:translateX(100%);
+  transform:translateX(-100%); /* hidden by default for mobile */
   transition:transform .35s ease;
   z-index:1000;
   padding-top:20px;
@@ -39,17 +42,6 @@ ul { list-style:none; }
 #sidebar.show {
   transform:translateX(0);
 }
-
-/* OVERLAY */
-.overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  z-index:900;
-}
-
-.overlay.show { display:block; }
 
 /* SIDEBAR ITEMS */
 #sidebar ul li {
@@ -68,11 +60,26 @@ ul { list-style:none; }
   background:#0055aa;
 }
 
-/* HAMBURGER */
+/* =========================
+   OVERLAY
+========================= */
+.overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:none;
+  z-index:900;
+}
+
+.overlay.show { display:block; }
+
+/* =========================
+   HAMBURGER
+========================= */
 .hamburger {
   position:fixed;
   top:15px;
-  right:15px;
+  left:15px; /* moved to left */
   font-size:28px;
   background:#0CA6EF;
   color:white;
@@ -84,7 +91,9 @@ ul { list-style:none; }
   display:none;
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
 .btn-brand {
   background:white;
   color:#0CA6EF;
@@ -104,162 +113,48 @@ button:focus {
   outline:3px solid rgba(12,166,239,.12);
 }
 
-  .btn.primary{
-    background:var(--brand);
-    color:#fff;
-    box-shadow:0 8px 20px rgba(12,166,239,.25);
-  }
-
-
-  .tab{
-    padding:6px 14px;
-    border-radius:999px;
-    background:#e9f5fe;
-    color:#0a4d6f;
-    border:1px solid rgba(12,166,239,.18);
-    font-weight:600;
-    cursor:pointer;
-  }
-
-  .tab.active{
-    background:var(--brand);
-    color:#fff;
-    border-color:transparent;
-    box-shadow:0 6px 16px rgba(12,166,239,.28);
-  }
-
-  .btn.small{
-
-    padding:9px 12px;
-    font-size:14px;
-  }
-
-  .btn.ghost {
+.btn.primary{
   background:var(--brand);
-  border:none;
-  padding:10px 18px;
-  border-radius:8px;
-  cursor:pointer;
+  color:#fff;
+  box-shadow:0 8px 20px rgba(12,166,239,.25);
 }
 
-  .btn.ghost{
-    background:#eef7fe;
-    color:#0a4d6f;
-  }
-  
-  .btn.gray{
-    background:#f3f6f9;
-    color:#0b2030;
-  }
-
-  .badge{
-    padding:6px 10px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:700;
-    background:#ecf8ff;
-    color:#0a4d6f;
-    border:1px solid rgba(12,166,239,.2);
-  }
-  .badge.upcoming{ background:#eafff1; color:#136b2e; border-color:rgba(24,164,78,.25) }
-  .badge.completed{ background:#f1f5f9; color:#475569; border-color:rgba(71,85,105,.2) }
-  .badge.cancelled{ background:#fff2f2; color:#b42318; border-color:rgba(244,63,94,.25) }
-
-/* MAIN BOOKING ENTRY CONTAINER */
-.booking-entry {
-  background: white;
-  padding: 16px;
-  margin-bottom: 12px;
-  margin-left: 20px;
-  border-left: 5px solid #0055aa;
-  border-radius: 6px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  gap: 12px;
-  flex-wrap: wrap; /* responsive behavior */
-  width: 100%;
-  box-sizing: border-box;
+.btn.ghost{
+  background:#eef7fe;
+  color:#0a4d6f;
 }
 
-/* Child Elements — Make them flexible */
-.booking-entry > * {
-  flex: 1 1 200px;  /* adapt to all screens */
-  min-width: 0;     /* prevents overflow */
+.btn.gray{
+  background:#f3f6f9;
+  color:#0b2030;
 }
 
-/* STATUS BADGES */
-.status {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  color: white;
-  white-space: nowrap;  /* prevents line break */
-  text-align: center;
+/* =========================
+   BADGES
+========================= */
+.badge{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+  background:#ecf8ff;
+  color:#0a4d6f;
+  border:1px solid rgba(12,166,239,.2);
 }
 
-.status.confirmed {
-  background-color: #009a00;
-}
+.badge.upcoming{ background:#eafff1; color:#136b2e; border-color:rgba(24,164,78,.25) }
+.badge.completed{ background:#f1f5f9; color:#475569; border-color:rgba(71,85,105,.2) }
+.badge.cancelled{ background:#fff2f2; color:#b42318; border-color:rgba(244,63,94,.25) }
 
-.status.completed {
-  background-color: #7e7e7e;
-}
-
-/* EXTRA RESPONSIVENESS — TABLETS */
-@media (max-width: 900px) {
-  .booking-entry {
-    padding: 14px;
-    gap: 10px;
-  }
-
-  .status {
-    font-size: 13px;
-    padding: 5px 10px;
-  }
-}
-
-/* SMALL MOBILE SCREENS (iPhone SE, 320px – 480px) */
-@media (max-width: 600px) {
-  .booking-entry {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 14px;
-    gap: 6px;
-  }
-
-  .booking-entry > * {
-    flex: 1 1 100%;
-  }
-
-  .status {
-    align-self: flex-start;
-    font-size: 12px;
-    padding: 4px 8px;
-  }
-}
-
-/* SUPER SMALL DEVICES (Tiny Android / Mini Phones 240px–300px) */
-@media (max-width: 350px) {
-  .booking-entry {
-    padding: 12px;
-  }
-
-  .status {
-    font-size: 11px;
-    padding: 3px 6px;
-  }
-}
-
-
-/* CONTENT WRAPPER */
+/* =========================
+   MAIN CONTENT
+========================= */
 .main-content {
+  margin-left: 280px; /* leave space for sidebar */
   padding:2rem;
 }
 
-/* GENERIC CARD FIX (remove duplicate styling) */
+/* Cards */
 .card {
   background:var(--card);
   padding:1.5rem;
@@ -287,9 +182,15 @@ button:focus {
   .grid-3 {
     grid-template-columns:1fr;
   }
+  .main-content {
+    margin-left:0;
+    padding:1rem;
+  }
 }
 
-/* PROFILE & CO-TRAVEL */
+/* =========================
+   PROFILE & CO-TRAVEL
+========================= */
 .profile-card,
 .co-travel-card {
   background:white;
@@ -319,6 +220,19 @@ button:focus {
   border-radius:6px;
 }
 
+/* PROFILE DETAILS */
+.profile-details {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px 20px;
+}
+
+.detail {
+  background:#f1f5f9;
+  padding:12px;
+  border-radius:8px;
+}
+
 /* FORM GRID */
 .grid-form {
   display:grid;
@@ -346,27 +260,9 @@ button:focus {
   }
 }
 
-/* PROFILE DETAILS */
-.profile-details {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px 20px;
-}
-
-.detail {
-  background:#f1f5f9;
-  padding:12px;
-  border-radius:8px;
-}
-
-/* ACTION BUTTON ROW */
-.actions {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-/* MODAL FIX */
+/* =========================
+   MODAL
+========================= */
 .modal {
   display:none;
   position:fixed;
@@ -374,6 +270,7 @@ button:focus {
   background:rgba(0,0,0,.5);
   align-items:center;
   justify-content:center;
+  z-index:1200;
 }
 
 .modal.show { display:flex; }
@@ -386,21 +283,69 @@ button:focus {
   max-width:750px;
 }
 
-/* BOOKING LIST FIX */
+/* =========================
+   BOOKING ENTRY
+========================= */
 .booking-entry {
-  width:100%;
-  max-width:600px;
+  background: white;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 5px solid #0055aa;
+  border-radius: 6px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* RESPONSIVE SIDE CARDS */
-@media(max-width:768px){
-  .profile-card,
-  .co-travel-card {
-    max-width:100%;
-  }
+.booking-entry > * {
+  flex: 1 1 200px;
+  min-width: 0;
 }
 
-/* DESKTOP SIDEBAR ALWAYS ON */
+/* STATUS BADGES */
+.status {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: white;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.status.confirmed {
+  background-color: #009a00;
+}
+
+.status.completed {
+  background-color: #7e7e7e;
+}
+
+/* RESPONSIVENESS */
+@media(max-width:900px){
+  .booking-entry { padding: 14px; gap: 10px; }
+  .status { font-size: 13px; padding: 5px 10px; }
+}
+
+@media(max-width:600px){
+  .booking-entry { flex-direction: column; align-items: flex-start; padding: 14px; gap: 6px; }
+  .booking-entry > * { flex: 1 1 100%; }
+  .status { align-self: flex-start; font-size: 12px; padding: 4px 8px; }
+}
+
+@media(max-width:350px){
+  .booking-entry { padding: 12px; }
+  .status { font-size: 11px; padding: 3px 6px; }
+}
+
+/* =========================
+   DESKTOP FIXES
+========================= */
 @media(min-width:993px){
   #sidebar {
     transform:translateX(0) !important;
@@ -410,7 +355,34 @@ button:focus {
   }
 }
 
-/* MOBILE HAMBURGER */
+/* =========================
+   MOBILE HAMBURGER
+========================= */
 @media(max-width:992px){
   .hamburger{ display:block; }
+  #sidebar { transform:translateX(-100%); }
+  .main-content { margin-left:0; padding:1rem; }
 }
+
+/* WELCOME TEXT */
+.welcome-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #0b2030;
+}
+
+/* RESPONSIVE POSITIONING FOR SMALL SCREENS */
+@media(max-width:992px) {
+  .welcome-text {
+    text-align: right; /* move text to the right */
+  }
+}
+
+@media(max-width:600px) {
+  .welcome-text {
+    font-size: 1rem; /* slightly smaller for very small screens */
+  }
+}
+
+
