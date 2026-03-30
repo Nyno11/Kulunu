@@ -640,6 +640,27 @@ section,
   background: rgba(12, 166, 239, 0.05);
 }
 
+.booking-container {
+  position: relative;
+  overflow: visible; /* VERY IMPORTANT */
+}
+.autocomplete {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 9999; /* increase priority */
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+
 /* 🔹 Mobile adjustments */
 @media (max-width: 600px) {
   .tab-btn {
@@ -855,6 +876,17 @@ section,
 .verify-form,
 .reset-form {
   display: none;
+}
+
+.plane-loader {
+  font-size: 16px;
+  animation: fly 1s infinite ease-in-out;
+}
+
+@keyframes fly {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
 }
 
 
