@@ -182,28 +182,81 @@
     </section>
 
     <script>
-      // Tab switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById(btn.dataset.target).classList.add('active');
-        });
-      });
+document.addEventListener("DOMContentLoaded", function () {
 
-      // Filter (flight)
-      const filters = document.querySelectorAll('.filter-btn');
-      filters.forEach(f => f.addEventListener('click', () => {
-        filters.forEach(x => x.classList.remove('active'));
-        f.classList.add('active');
-        const returnField = document.querySelector('.return');
-        returnField.style.display = f.dataset.type === 'oneway' ? 'none' : 'block';
-      }));
+  // =========================
+  // TAB SWITCHING
+  // =========================
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const formSections = document.querySelectorAll('.form-section');
 
-      // Initialize return date visibility
-      document.querySelector('.return').style.display = 'none';
-    </script>
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      formSections.forEach(f => f.classList.remove('active'));
+
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+    });
+  });
+
+  // =========================
+  // FLIGHT FILTER (ONE WAY / ROUND)
+  // =========================
+  const filters = document.querySelectorAll('.filter-btn');
+  const returnField = document.querySelector('.return');
+
+  filters.forEach(f => {
+    f.addEventListener('click', () => {
+      filters.forEach(x => x.classList.remove('active'));
+      f.classList.add('active');
+
+      // Show/hide return date
+      if (f.dataset.type === 'oneway') {
+        returnField.style.display = 'none';
+      } else {
+        returnField.style.display = 'block';
+      }
+    });
+  });
+
+  // Initialize return field hidden
+  if (returnField) {
+    returnField.style.display = 'none';
+  }
+
+  // =========================
+  // FLIGHT SEARCH LOADER
+  // =========================
+  const searchBtn = document.getElementById("flightSearchBtn");
+  const loader = document.getElementById("flightSearchLoader");
+
+  if (searchBtn && loader) {
+    searchBtn.addEventListener("click", function () {
+
+      // Show loader
+      loader.style.display = "block";
+
+      // Disable button
+      searchBtn.disabled = true;
+      searchBtn.innerText = "Searching...";
+
+      // Simulate API call
+      setTimeout(() => {
+
+        // Hide loader
+        loader.style.display = "none";
+
+        // Enable button
+        searchBtn.disabled = false;
+        searchBtn.innerText = "Search Flights";
+
+      }, 7000);
+    });
+  }
+
+});
+</script>
 
     <section id="clients" class="clients section light-background">
       <div class="container">
@@ -1178,7 +1231,6 @@
     addEyeIcon(newPassword);
     addEyeIcon(confirmPassword);
   </script>
-
 </body>
 
 </html>
