@@ -42,7 +42,7 @@
     <main class="main-content" id="content">
       <div id="profile" class="section">
         <div class="welcome-text">
-          <h1>Welcome, Franklin 👋</h1>
+          <h1>Welcome, <span id="username-display"></span> 👋</h1>
           <p>Your dashboard is ready.</p>
         </div>
         <div class="grid-2">
@@ -451,6 +451,7 @@
       </div>
 
       <script src="core/dashboard.js"></script>
+      <script src="core/storedUser.js"></script>
       <script>
         function navigate(sectionId, element) {
           // Remove active class from all menu items

@@ -7,7 +7,8 @@
 const modal = document.getElementById("profileModal");
 const profileForm = document.getElementById("travelInfoForm");
 const profileDetails = document.getElementById("profileDetails");
-
+ const userSession = JSON.parse(localStorage.getItem('user_session'));
+ 
 let profileData = null;
 
 
