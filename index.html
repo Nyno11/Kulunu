@@ -1111,7 +1111,7 @@
         if (nameEl) nameEl.textContent = displayName;
         if (emailEl) emailEl.textContent = displayEmail;
         if (btnNameEl) btnNameEl.textContent = displayName;
-        if (btnEmailEl) btnEmailEl.textContent = displayEmail;
+        if (btnEmailEl) btnEmailEl.textContent = '';
         if (amountEl) {
           const n = Number(user.wallet || user.wallet_balance || 0);
           amountEl.textContent = `₦${isNaN(n) ? '0' : n.toLocaleString('en-NG')}`;
