@@ -182,81 +182,81 @@
     </section>
 
     <script>
-document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", function () {
 
-  // =========================
-  // TAB SWITCHING
-  // =========================
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const formSections = document.querySelectorAll('.form-section');
+        // =========================
+        // TAB SWITCHING
+        // =========================
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const formSections = document.querySelectorAll('.form-section');
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.classList.remove('active'));
-      formSections.forEach(f => f.classList.remove('active'));
+        tabButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            formSections.forEach(f => f.classList.remove('active'));
 
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.target).classList.add('active');
-    });
-  });
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.target).classList.add('active');
+          });
+        });
 
-  // =========================
-  // FLIGHT FILTER (ONE WAY / ROUND)
-  // =========================
-  const filters = document.querySelectorAll('.filter-btn');
-  const returnField = document.querySelector('.return');
+        // =========================
+        // FLIGHT FILTER (ONE WAY / ROUND)
+        // =========================
+        const filters = document.querySelectorAll('.filter-btn');
+        const returnField = document.querySelector('.return');
 
-  filters.forEach(f => {
-    f.addEventListener('click', () => {
-      filters.forEach(x => x.classList.remove('active'));
-      f.classList.add('active');
+        filters.forEach(f => {
+          f.addEventListener('click', () => {
+            filters.forEach(x => x.classList.remove('active'));
+            f.classList.add('active');
 
-      // Show/hide return date
-      if (f.dataset.type === 'oneway') {
-        returnField.style.display = 'none';
-      } else {
-        returnField.style.display = 'block';
-      }
-    });
-  });
+            // Show/hide return date
+            if (f.dataset.type === 'oneway') {
+              returnField.style.display = 'none';
+            } else {
+              returnField.style.display = 'block';
+            }
+          });
+        });
 
-  // Initialize return field hidden
-  if (returnField) {
-    returnField.style.display = 'none';
-  }
+        // Initialize return field hidden
+        if (returnField) {
+          returnField.style.display = 'none';
+        }
 
-  // =========================
-  // FLIGHT SEARCH LOADER
-  // =========================
-  const searchBtn = document.getElementById("flightSearchBtn");
-  const loader = document.getElementById("flightSearchLoader");
+        // =========================
+        // FLIGHT SEARCH LOADER
+        // =========================
+        const searchBtn = document.getElementById("flightSearchBtn");
+        const loader = document.getElementById("flightSearchLoader");
 
-  if (searchBtn && loader) {
-    searchBtn.addEventListener("click", function () {
+        if (searchBtn && loader) {
+          searchBtn.addEventListener("click", function () {
 
-      // Show loader
-      loader.style.display = "block";
+            // Show loader
+            loader.style.display = "block";
 
-      // Disable button
-      searchBtn.disabled = true;
-      searchBtn.innerText = "Searching...";
+            // Disable button
+            searchBtn.disabled = true;
+            searchBtn.innerText = "Searching...";
 
-      // Simulate API call
-      setTimeout(() => {
+            // Simulate API call
+            setTimeout(() => {
 
-        // Hide loader
-        loader.style.display = "none";
+              // Hide loader
+              loader.style.display = "none";
 
-        // Enable button
-        searchBtn.disabled = false;
-        searchBtn.innerText = "Search Flights";
+              // Enable button
+              searchBtn.disabled = false;
+              searchBtn.innerText = "Search Flights";
 
-      }, 7000);
-    });
-  }
+            }, 7000);
+          });
+        }
 
-});
-</script>
+      });
+    </script>
 
     <section id="clients" class="clients section light-background">
       <div class="container">
@@ -1057,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <button id="kulunuProfileBtn" class="kulunu-profile-btn" aria-haspopup="true" aria-expanded="false" title="Open account">
               <div class="kulunu-avatar">
                 <!-- small avatar; replace with real image or initials -->
-                <img src="assets/img/avatar-placeholder.png" alt="avatar">
+                <img src="assets/img/account image.png" alt="avatar">
               </div>
               <div style="display:flex;flex-direction:column;align-items:flex-start;gap:0;">
                 <small style="color:rgba(255,255,255,0.95); font-weight:700;">Nonso Chukwu</small>
@@ -1070,7 +1070,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div id="kulunuProfileDropdown" class="kulunu-profile-dropdown" role="dialog" aria-label="Account menu">
               <div class="kulunu-profile-head">
                 <div class="kulunu-avatar" style="width:48px;height:48px;">
-                  <img src="assets/img/avatar-placeholder.png" alt="avatar">
+                  <img src="assets/img/account image.png" alt="avatar">
                 </div>
                 <div class="meta">
                   <div class="name">Nonso Chukwu</div>

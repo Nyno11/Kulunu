@@ -44,7 +44,7 @@ function closeModal() {
 // Auto open modal on first load
 window.addEventListener("load", () => {
     setTimeout(() => {
-        openModal();
+         loadTravelers();
     }, 2000);
 });
 
@@ -87,6 +87,105 @@ function openCoTravelModal(index = -1) {
 function closeCoTravelModal() {
     coTravelModal.style.display = "none";
 }
+
+
+
+// 🚀 Fetch Travelers
+async function loadTravelers() {
+    
+    const API_URL = `https://api.kulunu.app/travelers/${userSession.id}`; // Assuming your API endpoint to fetch travelers for the logged-in user
+
+    let profileData = null;
+    let coTravelers = [];
+
+    const profileDetails = document.getElementById("profileDetails");
+    const coTravelList = document.getElementById("coTravelList");
+    const coTravelDetails = document.getElementById("coTravelDetails");
+
+    try {
+        const res = await fetch(API_URL,
+             {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                // Pass the token to verify the user is allowed to save data
+                "Authorization": `Bearer ${userSession.token}`
+            },
+           
+        });
+        const result = await res.json();
+
+        if (!result.success) {
+            throw new Error("Failed to fetch travelers");
+        }
+
+        processTravelers(result.data);
+        renderProfile();
+        renderCoTravelers();
+
+    } catch (err) {
+        openModal();
+        
+        console.error(err);
+        
+        // profileDetails.innerHTML = `<p class="empty">Failed to load data</p>`;
+    }
+}
+
+// 🔥 Process + Split Data
+function processTravelers(travelers) {
+    profileData = null;
+    coTravelers = [];
+
+    travelers.forEach(t => {
+        const traveler = {
+            id: t.id,
+            title: t.title,
+            travelerType: t.traveler_type,
+            firstName: t.first_name,
+            lastName: t.last_name,
+            middleName: t.middle_name,
+            gender: t.gender,
+            dob: formatDate(t.date_of_birth),
+            email: t.email,
+            phone: t.mobile_number,
+            nationality: t.nationality,
+            passportNumber: t.passport_number,
+            expiryDate: formatDate(t.passport_expiry_date),
+            isCoTraveler: t.is_cotraveler
+        };
+
+        if (t.is_cotraveler === 0) {
+            profileData = traveler;
+        } else {
+            coTravelers.push(traveler);
+        }
+    });
+}
+
+// 🧾 Render Main Traveler
+function renderProfile() {
+    if (!profileData) {
+        profileDetails.innerHTML = `<p class="empty">No main traveler found</p>`;
+        return;
+    }
+
+    profileDetails.innerHTML = `
+        <div class="detail"><strong>Title:</strong> ${profileData.title}</div>
+        <div class="detail"><strong>Traveler Type:</strong> ${profileData.travelerType}</div>
+        <div class="detail"><strong>First Name:</strong> ${profileData.firstName}</div>
+        <div class="detail"><strong>Last Name:</strong> ${profileData.lastName}</div>
+        <div class="detail"><strong>Middle Name:</strong> ${profileData.middleName || "-"}</div>
+        <div class="detail"><strong>Gender:</strong> ${profileData.gender}</div>
+        <div class="detail"><strong>Date of Birth:</strong> ${profileData.dob}</div>
+        <div class="detail"><strong>Email:</strong> ${profileData.email}</div>
+        <div class="detail"><strong>Mobile:</strong> ${profileData.phone}</div>
+        <div class="detail"><strong>Nationality:</strong> ${profileData.nationality}</div>
+        <div class="detail"><strong>Passport No:</strong> ${profileData.passportNumber}</div>
+        <div class="detail"><strong>Expiry Date:</strong> ${profileData.expiryDate}</div>
+    `;
+}
+
 
 // Handle form submit
 document.getElementById("coTravelForm").addEventListener("submit", async(e) => {
@@ -136,7 +235,8 @@ document.getElementById("coTravelForm").addEventListener("submit", async(e) => {
         mobile_number: document.getElementById("coPhone").value,
         nationality: document.getElementById("coNationality").value,
         passport_number: document.getElementById("coPassportNumber").value,
-        passport_expiry_date: document.getElementById("coExpiryDate").value
+        passport_expiry_date: document.getElementById("coExpiryDate").value,
+        is_cotraveler:1,
     };
 
     try {
@@ -185,6 +285,7 @@ document.getElementById("coTravelForm").addEventListener("submit", async(e) => {
 });
 
 // Render travelers with Edit & Delete
+
 function renderCoTravelers() {
     coTravelList.innerHTML = "";
 
