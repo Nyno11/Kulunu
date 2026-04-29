@@ -786,15 +786,15 @@
         </div>
       </div>
 
-      <div class="menu-card" onclick="goTo('Event.html')">
-        <div class="icon">
-          <i class="bi bi-calendar-event"></i>
-        </div>
-        <div class="text">
-          <h4>Manage Event</h4>
-          <p>Create & distribute tickets</p>
-        </div>
-      </div>
+      <div class="menu-card" onclick="openKYC()">
+  <div class="icon">
+    <i class="bi bi-calendar-event"></i>
+  </div>
+  <div class="text">
+    <h4>Manage Event</h4>
+    <p>Create & distribute tickets</p>
+  </div>
+</div>
 
       <div class="menu-card" onclick="goTo('settings.html')">
         <div class="icon">
@@ -827,6 +827,68 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="kycModal" class="modal">
+
+  <div class="modal-content">
+
+    <span class="close" onclick="closeKYC()">&times;</span>
+
+    <div class="kyc-container">
+      <h2>Organizer Verification</h2>
+      <p style="font-size:14px;color:#666;">
+        Complete verification to unlock event creation
+      </p>
+
+      <form id="kycForm">
+
+        <!-- PERSONAL -->
+        <div class="section-title">Personal Information</div>
+        <input type="text" id="fullname" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+
+        <!-- IDENTITY -->
+        <div class="section-title">Identity Verification</div>
+        <select id="idType">
+          <option value="nin">National ID (NIN)</option>
+          <option value="passport">International Passport</option>
+          <option value="drivers">Driver’s License</option>
+        </select>
+
+        <div class="upload" onclick="idFile.click()">
+          Upload ID Document
+          <input type="file" id="idFile" hidden>
+        </div>
+
+        <div class="preview" id="idPreview"></div>
+
+        <!-- BUSINESS -->
+        <div class="section-title">Business name</div>
+        <input type="text" id="orgName" placeholder="Organization / Brand Name">
+
+        <div class="section-title">Registration number</div>
+        <input type="text" id="regNumber" placeholder="Registration number">
+
+        <div class="upload" onclick="bizFile.click()">
+          Upload Business Certificate
+          <input type="file" id="bizFile" hidden>
+        </div>
+
+        <div class="preview" id="bizPreview"></div>
+
+        <button type="submit" onclick="window.location.href='admin-dashboard.html'">Submit Verification</button>
+
+      </form>
+
+      <div class="status success" id="successMsg">
+        ✅ Verification submitted. Review takes 24–48 hours.
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -993,9 +1055,9 @@
     window.location.href = 'index.html';
   }
 
-</script>
 
-<script>
+
+
   function openPage(pageId) {
     document.querySelectorAll(".page").forEach(page => {
       page.classList.remove("active");
@@ -1011,6 +1073,23 @@
 
     document.getElementById("categoriesPage").classList.add("active");
   }
+
+
+  function openKYC() {
+  document.getElementById("kycModal").style.display = "block";
+}
+
+function closeKYC() {
+  document.getElementById("kycModal").style.display = "none";
+}
+
+// Close when clicking outside
+window.onclick = function(e) {
+  const modal = document.getElementById("kycModal");
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+};
 </script>
 
 
