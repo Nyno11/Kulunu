@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Details - Kulunu</title>
+<link href="assets/css/concert.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+
+<body>
+
+<div id="ticketDetailsPage" class="page-section active-section">
+<header>
+  <button onclick="history.back()" style="background:none;border:none">
+    <i class="bi bi-arrow-left-circle"></i>
+  </button>
+  <h3>Event Details</h3>
+</header>
+
+<div class="ticket-details">
+  <img id="detailsImage" class="details-img">
+  <h2 id="detailsTitle"></h2>
+  <p id="detailsDescription" style="padding-bottom:5px;"></p>
+  <button class="primary-btn" onclick="openTicketModal()">Buy Ticket</button>
+</div>
+</div>
+
+<!-- MODAL 1: TICKET -->
+<div id="ticketModal" class="modal">
+<div class="modal-content">
+  <div class="modal-header">
+    <h3>Select Ticket</h3>
+    <button onclick="closeTicketModal()">✕</button>
+  </div>
+
+  <div class="form-group">
+    <label>Ticket Type</label>
+    <select>
+      <option>Regular</option>
+      <option>VIP</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Quantity</label>
+    <input type="number" min="1" value="1">
+  </div>
+
+  <button class="primary-btn" onclick="openPaymentModal()">Continue</button>
+</div>
+</div>
+
+<!-- MODAL 2: PAYMENT -->
+<div id="paymentModal" class="modal">
+<div class="modal-content">
+  <div class="modal-header">
+    <h3>Payment Method</h3>
+    <button onclick="closePaymentModal()">✕</button>
+  </div>
+
+  <div class="payment-option">Pay with Card</div>
+  <div class="payment-option">Bank Transfer</div>
+  <div class="payment-option">USSD</div>
+
+  <button class="primary-btn" onclick="goToSuggestModal()">Pay Now</button>
+</div>
+</div>
+
+<!-- MODAL 3: SUGGESTION -->
+<div id="suggestModal" class="modal">
+<div class="modal-content">
+  <div class="modal-header">
+    <h3>Travel options</h3>
+    <button onclick="closeSuggestModal()">✕</button>
+  </div>
+
+  <div class="payment-option">Available Flights</div>
+  <div class="payment-option">Available Roadtrip</div>
+</div>
+</div>
+
+<script>
+// Populate page from localStorage
+(function () {
+  const raw = localStorage.getItem('viewEventData');
+  if (!raw) return;
+  const data = JSON.parse(raw);
+  document.getElementById('detailsTitle').textContent = data.title || '';
+  document.getElementById('detailsDescription').textContent = data.desc || '';
+  document.getElementById('detailsImage').src = data.img || '';
+  if (data.title) document.title = data.title + ' - Kulunu';
+})();
+
+const paymentModal = document.getElementById('paymentModal');
+const suggestModal = document.getElementById('suggestModal');
+
+function openTicketModal() {
+  document.getElementById('ticketModal').classList.add('active');
+}
+function closeTicketModal() {
+  document.getElementById('ticketModal').classList.remove('active');
+}
+
+function openPaymentModal() {
+  closeTicketModal();
+  paymentModal.classList.add('active');
+}
+function closePaymentModal() {
+  paymentModal.classList.remove('active');
+}
+
+function goToSuggestModal() {
+  closePaymentModal();
+  suggestModal.classList.add('active');
+}
+function closeSuggestModal() {
+  suggestModal.classList.remove('active');
+}
+
+window.addEventListener('click', function (e) {
+  if (e.target === paymentModal) closePaymentModal();
+  if (e.target === suggestModal) closeSuggestModal();
+});
+</script>
+</body>
+</html>

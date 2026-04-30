@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Concerts - Kulunu Ticketing</title>
- <link href="assets/css/concert.css" rel="stylesheet"> 
+<link href="assets/css/concert.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
 <body>
 
-<!-- CONCERT PAGE -->
 <div id="concertPage" class="page-section active-section">
 <header>
   <a href="Ticket.html"><i class="bi bi-arrow-left-circle"></i></a>
@@ -26,8 +25,8 @@
 <h3>THE CAVEMEN</h3>
 <p>Explore the cave with The Cavemen and Staycavy.</p>
 <button class="view-btn"
-onclick="openTicketDetails('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
-View
+  onclick="viewEvent('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
+  View
 </button>
 </div>
 
@@ -36,8 +35,8 @@ View
 <h3>THE CAVEMEN</h3>
 <p>Explore the cave with The Cavemen and Staycavy.</p>
 <button class="view-btn"
-onclick="openTicketDetails('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
-View
+  onclick="viewEvent('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
+  View
 </button>
 </div>
 
@@ -46,8 +45,8 @@ View
 <h3>THE CAVEMEN</h3>
 <p>Explore the cave with The Cavemen and Staycavy.</p>
 <button class="view-btn"
-onclick="openTicketDetails('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
-View
+  onclick="viewEvent('THE CAVEMEN','Explore the cave with The Cavemen and Staycavy.','assets/img/trend4.jpg')">
+  View
 </button>
 </div>
 
@@ -55,138 +54,11 @@ View
 </section>
 </div>
 
-<!-- DETAILS PAGE -->
-<div id="ticketDetailsPage" class="page-section">
-<header>
-<button onclick="goBack()" style="background:none;border:none">
-<i class="bi bi-arrow-left-circle"></i>
-</button>
-<h3>Event Details</h3>
-</header>
-
-<div class="ticket-details">
-<img id="detailsImage" class="details-img">
-<h2 id="detailsTitle"></h2>
-<p id="detailsDescription" style="padding-bottom: 5px;"></p>
-<button class="primary-btn" onclick="openTicketModal()">Buy Ticket</button>
-</div>
-</div>
-
-<!-- MODAL 1: TICKET -->
-<div id="ticketModal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3>Select Ticket</h3>
-<button onclick="closeTicketModal()">✕</button>
-</div>
-
-<div class="form-group">
-<label>Ticket Type</label>
-<select>
-<option>Regular</option>
-<option>VIP</option>
-</select>
-</div>
-
-<div class="form-group">
-<label>Quantity</label>
-<input type="number" min="1" value="1">
-</div>
-
-<button class="primary-btn" onclick="openPaymentModal()">Continue</button>
-</div>
-</div>
-
-<!-- MODAL 2: PAYMENT -->
-<div id="paymentModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Payment Method</h3>
-      <button onclick="closePaymentModal()">✕</button>
-    </div>
-
-    <div class="payment-option">Pay with Card</div>
-    <div class="payment-option">Bank Transfer</div>
-    <div class="payment-option">USSD</div>
-
-    <button class="primary-btn" onclick="goToSuggestModal()">Pay Now</button>
-  </div>
-</div>
-
-<!-- MODAL 3: SUGGESTION -->
-<div id="suggestModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Travel options</h3>
-      <button onclick="closeSuggestModal()">✕</button>
-    </div>
-
-    <div class="payment-option">Available Flights</div>
-    <div class="payment-option">Available Roadtrip</div>
-  </div>
-</div>
-
 <script>
-const paymentModal = document.getElementById("paymentModal");
-const suggestModal = document.getElementById("suggestModal");
-
-/* ---------------- Ticket Navigation ---------------- */
-
-function openTicketDetails(title, desc, img) {
-  concertPage.classList.remove('active-section');
-  ticketDetailsPage.classList.add('active-section');
-  detailsTitle.textContent = title;
-  detailsDescription.textContent = desc;
-  detailsImage.src = img;
+function viewEvent(title, desc, img) {
+  localStorage.setItem('viewEventData', JSON.stringify({ title, desc, img }));
+  window.location.href = 'viewevent.html';
 }
-
-function goBack() {
-  ticketDetailsPage.classList.remove('active-section');
-  concertPage.classList.add('active-section');
-}
-
-/* ---------------- Ticket Modal ---------------- */
-
-function openTicketModal() {
-  ticketModal.classList.add('active');
-}
-
-function closeTicketModal() {
-  ticketModal.classList.remove('active');
-}
-
-/* ---------------- Payment Modal ---------------- */
-
-function openPaymentModal() {
-  closeTicketModal();
-  paymentModal.classList.add('active');
-}
-
-function closePaymentModal() {
-  paymentModal.classList.remove('active');
-}
-
-/* ---------------- Suggestion Modal ---------------- */
-
-function goToSuggestModal() {
-  closePaymentModal();              // Close payment modal
-  suggestModal.classList.add('active'); // Open suggestion modal
-}
-
-function closeSuggestModal() {
-  suggestModal.classList.remove('active');
-}
-
-/* ---------------- Close When Clicking Outside ---------------- */
-
-window.addEventListener("click", function (e) {
-  if (e.target === paymentModal) {
-    closePaymentModal();
-  }
-  if (e.target === suggestModal) {
-    closeSuggestModal();
-  }
-});
 </script>
 </body>
 </html>

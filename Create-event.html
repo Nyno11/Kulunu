@@ -213,8 +213,8 @@ header {
     <div class="header-left">
         <i class="ri-user-3-fill profile-icon"></i>
         <div class="user-info">
-            <small class="user-name">Nonso Chukwu</small>
-            <small class="user-email">nonso@kulunu.com</small>
+            <small class="user-name" id="headerUserName"></small>
+            <small class="user-email" id="headerUserEmail"></small>
         </div>
     </div>
 
@@ -289,28 +289,8 @@ header {
     };
     reader.readAsDataURL(file);
   });
-
-  document.getElementById("createEventForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const eventData = {
-      id: "EVT-" + Date.now(),
-      title: title.value,
-      date: date.value,
-      venue: venue.value,
-      type: type.value,
-      banner: previewImg.src || "",
-      status: "draft",
-      tickets: [],
-      attendees: []
-    };
-
-    localStorage.setItem("activeEvent", JSON.stringify(eventData));
-
-    // Redirect to Manage Event dashboard
-    window.location.href = "Event.html";
-  });
 </script>
+<script src="./core/event.js"></script>
 
 </body>
 </html>

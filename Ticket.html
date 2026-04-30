@@ -165,31 +165,31 @@
       <span class="see-all">See All</span>
     </div>
     <div class="event-scroll">
-      <div class="event-card">
+      <div class="event-card" data-id="1" data-title="THE CAVEMEN" data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
         <img src="assets/img/trend4.jpg" />
         <h3>THE CAVEMEN</h3>
         <p>Explore the cave with The Cavemen and Staycavy.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="2" data-title="ABUJA TECH CONVERGE" data-desc="Innovation meets opportunity." data-img="assets/img/trend3.jpg">
         <img src="assets/img/trend3.jpg" />
         <h3>ABUJA TECH CONVERGE</h3>
         <p>Innovation meets opportunity.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="3" data-title="OBI's HOUSE" data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
         <img src="assets/img/trend2.jpg" />
         <h3>OBI's HOUSE</h3>
         <p>Party, music & unforgettable memories.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live." data-img="assets/img/trend1.jpg">
         <img src="assets/img/trend1.jpg" />
         <h3>GRAND OPENING</h3>
         <p>Experience Soundgod festival live.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party." data-img="assets/img/trend5.jpg">
         <img src="assets/img/trend5.jpg" />
         <h3>CAPITAL MACHINE</h3>
         <p>Capital Block Party.</p>
@@ -203,31 +203,31 @@
       <span class="see-all">See All</span>
     </div>
     <div class="event-scroll">
-      <div class="event-card">
+      <div class="event-card" data-id="1" data-title="THE CAVEMEN" data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
         <img src="assets/img/trend4.jpg" />
         <h3>THE CAVEMEN</h3>
         <p>Explore the cave with The Cavemen and Staycavy.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="2" data-title="ABUJA TECH CONVERGE" data-desc="Innovation meets opportunity." data-img="assets/img/trend3.jpg">
         <img src="assets/img/trend3.jpg" />
         <h3>ABUJA TECH CONVERGE</h3>
         <p>Innovation meets opportunity.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="3" data-title="OBI's HOUSE" data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
         <img src="assets/img/trend2.jpg" />
         <h3>OBI's HOUSE</h3>
         <p>Party, music & unforgettable memories.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live." data-img="assets/img/trend1.jpg">
         <img src="assets/img/trend1.jpg" />
         <h3>GRAND OPENING</h3>
         <p>Experience Soundgod festival live.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party." data-img="assets/img/trend5.jpg">
         <img src="assets/img/trend5.jpg" />
         <h3>CAPITAL MACHINE</h3>
         <p>Capital Block Party.</p>
@@ -241,25 +241,25 @@
       <span class="see-all">See All</span>
     </div>
     <div class="event-scroll">
-      <div class="event-card">
+      <div class="event-card" data-id="1" data-title="THE CAVEMEN" data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
         <img src="assets/img/trend4.jpg" />
         <h3>THE CAVEMEN</h3>
         <p>Explore the cave with The Cavemen and Staycavy.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party." data-img="assets/img/trend5.jpg">
         <img src="assets/img/trend5.jpg" />
         <h3>CAPITAL MACHINE</h3>
         <p>Capital Block Party.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="3" data-title="OBI's HOUSE" data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
         <img src="assets/img/trend2.jpg" />
         <h3>OBI's HOUSE</h3>
         <p>Party, music & unforgettable memories.</p>
       </div>
 
-      <div class="event-card">
+      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live." data-img="assets/img/trend1.jpg">
         <img src="assets/img/trend1.jpg" />
         <h3>GRAND OPENING</h3>
         <p>Experience Soundgod festival live.</p>
@@ -992,6 +992,17 @@
     localStorage.removeItem('user_session');
     window.location.href = 'index.html';
   }
+
+  function viewEvent(id, title, desc, img) {
+    localStorage.setItem('viewEventData', JSON.stringify({ id: id, title: title, desc: desc, img: img }));
+    window.location.href = 'viewevent.html';
+  }
+
+  document.querySelectorAll('.event-card[data-id]').forEach(function (card) {
+    card.addEventListener('click', function () {
+      viewEvent(card.dataset.id, card.dataset.title, card.dataset.desc, card.dataset.img);
+    });
+  });
 
 </script>
 
