@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Kulunu Events</title>
+  
+  <!-- Favicons -->
+  <link href="assets/img/ku.png" rel="icon">
+  <link href="assets/img/ku.png" rel="apple-touch-icon">
+  
+  <!-- Bootstrap + Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main CSS File -->
+  <link href="assets/css/admin-dashboard.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <img src="assets/img/ku.png" alt="Kulunu" class="logo-img">
+        <span class="logo-text">Kulunu</span>
+      </div>
+      <button class="sidebar-close d-lg-none" id="sidebarClose">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="bi bi-person-circle"></i>
+      </div>
+      <div class="user-info">
+        <span class="user-name" id="adminName">Admin User</span>
+        <span class="user-role">Event Organizer</span>
+      </div>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="nav-list">
+        <li class="nav-item active" data-section="overview">
+          <i class="bi bi-grid-1x2-fill"></i>
+          <span>Overview</span>
+        </li>
+        <li class="nav-item" data-section="events">
+          <i class="bi bi-calendar-event-fill"></i>
+          <span>Events</span>
+          <span class="badge-count" id="eventCount">0</span>
+        </li>
+        <li class="nav-item" data-section="tickets">
+          <i class="bi bi-ticket-perforated-fill"></i>
+          <span>Tickets</span>
+          <span class="badge-count" id="ticketCount">0</span>
+        </li>
+        <li class="nav-item" data-section="attendees">
+          <i class="bi bi-people-fill"></i>
+          <span>Attendees</span>
+        </li>
+        <li class="nav-item" data-section="analytics">
+          <i class="bi bi-graph-up-arrow"></i>
+          <span>Analytics</span>
+        </li>
+        <li class="nav-item" data-section="settings">
+          <i class="bi bi-gear-fill"></i>
+          <span>Settings</span>
+        </li>
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="window.location.href='Ticket.html'">
+        <i class="bi bi-box-arrow-left"></i>
+        <span>HomePage</span>
+      </button>
+    </div>
+  </aside>
+  
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Header -->
+    <header class="top-header">
+      <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+      
+      <div class="header-search">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Search events, tickets, attendees..." id="globalSearch">
+      </div>
+      
+      <div class="header-actions">
+        <button class="header-btn" id="notificationBtn">
+          <i class="bi bi-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <button class="header-btn primary" onclick="openCreateEventModal()">
+          <i class="bi bi-plus-circle"></i>
+          <span>Create Event</span>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      
+      <!-- Overview Section -->
+      <section id="overview" class="content-section active">
+        <div class="section-header">
+          <h1>Dashboard Overview</h1>
+          <p class="text-muted">Welcome back! Here's what's happening with your events.</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="totalEvents">0</span>
+              <span class="stat-label">Total Events</span>
+            </div>
+            <div class="stat-trend up">
+              <i class="bi bi-arrow-up"></i> 12%
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <i class="bi bi-ticket"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="ticketsSold">0</span>
+              <span class="stat-label">Tickets Sold</span>
+            </div>
+            <div class="stat-trend up">
+              <i class="bi bi-arrow-up"></i> 8%
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon purple">
+              <i class="bi bi-cash"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="totalRevenue">₦0</span>
+              <span class="stat-label">Total Revenue</span>
+            </div>
+            <div class="stat-trend up">
+              <i class="bi bi-arrow-up"></i> 24%
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-value" id="totalAttendees">0</span>
+              <span class="stat-label">Total Attendees</span>
+            </div>
+            <div class="stat-trend up">
+              <i class="bi bi-arrow-up"></i> 15%
+            </div>
+          </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="chart-card revenue-chart">
+            <div class="chart-header">
+              <h3>Revenue Overview</h3>
+              <select class="chart-filter" id="revenueTimeFilter">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+              </select>
+            </div>
+            <div class="chart-body">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="chart-card tickets-chart">
+            <div class="chart-header">
+              <h3>Ticket Sales Trend</h3>
+              <select class="chart-filter" id="ticketsTimeFilter">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+              </select>
+            </div>
+            <div class="chart-body">
+              <canvas id="ticketsChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Recent Activity & Upcoming Events -->
+        <div class="bottom-row">
+          <div class="card recent-activity">
+            <div class="card-header">
+              <h3>Recent Activity</h3>
+              <a href="#" class="view-all">View All</a>
+            </div>
+            <div class="activity-list" id="activityList">
+              <!-- Activity items will be injected by JS -->
+            </div>
+          </div>
+          
+          <div class="card upcoming-events">
+            <div class="card-header">
+              <h3>Upcoming Events</h3>
+              <a href="#" class="view-all" onclick="switchSection('events')">View All</a>
+            </div>
+            <div class="events-list" id="upcomingEventsList">
+              <!-- Events will be injected by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Events Section -->
+      <section id="events" class="content-section">
+        <div class="section-header">
+          <div class="header-left">
+            <h1>My Events</h1>
+            <p class="text-muted">Manage and track all your events</p>
+          </div>
+          <button class="btn-primary" onclick="openCreateEventModal()">
+            <i class="bi bi-plus-lg"></i> Create New Event
+          </button>
+        </div>
+        
+        <!-- Events Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All Events</button>
+          <button class="filter-tab" data-filter="upcoming">Upcoming</button>
+          <button class="filter-tab" data-filter="live">Live Now</button>
+          <button class="filter-tab" data-filter="completed">Completed</button>
+          <button class="filter-tab" data-filter="draft">Drafts</button>
+        </div>
+        
+        <!-- Events Grid -->
+        <div class="events-grid" id="eventsGrid">
+          <!-- Events will be injected by JS -->
+        </div>
+        
+        <!-- Empty State -->
+        <div class="empty-state d-none" id="eventsEmpty">
+          <i class="bi bi-calendar-x"></i>
+          <h3>No Events Found</h3>
+          <p>Create your first event to get started</p>
+          <button class="btn-primary" onclick="openCreateEventModal()">
+            Create Event
+          </button>
+        </div>
+      </section>
+      
+      <!-- Tickets Section -->
+      <section id="tickets" class="content-section">
+        <div class="section-header">
+          <div class="header-left">
+            <h1>Ticket Management</h1>
+            <p class="text-muted">Track and manage ticket sales across all events</p>
+          </div>
+          <button class="btn-secondary" onclick="exportTickets()">
+            <i class="bi bi-download"></i> Export Data
+          </button>
+        </div>
+        
+        <!-- Ticket Stats -->
+        <div class="ticket-stats">
+          <div class="ticket-stat-card">
+            <span class="ticket-stat-value" id="totalTicketsAvailable">0</span>
+            <span class="ticket-stat-label">Total Available</span>
+          </div>
+          <div class="ticket-stat-card">
+            <span class="ticket-stat-value" id="totalTicketsSoldStat">0</span>
+            <span class="ticket-stat-label">Sold</span>
+          </div>
+          <div class="ticket-stat-card">
+            <span class="ticket-stat-value" id="totalTicketsRemaining">0</span>
+            <span class="ticket-stat-label">Remaining</span>
+          </div>
+          <div class="ticket-stat-card">
+            <span class="ticket-stat-value" id="conversionRate">0%</span>
+            <span class="ticket-stat-label">Conversion Rate</span>
+          </div>
+        </div>
+        
+        <!-- Tickets Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-search">
+              <i class="bi bi-search"></i>
+              <input type="text" placeholder="Search tickets..." id="ticketSearch">
+            </div>
+            <div class="table-filters">
+              <select id="ticketEventFilter">
+                <option value="">All Events</option>
+              </select>
+              <select id="ticketTypeFilter">
+                <option value="">All Types</option>
+                <option value="paid">Paid</option>
+                <option value="free">Free</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Event</th>
+                  <th>Type</th>
+                  <th>Price</th>
+                  <th>Available</th>
+                  <th>Sold</th>
+                  <th>Revenue</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ticketsTableBody">
+                <!-- Tickets will be injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Attendees Section -->
+      <section id="attendees" class="content-section">
+        <div class="section-header">
+          <div class="header-left">
+            <h1>Attendees</h1>
+            <p class="text-muted">View and manage event attendees</p>
+          </div>
+          <button class="btn-secondary" onclick="exportAttendees()">
+            <i class="bi bi-download"></i> Export List
+          </button>
+        </div>
+        
+        <!-- Attendees Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-search">
+              <i class="bi bi-search"></i>
+              <input type="text" placeholder="Search attendees..." id="attendeeSearch">
+            </div>
+            <div class="table-filters">
+              <select id="attendeeEventFilter">
+                <option value="">All Events</option>
+              </select>
+              <select id="attendeeStatusFilter">
+                <option value="">All Status</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="checked-in">Checked In</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Event</th>
+                  <th>Ticket Type</th>
+                  <th>Purchase Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="attendeesTableBody">
+                <!-- Attendees will be injected by JS -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-pagination">
+            <span class="pagination-info">Showing <span id="attendeeStart">0</span>-<span id="attendeeEnd">0</span> of <span id="attendeeTotal">0</span></span>
+            <div class="pagination-controls">
+              <button class="pagination-btn" id="attendeePrev" disabled>
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <span class="pagination-pages" id="attendeePages"></span>
+              <button class="pagination-btn" id="attendeeNext">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Analytics Section -->
+      <section id="analytics" class="content-section">
+        <div class="section-header">
+          <h1>Analytics & Reports</h1>
+          <p class="text-muted">Deep insights into your event performance</p>
+        </div>
+        
+        <!-- Analytics Overview -->
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3>Sales Performance</h3>
+              <select class="analytics-filter">
+                <option>Last 30 days</option>
+                <option>Last 90 days</option>
+                <option>This Year</option>
+              </select>
+            </div>
+            <div class="analytics-body">
+              <canvas id="salesPerformanceChart"></canvas>
+            </div>
+          </div>
+          
+          <div class="analytics-card">
+            <div class="analytics-header">
+              <h3>Ticket Type Distribution</h3>
+            </div>
+            <div class="analytics-body">
+              <canvas id="ticketTypeChart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Top Performing Events -->
+        <div class="analytics-section">
+          <h3>Top Performing Events</h3>
+          <div class="top-events-list" id="topEventsList">
+            <!-- Top events will be injected by JS -->
+          </div>
+        </div>
+      </section>
+      
+      <!-- Settings Section -->
+      <section id="settings" class="content-section">
+        <div class="section-header">
+          <h1>Settings</h1>
+          <p class="text-muted">Manage your account and preferences</p>
+        </div>
+        
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Profile Settings</h3>
+            <form id="profileForm">
+              <div class="form-group">
+                <label>Organizer Name</label>
+                <input type="text" id="settingsName" placeholder="Enter your name">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="settingsEmail" placeholder="Enter your email">
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="settingsPhone" placeholder="Enter your phone number">
+              </div>
+              <div class="form-group">
+                <label>Organization</label>
+                <input type="text" id="settingsOrg" placeholder="Enter your organization">
+              </div>
+              <button type="submit" class="btn-primary">Save Changes</button>
+            </form>
+          </div>
+          
+          <div class="settings-card">
+            <h3>Notification Preferences</h3>
+            <div class="notification-settings">
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-title">New Ticket Sales</span>
+                  <span class="notification-desc">Get notified when tickets are purchased</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-title">Event Reminders</span>
+                  <span class="notification-desc">Receive reminders before your events</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-title">Weekly Reports</span>
+                  <span class="notification-desc">Receive weekly performance summaries</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <span class="notification-title">Marketing Emails</span>
+                  <span class="notification-desc">Receive tips and promotional offers</span>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  
+  <!-- Notification Panel -->
+  <div class="notification-panel" id="notificationPanel">
+    <div class="notification-panel-header">
+      <h3>Notifications</h3>
+      <button class="mark-all-read">Mark all as read</button>
+    </div>
+    <div class="notification-panel-list" id="notificationList">
+      <!-- Notifications will be injected by JS -->
+    </div>
+  </div>
+  
+  <!-- Create Event Modal -->
+  <div class="modal" id="createEventModal">
+    <div class="modal-overlay" onclick="closeModal('createEventModal')"></div>
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3>Create New Event</h3>
+        <button class="modal-close" onclick="closeModal('createEventModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="createEventForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Event Title *</label>
+                <input type="text" id="newEventTitle" placeholder="e.g. Lagos Tech Conference 2025" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Event Date *</label>
+                <input type="date" id="newEventDate" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Venue *</label>
+            <input type="text" id="newEventVenue" placeholder="e.g. Lagos International Centre" required>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Event Type *</label>
+                <select id="newEventType" required>
+                  <option value="physical">Physical Event</option>
+                  <option value="virtual">Virtual Event</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Initial Status</label>
+                <select id="newEventStatus">
+                  <option value="draft">Draft</option>
+                  <option value="upcoming">Upcoming</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Event Banner</label>
+            <div class="banner-upload-options" style="display: flex; gap: 16px; margin-bottom: 12px;">
+              <button type="button" class="btn-secondary upload-tab active" onclick="switchBannerTab('url')" id="urlTabBtn">
+                <i class="bi bi-link-45deg"></i> Use URL
+              </button>
+              <button type="button" class="btn-secondary upload-tab" onclick="switchBannerTab('file')" id="fileTabBtn">
+                <i class="bi bi-upload"></i> Upload File
+              </button>
+            </div>
+            
+            <!-- URL Input -->
+            <div id="bannerUrlSection">
+              <input type="text" id="newEventBanner" placeholder="https://example.com/banner.jpg">
+              <small class="text-muted">Enter an image URL</small>
+            </div>
+            
+            <!-- File Upload -->
+            <div id="bannerFileSection" style="display: none;">
+              <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('newEventBannerFile').click()" style="border: 2px dashed #E2E8F0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                <i class="bi bi-cloud-upload" style="font-size: 32px; color: #0CA6EF; margin-bottom: 8px;"></i>
+                <p style="margin: 0; color: #64748B;">Click to upload or drag and drop</p>
+                <p style="margin: 4px 0 0 0; font-size: 12px; color: #94A3B8;">PNG, JPG up to 5MB</p>
+                <input type="file" id="newEventBannerFile" accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
+              </div>
+              <div id="filePreview" style="margin-top: 12px; display: none;">
+                <img id="previewImage" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+                <button type="button" class="btn-secondary" onclick="removeFilePreview()" style="margin-top: 8px; font-size: 12px;">
+                  <i class="bi bi-x"></i> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Description (Optional)</label>
+            <textarea id="newEventDescription" rows="3" placeholder="Describe your event..."></textarea>
+          </div>
+          
+          <div class="modal-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+            <button type="button" class="btn-secondary" onclick="closeModal('createEventModal')">Cancel</button>
+            <button type="submit" class="btn-primary">Create Event</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Event Detail Modal -->
+  <div class="modal" id="eventDetailModal">
+    <div class="modal-overlay" onclick="closeModal('eventDetailModal')"></div>
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 id="modalEventTitle">Event Details</h3>
+        <button class="modal-close" onclick="closeModal('eventDetailModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="modalEventBody">
+        <!-- Event details will be injected by JS -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toastContainer"></div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="assets/js/admin-dashboard.js"></script>
+</body>
+</html>
