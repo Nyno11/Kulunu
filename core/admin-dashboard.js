@@ -11,40 +11,40 @@ const DataStore = {
     const events = localStorage.getItem('kulunu_events');
     return events ? JSON.parse(events) : this.getDefaultEvents();
   },
-  
+
   // Save events
   saveEvents(events) {
     localStorage.setItem('kulunu_events', JSON.stringify(events));
   },
-  
+
   // Get all tickets
   getTickets() {
     const tickets = localStorage.getItem('kulunu_tickets');
     return tickets ? JSON.parse(tickets) : this.getDefaultTickets();
   },
-  
+
   // Save tickets
   saveTickets(tickets) {
     localStorage.setItem('kulunu_tickets', JSON.stringify(tickets));
   },
-  
+
   // Get all attendees
   getAttendees() {
     const attendees = localStorage.getItem('kulunu_attendees');
     return attendees ? JSON.parse(attendees) : this.getDefaultAttendees();
   },
-  
+
   // Save attendees
   saveAttendees(attendees) {
     localStorage.setItem('kulunu_attendees', JSON.stringify(attendees));
   },
-  
+
   // Get activities
   getActivities() {
     const activities = localStorage.getItem('kulunu_activities');
     return activities ? JSON.parse(activities) : this.getDefaultActivities();
   },
-  
+
   // Save activity
   saveActivity(activity) {
     const activities = this.getActivities();
@@ -52,7 +52,7 @@ const DataStore = {
     if (activities.length > 50) activities.pop(); // Keep last 50
     localStorage.setItem('kulunu_activities', JSON.stringify(activities));
   },
-  
+
   // Default events data
   getDefaultEvents() {
     return [
@@ -118,7 +118,7 @@ const DataStore = {
       }
     ];
   },
-  
+
   // Default tickets data
   getDefaultTickets() {
     return [
@@ -133,13 +133,13 @@ const DataStore = {
       { id: 'TKT-009', eventId: 'EVT-004', name: 'Regular', type: 'paid', price: 5000, quantity: 700, sold: 700, eventTitle: 'Comedy Night Live' }
     ];
   },
-  
+
   // Default attendees data
   getDefaultAttendees() {
     const attendees = [];
     const names = ['Chidinma Okafor', 'Emeka Nwosu', 'Fatima Abdullahi', 'Tunde Bakare', 'Ngozi Adeleke', 'Ibrahim Musa', 'Blessing Eze', 'Chukwuemeka Obi', 'Aisha Mohammed', 'Femi Johnson', 'Kemi Williams', 'Yusuf Ibrahim', 'Chioma Okonkwo', 'Daniel Achebe', 'Funmi Lawal'];
     const emails = ['chidinma@email.com', 'emeka@email.com', 'fatima@email.com', 'tunde@email.com', 'ngozi@email.com', 'ibrahim@email.com', 'blessing@email.com', 'chukwuemeka@email.com', 'aisha@email.com', 'femi@email.com', 'kemi@email.com', 'yusuf@email.com', 'chioma@email.com', 'daniel@email.com', 'funmi@email.com'];
-    
+
     names.forEach((name, i) => {
       attendees.push({
         id: `ATT-${String(i + 1).padStart(3, '0')}`,
@@ -152,10 +152,10 @@ const DataStore = {
         status: i % 4 === 0 ? 'checked-in' : i % 3 === 0 ? 'pending' : 'confirmed'
       });
     });
-    
+
     return attendees;
   },
-  
+
   // Default activities data
   getDefaultActivities() {
     return [
@@ -166,7 +166,7 @@ const DataStore = {
       { type: 'sale', text: '<strong>Tunde Bakare</strong> purchased an Early Bird ticket for Virtual Business Summit', time: '1 day ago' }
     ];
   },
-  
+
   // Default notifications
   getDefaultNotifications() {
     return [
@@ -222,26 +222,26 @@ function initializeSidebar() {
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebarClose = document.getElementById('sidebarClose');
   const navItems = document.querySelectorAll('.nav-item');
-  
+
   // Toggle sidebar on mobile
   sidebarToggle?.addEventListener('click', () => {
     sidebar.classList.add('open');
   });
-  
+
   sidebarClose?.addEventListener('click', () => {
     sidebar.classList.remove('open');
   });
-  
+
   // Navigation
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       const section = item.dataset.section;
       switchSection(section);
-      
+
       // Update active state
       navItems.forEach(nav => nav.classList.remove('active'));
       item.classList.add('active');
-      
+
       // Close sidebar on mobile
       if (window.innerWidth <= 992) {
         sidebar.classList.remove('open');
@@ -256,12 +256,12 @@ function switchSection(sectionId) {
   sections.forEach(section => {
     section.classList.remove('active');
   });
-  
+
   const targetSection = document.getElementById(sectionId);
   if (targetSection) {
     targetSection.classList.add('active');
   }
-  
+
   // Update nav items
   document.querySelectorAll('.nav-item').forEach(item => {
     item.classList.remove('active');
@@ -269,7 +269,7 @@ function switchSection(sectionId) {
       item.classList.add('active');
     }
   });
-  
+
   // Re-render charts if analytics section
   if (sectionId === 'analytics') {
     setTimeout(() => initializeAnalyticsCharts(), 100);
@@ -284,32 +284,32 @@ function renderDashboard() {
   const tickets = DataStore.getTickets();
   const attendees = DataStore.getAttendees();
   const activities = DataStore.getActivities();
-  
+
   // Update stats
   document.getElementById('totalEvents').textContent = events.length;
   document.getElementById('ticketsSold').textContent = tickets.reduce((sum, t) => sum + t.sold, 0).toLocaleString();
   document.getElementById('totalRevenue').textContent = '₦' + tickets.reduce((sum, t) => sum + (t.price * t.sold), 0).toLocaleString();
   document.getElementById('totalAttendees').textContent = attendees.length.toLocaleString();
-  
+
   // Update badges
   document.getElementById('eventCount').textContent = events.length;
   document.getElementById('ticketCount').textContent = tickets.reduce((sum, t) => sum + t.sold, 0);
-  
+
   // Render events
   renderEvents(events);
-  
+
   // Render tickets
   renderTickets(tickets);
-  
+
   // Render attendees
   renderAttendees(attendees);
-  
+
   // Render activities
   renderActivities(activities);
-  
+
   // Render upcoming events
   renderUpcomingEvents(events.filter(e => e.status === 'upcoming' || e.status === 'live').slice(0, 4));
-  
+
   // Initialize charts
   initializeCharts();
 }
@@ -320,15 +320,15 @@ function renderDashboard() {
 function renderEvents(events) {
   const grid = document.getElementById('eventsGrid');
   const emptyState = document.getElementById('eventsEmpty');
-  
+
   if (events.length === 0) {
     grid.innerHTML = '';
     emptyState.classList.remove('d-none');
     return;
   }
-  
+
   emptyState.classList.add('d-none');
-  
+
   grid.innerHTML = events.map(event => `
     <div class="event-card" data-id="${event.id}">
       <img src="${event.banner || 'assets/img/trend1.jpg'}" alt="${event.title}" class="event-card-image" onerror="this.src='https://via.placeholder.com/400x200?text=Event'">
@@ -369,15 +369,15 @@ function renderEvents(events) {
 
 function initializeEventFilters() {
   const filterTabs = document.querySelectorAll('.filter-tab');
-  
+
   filterTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       filterTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      
+
       const filter = tab.dataset.filter;
       const events = DataStore.getEvents();
-      
+
       if (filter === 'all') {
         renderEvents(events);
       } else {
@@ -390,7 +390,7 @@ function initializeEventFilters() {
 function viewEvent(eventId) {
   const events = DataStore.getEvents();
   const event = events.find(e => e.id === eventId);
-  
+
   if (event) {
     const modal = document.getElementById('eventDetailModal');
     document.getElementById('modalEventTitle').textContent = event.title;
@@ -463,20 +463,20 @@ function viewEvent(eventId) {
 function editEvent(eventId) {
   const events = DataStore.getEvents();
   const event = events.find(e => e.id === eventId);
-  
+
   if (!event) {
     showToast('Event not found', 'error');
     return;
   }
-  
+
   // Open create event modal and populate with existing data
   openCreateEventModal();
-  
+
   // Set minimum date to today
   const dateInput = document.getElementById('newEventDate');
   const today = new Date().toISOString().split('T')[0];
   dateInput.setAttribute('min', today);
-  
+
   // Populate form fields
   document.getElementById('newEventTitle').value = event.title;
   document.getElementById('newEventDate').value = event.date;
@@ -484,7 +484,7 @@ function editEvent(eventId) {
   document.getElementById('newEventType').value = event.type;
   document.getElementById('newEventStatus').value = event.status;
   document.getElementById('newEventDescription').value = event.description || '';
-  
+
   // Set banner - if it's a URL (not base64), use it
   if (event.banner && !event.banner.startsWith('data:')) {
     document.getElementById('newEventBanner').value = event.banner;
@@ -493,11 +493,11 @@ function editEvent(eventId) {
     switchBannerTab('file');
     // Note: Can't pre-populate file upload, user would need to re-upload
   }
-  
+
   // Change modal title and button
   document.querySelector('#createEventModal .modal-header h3').textContent = 'Edit Event';
   document.querySelector('#createEventModal button[type="submit"]').textContent = 'Save Changes';
-  
+
   // Store the event ID for updating
   document.getElementById('createEventForm').dataset.editId = eventId;
 }
@@ -511,18 +511,18 @@ function closeModal(modalId) {
 // =========================
 function renderTickets(tickets) {
   const tbody = document.getElementById('ticketsTableBody');
-  
+
   // Update ticket stats
   const totalAvailable = tickets.reduce((sum, t) => sum + t.quantity, 0);
   const totalSold = tickets.reduce((sum, t) => sum + t.sold, 0);
   const totalRemaining = totalAvailable - totalSold;
   const conversionRate = totalAvailable > 0 ? ((totalSold / totalAvailable) * 100).toFixed(1) : 0;
-  
+
   document.getElementById('totalTicketsAvailable').textContent = totalAvailable.toLocaleString();
   document.getElementById('totalTicketsSoldStat').textContent = totalSold.toLocaleString();
   document.getElementById('totalTicketsRemaining').textContent = totalRemaining.toLocaleString();
   document.getElementById('conversionRate').textContent = conversionRate + '%';
-  
+
   tbody.innerHTML = tickets.map(ticket => `
     <tr>
       <td>
@@ -548,7 +548,7 @@ function renderTickets(tickets) {
       </td>
     </tr>
   `).join('');
-  
+
   // Populate event filter
   populateEventFilter('ticketEventFilter', tickets);
 }
@@ -557,20 +557,20 @@ function initializeTicketFilters() {
   const eventFilter = document.getElementById('ticketEventFilter');
   const typeFilter = document.getElementById('ticketTypeFilter');
   const searchInput = document.getElementById('ticketSearch');
-  
+
   const filterTickets = () => {
     let tickets = DataStore.getTickets();
     const eventVal = eventFilter.value;
     const typeVal = typeFilter.value;
     const searchVal = searchInput.value.toLowerCase();
-    
+
     if (eventVal) tickets = tickets.filter(t => t.eventId === eventVal);
     if (typeVal) tickets = tickets.filter(t => t.type === typeVal);
     if (searchVal) tickets = tickets.filter(t => t.name.toLowerCase().includes(searchVal) || t.eventTitle.toLowerCase().includes(searchVal));
-    
+
     renderTickets(tickets);
   };
-  
+
   eventFilter?.addEventListener('change', filterTickets);
   typeFilter?.addEventListener('change', filterTickets);
   searchInput?.addEventListener('input', filterTickets);
@@ -579,10 +579,10 @@ function initializeTicketFilters() {
 function populateEventFilter(selectId, tickets) {
   const select = document.getElementById(selectId);
   if (!select) return;
-  
+
   const events = DataStore.getEvents();
   const eventIds = [...new Set(tickets.map(t => t.eventId))];
-  
+
   select.innerHTML = '<option value="">All Events</option>';
   eventIds.forEach(id => {
     const event = events.find(e => e.id === id);
@@ -617,7 +617,7 @@ function renderAttendees(attendees, page = 1) {
   const start = (page - 1) * attendeesPerPage;
   const end = start + attendeesPerPage;
   const paginatedAttendees = attendees.slice(start, end);
-  
+
   tbody.innerHTML = paginatedAttendees.map(attendee => `
     <tr>
       <td>
@@ -642,15 +642,15 @@ function renderAttendees(attendees, page = 1) {
       </td>
     </tr>
   `).join('');
-  
+
   // Update pagination info
   document.getElementById('attendeeStart').textContent = totalAttendees > 0 ? start + 1 : 0;
   document.getElementById('attendeeEnd').textContent = Math.min(end, totalAttendees);
   document.getElementById('attendeeTotal').textContent = totalAttendees;
-  
+
   // Render pagination
   renderAttendeePagination(page, totalPages);
-  
+
   // Populate event filter
   populateEventFilter('attendeeEventFilter', attendees);
 }
@@ -659,13 +659,13 @@ function renderAttendeePagination(currentPage, totalPages) {
   const pagesContainer = document.getElementById('attendeePages');
   const prevBtn = document.getElementById('attendeePrev');
   const nextBtn = document.getElementById('attendeeNext');
-  
+
   prevBtn.disabled = currentPage === 1;
   nextBtn.disabled = currentPage === totalPages || totalPages === 0;
-  
+
   prevBtn.onclick = () => renderAttendees(getFilteredAttendees(), currentPage - 1);
   nextBtn.onclick = () => renderAttendees(getFilteredAttendees(), currentPage + 1);
-  
+
   let pagesHTML = '';
   for (let i = 1; i <= Math.min(totalPages, 5); i++) {
     pagesHTML += `<button class="page-num ${i === currentPage ? 'active' : ''}" onclick="renderAttendees(getFilteredAttendees(), ${i})">${i}</button>`;
@@ -678,11 +678,11 @@ function getFilteredAttendees() {
   const eventFilter = document.getElementById('attendeeEventFilter')?.value;
   const statusFilter = document.getElementById('attendeeStatusFilter')?.value;
   const searchVal = document.getElementById('attendeeSearch')?.value.toLowerCase();
-  
+
   if (eventFilter) attendees = attendees.filter(a => a.eventId === eventFilter);
   if (statusFilter) attendees = attendees.filter(a => a.status === statusFilter);
   if (searchVal) attendees = attendees.filter(a => a.name.toLowerCase().includes(searchVal) || a.email.toLowerCase().includes(searchVal));
-  
+
   return attendees;
 }
 
@@ -690,12 +690,12 @@ function initializeAttendeeFilters() {
   const eventFilter = document.getElementById('attendeeEventFilter');
   const statusFilter = document.getElementById('attendeeStatusFilter');
   const searchInput = document.getElementById('attendeeSearch');
-  
+
   const filterAttendees = () => {
     currentAttendeePage = 1;
     renderAttendees(getFilteredAttendees(), 1);
   };
-  
+
   eventFilter?.addEventListener('change', filterAttendees);
   statusFilter?.addEventListener('change', filterAttendees);
   searchInput?.addEventListener('input', filterAttendees);
@@ -708,13 +708,13 @@ function viewAttendee(attendeeId) {
 function markCheckedIn(attendeeId) {
   const attendees = DataStore.getAttendees();
   const attendee = attendees.find(a => a.id === attendeeId);
-  
+
   if (attendee) {
     attendee.status = 'checked-in';
     DataStore.saveAttendees(attendees);
     renderAttendees(getFilteredAttendees(), currentAttendeePage);
     showToast(`${attendee.name} marked as checked in`, 'success');
-    
+
     DataStore.saveActivity({
       type: 'attendee',
       text: `<strong>${attendee.name}</strong> checked in`,
@@ -732,7 +732,7 @@ function exportAttendees() {
 // =========================
 function renderActivities(activities) {
   const list = document.getElementById('activityList');
-  
+
   list.innerHTML = activities.slice(0, 5).map(activity => `
     <div class="activity-item">
       <div class="activity-icon ${activity.type}">
@@ -758,7 +758,7 @@ function getActivityIcon(type) {
 
 function renderUpcomingEvents(events) {
   const list = document.getElementById('upcomingEventsList');
-  
+
   list.innerHTML = events.map(event => `
     <div class="event-item" onclick="viewEvent('${event.id}')">
       <img src="${event.banner || 'assets/img/trend1.jpg'}" alt="${event.title}" class="event-item-image" onerror="this.src='https://via.placeholder.com/64x64?text=E'">
@@ -788,10 +788,10 @@ let ticketTypeChart = null;
 function initializeCharts() {
   const revenueCtx = document.getElementById('revenueChart');
   const ticketsCtx = document.getElementById('ticketsChart');
-  
+
   if (revenueCtx) {
     if (revenueChart) revenueChart.destroy();
-    
+
     revenueChart = new Chart(revenueCtx, {
       type: 'line',
       data: {
@@ -822,10 +822,10 @@ function initializeCharts() {
       }
     });
   }
-  
+
   if (ticketsCtx) {
     if (ticketsChart) ticketsChart.destroy();
-    
+
     ticketsChart = new Chart(ticketsCtx, {
       type: 'bar',
       data: {
@@ -854,10 +854,10 @@ function initializeCharts() {
 function initializeAnalyticsCharts() {
   const salesCtx = document.getElementById('salesPerformanceChart');
   const typeCtx = document.getElementById('ticketTypeChart');
-  
+
   if (salesCtx) {
     if (salesPerformanceChart) salesPerformanceChart.destroy();
-    
+
     salesPerformanceChart = new Chart(salesCtx, {
       type: 'line',
       data: {
@@ -896,15 +896,15 @@ function initializeAnalyticsCharts() {
       }
     });
   }
-  
+
   if (typeCtx) {
     if (ticketTypeChart) ticketTypeChart.destroy();
-    
+
     const tickets = DataStore.getTickets();
     const vipTickets = tickets.filter(t => t.name.toLowerCase().includes('vip')).reduce((sum, t) => sum + t.sold, 0);
     const regularTickets = tickets.filter(t => t.name.toLowerCase().includes('regular') || t.name.toLowerCase().includes('standard')).reduce((sum, t) => sum + t.sold, 0);
     const freeTickets = tickets.filter(t => t.type === 'free').reduce((sum, t) => sum + t.sold, 0);
-    
+
     ticketTypeChart = new Chart(typeCtx, {
       type: 'doughnut',
       data: {
@@ -924,7 +924,7 @@ function initializeAnalyticsCharts() {
       }
     });
   }
-  
+
   // Render top events
   renderTopEvents();
 }
@@ -933,7 +933,7 @@ function renderTopEvents() {
   const events = DataStore.getEvents();
   const sortedEvents = [...events].sort((a, b) => b.revenue - a.revenue).slice(0, 5);
   const list = document.getElementById('topEventsList');
-  
+
   list.innerHTML = sortedEvents.map((event, index) => `
     <div class="top-event-item">
       <div class="top-event-rank">${index + 1}</div>
@@ -955,20 +955,20 @@ function renderTopEvents() {
 function initializeNotifications() {
   const notificationBtn = document.getElementById('notificationBtn');
   const notificationPanel = document.getElementById('notificationPanel');
-  
+
   notificationBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     notificationPanel.classList.toggle('open');
     renderNotifications();
   });
-  
+
   // Close panel when clicking outside
   document.addEventListener('click', (e) => {
     if (!notificationPanel.contains(e.target) && !notificationBtn.contains(e.target)) {
       notificationPanel.classList.remove('open');
     }
   });
-  
+
   // Mark all as read
   document.querySelector('.mark-all-read')?.addEventListener('click', () => {
     const notifications = JSON.parse(localStorage.getItem('kulunu_notifications') || '[]');
@@ -982,7 +982,7 @@ function initializeNotifications() {
 function renderNotifications() {
   const notifications = JSON.parse(localStorage.getItem('kulunu_notifications') || '[]');
   const list = document.getElementById('notificationList');
-  
+
   list.innerHTML = notifications.map(notification => `
     <div class="notification-item-panel ${notification.unread ? 'unread' : ''}">
       <div class="notification-icon-panel ${notification.type}">
@@ -1020,19 +1020,19 @@ function updateNotificationBadge() {
 // =========================
 function initializeSearch() {
   const searchInput = document.getElementById('globalSearch');
-  
+
   searchInput?.addEventListener('input', (e) => {
     const query = e.target.value.toLowerCase();
     if (query.length < 2) return;
-    
+
     const events = DataStore.getEvents();
     const tickets = DataStore.getTickets();
     const attendees = DataStore.getAttendees();
-    
+
     const matchingEvents = events.filter(ev => ev.title.toLowerCase().includes(query));
     const matchingTickets = tickets.filter(t => t.name.toLowerCase().includes(query) || t.eventTitle.toLowerCase().includes(query));
     const matchingAttendees = attendees.filter(a => a.name.toLowerCase().includes(query) || a.email.toLowerCase().includes(query));
-    
+
     // For now, just show a toast with results count
     const total = matchingEvents.length + matchingTickets.length + matchingAttendees.length;
     if (total > 0) {
@@ -1046,27 +1046,27 @@ function initializeSearch() {
 // =========================
 function initializeSettings() {
   const profileForm = document.getElementById('profileForm');
-  
+
   // Load saved settings
   const savedSettings = JSON.parse(localStorage.getItem('kulunu_settings') || '{}');
   if (savedSettings.name) document.getElementById('settingsName').value = savedSettings.name;
   if (savedSettings.email) document.getElementById('settingsEmail').value = savedSettings.email;
   if (savedSettings.phone) document.getElementById('settingsPhone').value = savedSettings.phone;
   if (savedSettings.org) document.getElementById('settingsOrg').value = savedSettings.org;
-  
+
   profileForm?.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const settings = {
       name: document.getElementById('settingsName').value,
       email: document.getElementById('settingsEmail').value,
       phone: document.getElementById('settingsPhone').value,
       org: document.getElementById('settingsOrg').value
     };
-    
+
     localStorage.setItem('kulunu_settings', JSON.stringify(settings));
     showToast('Settings saved successfully!', 'success');
-    
+
     // Update admin name display
     if (settings.name) {
       document.getElementById('adminName').textContent = settings.name;
@@ -1096,9 +1096,9 @@ function showToast(message, type = 'info') {
       <i class="bi bi-x"></i>
     </button>
   `;
-  
+
   container.appendChild(toast);
-  
+
   // Auto remove after 4 seconds
   setTimeout(() => {
     toast.classList.add('hiding');
@@ -1120,12 +1120,12 @@ let uploadedBannerData = null; // Store base64 data from file upload
 function openCreateEventModal() {
   const modal = document.getElementById('createEventModal');
   modal.classList.add('open');
-  
+
   // Set minimum date to today
   const dateInput = document.getElementById('newEventDate');
   const today = new Date().toISOString().split('T')[0];
   dateInput.setAttribute('min', today);
-  
+
   // Reset banner upload state
   uploadedBannerData = null;
   document.getElementById('filePreview').style.display = 'none';
@@ -1140,7 +1140,7 @@ function switchBannerTab(tab) {
   const fileSection = document.getElementById('bannerFileSection');
   const urlBtn = document.getElementById('urlTabBtn');
   const fileBtn = document.getElementById('fileTabBtn');
-  
+
   if (tab === 'url') {
     urlSection.style.display = 'block';
     fileSection.style.display = 'none';
@@ -1158,32 +1158,32 @@ function switchBannerTab(tab) {
 function handleFileUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  
+
   // Validate file size (5MB max)
   if (file.size > 5 * 1024 * 1024) {
     showToast('File size must be less than 5MB', 'error');
     event.target.value = '';
     return;
   }
-  
+
   // Validate file type
   if (!file.type.startsWith('image/')) {
     showToast('Please select a valid image file', 'error');
     event.target.value = '';
     return;
   }
-  
+
   // Read file and convert to base64
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     uploadedBannerData = e.target.result;
-    
+
     // Show preview
     const previewImage = document.getElementById('previewImage');
     const previewContainer = document.getElementById('filePreview');
     previewImage.src = uploadedBannerData;
     previewContainer.style.display = 'block';
-    
+
     // Add hover effect to upload area
     const uploadArea = document.getElementById('fileUploadArea');
     uploadArea.style.borderColor = '#10B981';
@@ -1197,121 +1197,134 @@ function removeFilePreview() {
   uploadedBannerData = null;
   document.getElementById('filePreview').style.display = 'none';
   document.getElementById('newEventBannerFile').value = '';
-  
+
   const uploadArea = document.getElementById('fileUploadArea');
   uploadArea.style.borderColor = '#E2E8F0';
   uploadArea.style.background = 'transparent';
 }
 
 // Handle create/edit event form submission
+const BASE_URL = 'http://192.168.153.21:8080';
+
 document.addEventListener('DOMContentLoaded', () => {
   const createEventForm = document.getElementById('createEventForm');
-  
-  createEventForm?.addEventListener('submit', (e) => {
+
+  createEventForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Check if we're editing an existing event
+
     const editId = createEventForm.dataset.editId;
     const isEditing = !!editId;
-    
-    // Get form values
+
     const title = document.getElementById('newEventTitle').value.trim();
     const date = document.getElementById('newEventDate').value;
     const venue = document.getElementById('newEventVenue').value.trim();
     const type = document.getElementById('newEventType').value;
     const status = document.getElementById('newEventStatus').value;
     const description = document.getElementById('newEventDescription').value.trim();
-    
-    // Determine banner source - use uploaded file if available, otherwise use URL
+
     let banner;
     if (uploadedBannerData) {
-      banner = uploadedBannerData; // Use base64 data from file upload
+      banner = uploadedBannerData;
     } else {
       banner = document.getElementById('newEventBanner').value.trim();
       if (!banner && isEditing) {
-        // Keep existing banner if editing and no new banner provided
-        const events = DataStore.getEvents();
-        const existingEvent = events.find(ev => ev.id === editId);
+        const existingEvent = DataStore.getEvents().find(ev => ev.id === editId);
         banner = existingEvent ? existingEvent.banner : 'assets/img/trend1.jpg';
       } else {
         banner = banner || 'assets/img/trend1.jpg';
       }
     }
-    
-    const events = DataStore.getEvents();
-    
+
     if (isEditing) {
-      // Update existing event
+      const events = DataStore.getEvents();
       const eventIndex = events.findIndex(ev => ev.id === editId);
       if (eventIndex !== -1) {
-        events[eventIndex] = {
-          ...events[eventIndex], // Keep existing properties like ticketsSold, revenue
-          title: title,
-          date: date,
-          venue: venue,
-          type: type,
-          status: status,
-          banner: banner,
-          description: description
-        };
+        events[eventIndex] = { ...events[eventIndex], title, date, venue, type, status, banner, description };
         DataStore.saveEvents(events);
-        
-        // Add activity
-        DataStore.saveActivity({
-          type: 'event',
-          text: `<strong>${title}</strong> has been updated`,
-          time: 'Just now'
-        });
-        
+        DataStore.saveActivity({ type: 'event', text: `<strong>${title}</strong> has been updated`, time: 'Just now' });
         showToast('Event updated successfully!', 'success');
       }
-    } else {
-      // Create new event
+      resetCreateEventModal(createEventForm);
+      closeModal('createEventModal');
+      renderDashboard();
+      switchSection('events');
+      return;
+    }
+
+    // ── Create new event via API ──────────────────────────────────────────────
+    const session = window._adminSession || {};
+    if (!session.token) {
+      showToast('You must be logged in to create an event.', 'error');
+      return;
+    }
+
+    const submitBtn = createEventForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating...';
+
+    try {
+      const res = await fetch(`${BASE_URL}/create-event`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, date, venue, type, banner_url: banner }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        showToast(data.message || 'Failed to create event.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+        return;
+      }
+
+      const apiEvent = data.data || {};
       const newEvent = {
-        id: 'EVT-' + Date.now(),
-        title: title,
-        date: date,
-        venue: venue,
-        type: type,
-        status: status,
-        banner: banner,
+        id: String(apiEvent.id || 'EVT-' + Date.now()),
+        title: apiEvent.title || title,
+        date: apiEvent.date || date,
+        venue: apiEvent.venue || venue,
+        type: apiEvent.type || type,
+        status: apiEvent.status || status,
+        banner: apiEvent.banner_url || banner,
         ticketsSold: 0,
         revenue: 0,
-        description: description,
-        createdAt: new Date().toISOString().split('T')[0]
+        description,
+        createdAt: apiEvent.created_at ? apiEvent.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
       };
-      
+
+      const events = DataStore.getEvents();
       events.push(newEvent);
       DataStore.saveEvents(events);
-      
-      // Add activity
-      DataStore.saveActivity({
-        type: 'event',
-        text: `<strong>${title}</strong> has been created`,
-        time: 'Just now'
-      });
-      
-      showToast('Event created successfully! You can now add tickets.', 'success');
+      DataStore.saveActivity({ type: 'event', text: `<strong>${title}</strong> has been created`, time: 'Just now' });
+
+      showToast('Event created successfully!', 'success');
+      resetCreateEventModal(createEventForm);
+      closeModal('createEventModal');
+      renderDashboard();
+      switchSection('events');
+
+    } catch (err) {
+      console.error(err);
+      showToast('Server error. Please try again.', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
     }
-    
-    // Close modal
-    closeModal('createEventModal');
-    
-    // Reset form
-    createEventForm.reset();
-    delete createEventForm.dataset.editId;
-    
-    // Reset modal title and button
-    document.querySelector('#createEventModal .modal-header h3').textContent = 'Create New Event';
-    document.querySelector('#createEventModal button[type="submit"]').textContent = 'Create Event';
-    
-    // Re-render dashboard
-    renderDashboard();
-    
-    // Switch to events section to see the event
-    switchSection('events');
   });
 });
+
+function resetCreateEventModal(form) {
+  form.reset();
+  delete form.dataset.editId;
+  uploadedBannerData = null;
+  document.getElementById('filePreview').style.display = 'none';
+  document.querySelector('#createEventModal .modal-header h3').textContent = 'Create New Event';
+  document.querySelector('#createEventModal button[type="submit"]').textContent = 'Create Event';
+}
 
 // Make functions globally available
 window.switchSection = switchSection;
@@ -1329,3 +1342,4 @@ window.viewAttendee = viewAttendee;
 window.markCheckedIn = markCheckedIn;
 window.exportAttendees = exportAttendees;
 window.logout = logout;
+window.resetCreateEventModal = resetCreateEventModal;

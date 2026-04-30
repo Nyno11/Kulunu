@@ -844,67 +844,146 @@
   </div>
 </div>
 
-<!-- MODAL -->
-<div id="kycModal" class="modal">
+<!-- KYC MODAL -->
+<div id="kycModal" class="overlay" style="display:none;">
+  <div class="modal" style="display:block;max-width:560px;width:90%;max-height:88vh;overflow-y:auto;border-radius:18px;padding:28px 24px;position:relative;background:#fff;">
 
-  <div class="modal-content">
+    <div class="close-x" onclick="closeKYC()" style="position:absolute;top:16px;right:18px;font-size:22px;cursor:pointer;color:#6b7280;">&times;</div>
 
-    <span class="close" onclick="closeKYC()">&times;</span>
+    <!-- Loading -->
+    <div id="kycLoading" style="text-align:center;padding:48px 0;">
+      <div style="width:36px;height:36px;border:4px solid #e0e7ff;border-top-color:#0CA6EF;border-radius:50%;animation:kycSpin 0.8s linear infinite;margin:0 auto 14px;"></div>
+      <p style="color:#667085;font-size:14px;">Checking your status…</p>
+    </div>
 
-    <div class="kyc-container">
-      <h2>Organizer Verification</h2>
-      <p style="font-size:14px;color:#666;">
-        Complete verification to unlock event creation
-      </p>
+    <!-- Form -->
+    <div id="kycFormState" style="display:none;">
+      <h4 style="font-size:18px;font-weight:700;margin-bottom:4px;">Organiser Verification</h4>
+      <p style="font-size:13px;color:#667085;margin-bottom:18px;">Complete to unlock event creation on Kulunu.</p>
 
-      <form id="kycForm">
+      <div id="kycRejectionBox" style="display:none;background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:12px 14px;font-size:13px;color:#dc2626;margin-bottom:16px;"></div>
 
-        <!-- PERSONAL -->
-        <div class="section-title">Personal Information</div>
-        <input type="text" id="fullname" placeholder="Full Name" required>
-        <input type="email" id="email" placeholder="Email Address" required>
-        <input type="tel" id="phone" placeholder="Phone Number" required>
+      <form id="kycForm" novalidate>
 
-        <!-- IDENTITY -->
-        <div class="section-title">Identity Verification</div>
-        <select id="idType">
-          <option value="nin">National ID (NIN)</option>
-          <option value="passport">International Passport</option>
-          <option value="drivers">Driver’s License</option>
-        </select>
+        <p style="font-size:11px;font-weight:700;color:#0CA6EF;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 10px;border-bottom:1px solid #e5e7eb;padding-bottom:5px;">Organisation</p>
 
-        <div class="upload" onclick="idFile.click()">
-          Upload ID Document
-          <input type="file" id="idFile" hidden>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Display / Organisation Name</label>
+          <input type="text" id="kyc_org_name" placeholder="e.g. Kulunu Events Ltd" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
         </div>
 
-        <div class="preview" id="idPreview"></div>
-
-        <!-- BUSINESS -->
-        <div class="section-title">Business name</div>
-        <input type="text" id="orgName" placeholder="Organization / Brand Name">
-
-        <div class="section-title">Registration number</div>
-        <input type="text" id="regNumber" placeholder="Registration number">
-
-        <div class="upload" onclick="bizFile.click()">
-          Upload Business Certificate
-          <input type="file" id="bizFile" hidden>
+        <div style="display:flex;gap:12px;margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Organiser Type</label>
+            <select id="kyc_org_type" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+              <option value="">Select type</option>
+              <option value="individual">Individual</option>
+              <option value="company">Company / Business</option>
+              <option value="ngo">NGO / Non-profit</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Phone Number</label>
+            <input type="tel" id="kyc_phone" placeholder="+234 800 000 0000" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
         </div>
 
-        <div class="preview" id="bizPreview"></div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Street Address</label>
+          <input type="text" id="kyc_address" placeholder="Street address" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+        </div>
 
-        <button type="submit" onclick="window.location.href='admin-dashboard.html'">Submit Verification</button>
+        <div style="display:flex;gap:12px;margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">City</label>
+            <input type="text" id="kyc_city" placeholder="City" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">State</label>
+            <input type="text" id="kyc_state" placeholder="State" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
+        </div>
 
+        <p style="font-size:11px;font-weight:700;color:#0CA6EF;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 10px;border-bottom:1px solid #e5e7eb;padding-bottom:5px;">Online Presence <span style="font-weight:400;text-transform:none;color:#9ca3af;">(optional)</span></p>
+
+        <div style="display:flex;gap:12px;margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Instagram</label>
+            <input type="text" id="kyc_instagram" placeholder="@handle" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Twitter / X</label>
+            <input type="text" id="kyc_twitter" placeholder="@handle" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
+        </div>
+
+        <p style="font-size:11px;font-weight:700;color:#0CA6EF;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 10px;border-bottom:1px solid #e5e7eb;padding-bottom:5px;">Identification</p>
+
+        <div style="display:flex;gap:12px;margin-bottom:12px;">
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">ID Type</label>
+            <select id="kyc_id_type" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+              <option value="">Select ID</option>
+              <option value="national_id">National ID Card</option>
+              <option value="passport">Int’l Passport</option>
+              <option value="drivers_license">Driver’s License</option>
+              <option value="bvn">BVN</option>
+              <option value="cac">CAC Number</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">ID Number</label>
+            <input type="text" id="kyc_id_number" placeholder="Enter ID number" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid #d1d5db;font-size:13px;">
+          </div>
+        </div>
+
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Upload ID Document</label>
+          <div id="kycDocArea" onclick="kycPickDoc()" style="border:2px dashed #d1d5db;border-radius:10px;padding:14px;text-align:center;cursor:pointer;font-size:13px;color:#6b7280;">
+            <i class="bi bi-cloud-upload" style="font-size:20px;display:block;margin-bottom:4px;"></i>
+            <span id="kycDocLabel">Click to upload photo of your ID</span>
+            <input type="file" id="kyc_id_document" accept="image/*" hidden>
+          </div>
+        </div>
+
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-bottom:14px;cursor:pointer;">
+          <input type="checkbox" id="kyc_terms" style="margin-top:2px;width:16px;height:16px;min-width:16px;">
+          I confirm all information is accurate and agree to Kulunu’s Terms &amp; Conditions.
+        </label>
+
+        <div id="kycFormError" style="display:none;background:#fff0f0;border:1px solid #fca5a5;border-radius:10px;padding:11px 14px;font-size:13px;color:#dc2626;margin-bottom:12px;"></div>
+
+        <button type="submit" id="kycSubmitBtn" class="btn" style="width:100%;background:#0CA6EF;color:#fff;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;">Submit Application</button>
       </form>
+    </div>
 
-      <div class="status success" id="successMsg">
-        ✅ Verification submitted. Review takes 24–48 hours.
-      </div>
+    <!-- Pending -->
+    <div id="kycPendingState" style="display:none;text-align:center;padding:32px 16px;">
+      <i class="bi bi-hourglass-split" style="font-size:48px;color:#b45309;display:block;margin-bottom:12px;"></i>
+      <span style="display:inline-block;background:#fff7e0;color:#b45309;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:14px;">Under Review</span>
+      <h4 style="font-size:17px;font-weight:700;margin-bottom:6px;">Application Submitted</h4>
+      <p style="font-size:13px;color:#667085;">Your verification is being reviewed.<br>This usually takes <strong>24–48 hours</strong>.</p>
+      <p id="kycPendingDate" style="font-size:12px;color:#9ca3af;margin-top:16px;"></p>
+      <button class="btn" onclick="closeKYC()" style="margin-top:20px;background:#f3f4f6;color:#374151;border:none;border-radius:12px;padding:12px 28px;font-weight:600;cursor:pointer;">Close</button>
+      <button class="btn" onclick="window.location.href='admin-dashboard.html'" style="margin-top:10px;width:100%;background:#0CA6EF;color:#fff;border:none;border-radius:12px;padding:12px 28px;font-weight:600;cursor:pointer;">Go to Dashboard</button>
+    </div>
+
+    <!-- Approved -->
+    <div id="kycApprovedState" style="display:none;text-align:center;padding:24px 16px;">
+      <i class="bi bi-patch-check-fill" style="font-size:48px;color:#15803d;display:block;margin-bottom:10px;"></i>
+      <span style="display:inline-block;background:#e6faf0;color:#15803d;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:12px;">Verified Organiser</span>
+      <h4 id="kycApprovedName" style="font-size:17px;font-weight:700;margin-bottom:6px;"></h4>
+      <p style="font-size:13px;color:#667085;margin-bottom:20px;">Your account is verified. Start creating events.</p>
+      <button class="btn" onclick="kycGoCreate()" style="width:100%;background:#0CA6EF;color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">
+        <i class="bi bi-plus-circle"></i> Create Event
+      </button>
     </div>
 
   </div>
 </div>
+<style>
+  @keyframes kycSpin { to { transform: rotate(360deg); } }
+</style>
 
 
 <!-- DOCK NAVIGATION -->
@@ -1069,6 +1148,8 @@
     window.location.href = 'index.html';
   }
 
+
+
   function viewEvent(id, title, desc, img) {
     localStorage.setItem('viewEventData', JSON.stringify({ id: id, title: title, desc: desc, img: img }));
     window.location.href = 'viewevent.html';
@@ -1101,23 +1182,29 @@
 
 
   function openKYC() {
-    document.getElementById("kycModal").style.display = "block";
+    document.getElementById('kycModal').style.display = 'flex';
+    if (window._kycCheckStatus) window._kycCheckStatus();
   }
 
   function closeKYC() {
-    document.getElementById("kycModal").style.display = "none";
+    document.getElementById('kycModal').style.display = 'none';
   }
 
-  // Close when clicking outside
-  window.onclick = function (e) {
-    const modal = document.getElementById("kycModal");
-    if (e.target === modal) {
-      modal.style.display = "none";
-    }
-  };
+  function kycPickDoc() {
+    document.getElementById('kyc_id_document').click();
+  }
+
+  function kycGoCreate() {
+    closeKYC();
+    goTo('Create-event.html');
+  }
+
+  document.getElementById('kycModal').addEventListener('click', function (e) {
+    if (e.target === this) closeKYC();
+  });
 </script>
 
-
+<script src="./core/event.js"></script>
 </body>
 
 </html>

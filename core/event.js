@@ -1,5 +1,6 @@
 (function () {
-  const BASE_URL = 'https://api.kulunu.app';
+  // const BASE_URL = 'https://api.kulunu.app';
+  const BASE_URL = 'http://192.168.153.21:8080';
 
   // Sync header with localStorage session
   const session = JSON.parse(localStorage.getItem('user_session') || 'null');
@@ -87,4 +88,193 @@
       window.location.href = 'Event.html';
     }
   });
+})();
+
+// ─── ORGANISER VERIFICATION (kycModal in Ticket.html) ────────────────────────
+
+(function () {
+  // const BASE_URL = 'https://api.kulunu.app';
+  const BASE_URL = 'http://192.168.153.21:8080';
+
+  // Only activate on pages that have the KYC modal
+  if (!document.getElementById('kycForm')) return;
+
+  const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+
+  function showState(id) {
+    ['kycLoading', 'kycFormState', 'kycPendingState', 'kycApprovedState'].forEach(function (sid) {
+      var el = document.getElementById(sid);
+      if (el) el.style.display = 'none';
+    });
+    var target = document.getElementById(id);
+    if (target) target.style.display = id === 'kycLoading' ? 'block' : 'block';
+  }
+
+  // ── Status check (called by openKYC in Ticket.html) ──────────────────────
+  async function checkStatus() {
+    showState('kycLoading');
+
+    if (!session || !session.token) {
+      showState('kycFormState');
+      return;
+    }
+
+    try {
+      const res = await fetch(BASE_URL + '/organiser/status', {
+        headers: { 'Authorization': 'Bearer ' + session.token }
+      });
+      const data = await res.json();
+
+      if (!data.success || !data.data) { showState('kycFormState'); return; }
+
+      const s = data.data;
+
+      if (s.status === 'approved') {
+        var nameEl = document.getElementById('kycApprovedName');
+        if (nameEl) nameEl.textContent = s.org_name || '';
+        showState('kycApprovedState');
+
+      } else if (s.status === 'pending') {
+        var dateEl = document.getElementById('kycPendingDate');
+        if (dateEl && s.submitted_at) {
+          dateEl.textContent = 'Submitted on ' + new Date(s.submitted_at).toLocaleDateString('en-NG', { dateStyle: 'long' });
+        }
+        showState('kycPendingState');
+
+      } else if (s.status === 'rejected') {
+        var box = document.getElementById('kycRejectionBox');
+        if (box) {
+          box.textContent = 'Previous application rejected: ' + (s.rejection_reason || 'No reason given.') + ' Please correct and resubmit.';
+          box.style.display = 'block';
+        }
+        showState('kycFormState');
+
+      } else {
+        showState('kycFormState');
+      }
+
+    } catch (err) {
+      console.error(err);
+      showState('kycFormState');
+    }
+  }
+
+  // Expose to Ticket.html's openKYC()
+  window._kycCheckStatus = checkStatus;
+
+  // ── ID document upload label ──────────────────────────────────────────────
+  var docInput = document.getElementById('kyc_id_document');
+  if (docInput) {
+    docInput.addEventListener('change', function () {
+      var file = docInput.files[0];
+      if (!file) return;
+      var label = document.getElementById('kycDocLabel');
+      var area = document.getElementById('kycDocArea');
+      if (label) label.textContent = file.name;
+      if (area) area.style.borderColor = '#0CA6EF';
+    });
+  }
+
+  // ── Form submission ───────────────────────────────────────────────────────
+  var form = document.getElementById('kycForm');
+  var submitBtn = document.getElementById('kycSubmitBtn');
+  var errorBox = document.getElementById('kycFormError');
+
+  function showError(msg) {
+    if (!errorBox) return;
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+  }
+
+  function hideError() {
+    if (errorBox) errorBox.style.display = 'none';
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    hideError();
+
+    if (!session || !session.token) {
+      showError('You must be logged in to submit a verification application.');
+      return;
+    }
+
+    if (!document.getElementById('kyc_terms').checked) {
+      showError('Please agree to the Terms & Conditions before submitting.');
+      return;
+    }
+
+    var payload = {
+      org_name: document.getElementById('kyc_org_name').value.trim(),
+      org_type: document.getElementById('kyc_org_type').value,
+      phone: document.getElementById('kyc_phone').value.trim(),
+      address: document.getElementById('kyc_address').value.trim(),
+      city: document.getElementById('kyc_city').value.trim(),
+      state: document.getElementById('kyc_state').value.trim(),
+      website: document.getElementById('kyc_instagram') ? document.getElementById('kyc_instagram').value.trim() || null : null,
+      social_instagram: document.getElementById('kyc_instagram') ? document.getElementById('kyc_instagram').value.trim() || null : null,
+      social_twitter: document.getElementById('kyc_twitter') ? document.getElementById('kyc_twitter').value.trim() || null : null,
+      id_type: document.getElementById('kyc_id_type').value,
+      id_number: document.getElementById('kyc_id_number').value.trim(),
+      id_document_url: null,
+    };
+
+    var required = {
+      'Organisation Name': payload.org_name,
+      'Organiser Type': payload.org_type,
+      'Phone Number': payload.phone,
+      'Address': payload.address,
+      'City': payload.city,
+      'State': payload.state,
+      'ID Type': payload.id_type,
+      'ID Number': payload.id_number
+    };
+    for (var label in required) {
+      if (!required[label]) { showError(label + ' is required.'); return; }
+    }
+
+    // Read ID document as base64 if provided
+    var docFile = docInput ? docInput.files[0] : null;
+    if (docFile) {
+      payload.id_document_url = await new Promise(function (resolve) {
+        var reader = new FileReader();
+        reader.onload = function () { resolve(reader.result); };
+        reader.readAsDataURL(docFile);
+      });
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+      const res = await fetch(BASE_URL + '/organiser/apply', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + session.token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        showError(data.message || 'Submission failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Application';
+        return;
+      }
+
+      var dateEl = document.getElementById('kycPendingDate');
+      if (dateEl) dateEl.textContent = 'Submitted on ' + new Date().toLocaleDateString('en-NG', { dateStyle: 'long' });
+      showState('kycPendingState');
+
+    } catch (err) {
+      console.error(err);
+      showError('Server error. Please check your connection and try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Application';
+    }
+  });
+
 })();

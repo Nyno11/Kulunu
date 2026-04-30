@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard - Kulunu Events</title>
-  
+
   <!-- Favicons -->
   <link href="assets/img/ku.png" rel="icon">
   <link href="assets/img/ku.png" rel="apple-touch-icon">
-  
+
   <!-- Bootstrap + Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <!-- Main CSS File -->
   <link href="assets/css/admin-dashboard.css" rel="stylesheet">
 </head>
+<script>
+  (function () {
+    var session = null;
+    try { session = JSON.parse(localStorage.getItem('user_session')); } catch (e) { }
+    if (!session || !session.token) { window.location.replace('index.html'); }
+    window._adminSession = session || {};
+  })();
+</script>
+
 <body>
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -29,17 +40,17 @@
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
-    
+
     <div class="sidebar-user">
       <div class="user-avatar">
         <i class="bi bi-person-circle"></i>
       </div>
       <div class="user-info">
-        <span class="user-name" id="adminName">Admin User</span>
-        <span class="user-role">Event Organizer</span>
+        <span class="user-name" id="adminName"></span>
+        <span class="user-role" id="adminEmail"></span>
       </div>
     </div>
-    
+
     <nav class="sidebar-nav">
       <ul class="nav-list">
         <li class="nav-item active" data-section="overview">
@@ -70,7 +81,7 @@
         </li>
       </ul>
     </nav>
-    
+
     <div class="sidebar-footer">
       <button class="btn-logout" onclick="window.location.href='Ticket.html'">
         <i class="bi bi-box-arrow-left"></i>
@@ -78,7 +89,7 @@
       </button>
     </div>
   </aside>
-  
+
   <!-- Main Content -->
   <main class="main-content">
     <!-- Top Header -->
@@ -86,12 +97,12 @@
       <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
         <i class="bi bi-list"></i>
       </button>
-      
+
       <div class="header-search">
         <i class="bi bi-search"></i>
         <input type="text" placeholder="Search events, tickets, attendees..." id="globalSearch">
       </div>
-      
+
       <div class="header-actions">
         <button class="header-btn" id="notificationBtn">
           <i class="bi bi-bell"></i>
@@ -103,17 +114,17 @@
         </button>
       </div>
     </header>
-    
+
     <!-- Dashboard Content -->
     <div class="dashboard-content">
-      
+
       <!-- Overview Section -->
       <section id="overview" class="content-section active">
         <div class="section-header">
           <h1>Dashboard Overview</h1>
           <p class="text-muted">Welcome back! Here's what's happening with your events.</p>
         </div>
-        
+
         <!-- Stats Cards -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -128,7 +139,7 @@
               <i class="bi bi-arrow-up"></i> 12%
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon green">
               <i class="bi bi-ticket"></i>
@@ -141,7 +152,7 @@
               <i class="bi bi-arrow-up"></i> 8%
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon purple">
               <i class="bi bi-cash"></i>
@@ -154,7 +165,7 @@
               <i class="bi bi-arrow-up"></i> 24%
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon orange">
               <i class="bi bi-people"></i>
@@ -168,7 +179,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Charts Row -->
         <div class="charts-row">
           <div class="chart-card revenue-chart">
@@ -184,7 +195,7 @@
               <canvas id="revenueChart"></canvas>
             </div>
           </div>
-          
+
           <div class="chart-card tickets-chart">
             <div class="chart-header">
               <h3>Ticket Sales Trend</h3>
@@ -199,7 +210,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Recent Activity & Upcoming Events -->
         <div class="bottom-row">
           <div class="card recent-activity">
@@ -211,7 +222,7 @@
               <!-- Activity items will be injected by JS -->
             </div>
           </div>
-          
+
           <div class="card upcoming-events">
             <div class="card-header">
               <h3>Upcoming Events</h3>
@@ -223,7 +234,7 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Events Section -->
       <section id="events" class="content-section">
         <div class="section-header">
@@ -235,7 +246,7 @@
             <i class="bi bi-plus-lg"></i> Create New Event
           </button>
         </div>
-        
+
         <!-- Events Filter Tabs -->
         <div class="filter-tabs">
           <button class="filter-tab active" data-filter="all">All Events</button>
@@ -244,12 +255,12 @@
           <button class="filter-tab" data-filter="completed">Completed</button>
           <button class="filter-tab" data-filter="draft">Drafts</button>
         </div>
-        
+
         <!-- Events Grid -->
         <div class="events-grid" id="eventsGrid">
           <!-- Events will be injected by JS -->
         </div>
-        
+
         <!-- Empty State -->
         <div class="empty-state d-none" id="eventsEmpty">
           <i class="bi bi-calendar-x"></i>
@@ -260,7 +271,7 @@
           </button>
         </div>
       </section>
-      
+
       <!-- Tickets Section -->
       <section id="tickets" class="content-section">
         <div class="section-header">
@@ -272,7 +283,7 @@
             <i class="bi bi-download"></i> Export Data
           </button>
         </div>
-        
+
         <!-- Ticket Stats -->
         <div class="ticket-stats">
           <div class="ticket-stat-card">
@@ -292,7 +303,7 @@
             <span class="ticket-stat-label">Conversion Rate</span>
           </div>
         </div>
-        
+
         <!-- Tickets Table -->
         <div class="table-card">
           <div class="table-header">
@@ -332,7 +343,7 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Attendees Section -->
       <section id="attendees" class="content-section">
         <div class="section-header">
@@ -344,7 +355,7 @@
             <i class="bi bi-download"></i> Export List
           </button>
         </div>
-        
+
         <!-- Attendees Table -->
         <div class="table-card">
           <div class="table-header">
@@ -383,7 +394,8 @@
             </table>
           </div>
           <div class="table-pagination">
-            <span class="pagination-info">Showing <span id="attendeeStart">0</span>-<span id="attendeeEnd">0</span> of <span id="attendeeTotal">0</span></span>
+            <span class="pagination-info">Showing <span id="attendeeStart">0</span>-<span id="attendeeEnd">0</span> of
+              <span id="attendeeTotal">0</span></span>
             <div class="pagination-controls">
               <button class="pagination-btn" id="attendeePrev" disabled>
                 <i class="bi bi-chevron-left"></i>
@@ -396,14 +408,14 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Analytics Section -->
       <section id="analytics" class="content-section">
         <div class="section-header">
           <h1>Analytics & Reports</h1>
           <p class="text-muted">Deep insights into your event performance</p>
         </div>
-        
+
         <!-- Analytics Overview -->
         <div class="analytics-cards">
           <div class="analytics-card">
@@ -419,7 +431,7 @@
               <canvas id="salesPerformanceChart"></canvas>
             </div>
           </div>
-          
+
           <div class="analytics-card">
             <div class="analytics-header">
               <h3>Ticket Type Distribution</h3>
@@ -429,7 +441,7 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Top Performing Events -->
         <div class="analytics-section">
           <h3>Top Performing Events</h3>
@@ -438,14 +450,14 @@
           </div>
         </div>
       </section>
-      
+
       <!-- Settings Section -->
       <section id="settings" class="content-section">
         <div class="section-header">
           <h1>Settings</h1>
           <p class="text-muted">Manage your account and preferences</p>
         </div>
-        
+
         <div class="settings-grid">
           <div class="settings-card">
             <h3>Profile Settings</h3>
@@ -469,7 +481,7 @@
               <button type="submit" class="btn-primary">Save Changes</button>
             </form>
           </div>
-          
+
           <div class="settings-card">
             <h3>Notification Preferences</h3>
             <div class="notification-settings">
@@ -519,7 +531,7 @@
       </section>
     </div>
   </main>
-  
+
   <!-- Notification Panel -->
   <div class="notification-panel" id="notificationPanel">
     <div class="notification-panel-header">
@@ -530,7 +542,7 @@
       <!-- Notifications will be injected by JS -->
     </div>
   </div>
-  
+
   <!-- Create Event Modal -->
   <div class="modal" id="createEventModal">
     <div class="modal-overlay" onclick="closeModal('createEventModal')"></div>
@@ -557,12 +569,12 @@
               </div>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label>Venue *</label>
             <input type="text" id="newEventVenue" placeholder="e.g. Lagos International Centre" required>
           </div>
-          
+
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -583,46 +595,52 @@
               </div>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label>Event Banner</label>
             <div class="banner-upload-options" style="display: flex; gap: 16px; margin-bottom: 12px;">
-              <button type="button" class="btn-secondary upload-tab active" onclick="switchBannerTab('url')" id="urlTabBtn">
+              <button type="button" class="btn-secondary upload-tab active" onclick="switchBannerTab('url')"
+                id="urlTabBtn">
                 <i class="bi bi-link-45deg"></i> Use URL
               </button>
               <button type="button" class="btn-secondary upload-tab" onclick="switchBannerTab('file')" id="fileTabBtn">
                 <i class="bi bi-upload"></i> Upload File
               </button>
             </div>
-            
+
             <!-- URL Input -->
             <div id="bannerUrlSection">
               <input type="text" id="newEventBanner" placeholder="https://example.com/banner.jpg">
               <small class="text-muted">Enter an image URL</small>
             </div>
-            
+
             <!-- File Upload -->
             <div id="bannerFileSection" style="display: none;">
-              <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('newEventBannerFile').click()" style="border: 2px dashed #E2E8F0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s;">
+              <div class="file-upload-area" id="fileUploadArea"
+                onclick="document.getElementById('newEventBannerFile').click()"
+                style="border: 2px dashed #E2E8F0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s;">
                 <i class="bi bi-cloud-upload" style="font-size: 32px; color: #0CA6EF; margin-bottom: 8px;"></i>
                 <p style="margin: 0; color: #64748B;">Click to upload or drag and drop</p>
                 <p style="margin: 4px 0 0 0; font-size: 12px; color: #94A3B8;">PNG, JPG up to 5MB</p>
-                <input type="file" id="newEventBannerFile" accept="image/*" style="display: none;" onchange="handleFileUpload(event)">
+                <input type="file" id="newEventBannerFile" accept="image/*" style="display: none;"
+                  onchange="handleFileUpload(event)">
               </div>
               <div id="filePreview" style="margin-top: 12px; display: none;">
-                <img id="previewImage" src="" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
-                <button type="button" class="btn-secondary" onclick="removeFilePreview()" style="margin-top: 8px; font-size: 12px;">
+                <img id="previewImage" src="" alt="Preview"
+                  style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+                <button type="button" class="btn-secondary" onclick="removeFilePreview()"
+                  style="margin-top: 8px; font-size: 12px;">
                   <i class="bi bi-x"></i> Remove
                 </button>
               </div>
             </div>
           </div>
-          
+
           <div class="form-group">
             <label>Description (Optional)</label>
             <textarea id="newEventDescription" rows="3" placeholder="Describe your event..."></textarea>
           </div>
-          
+
           <div class="modal-actions" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
             <button type="button" class="btn-secondary" onclick="closeModal('createEventModal')">Cancel</button>
             <button type="submit" class="btn-primary">Create Event</button>
@@ -631,7 +649,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Event Detail Modal -->
   <div class="modal" id="eventDetailModal">
     <div class="modal-overlay" onclick="closeModal('eventDetailModal')"></div>
@@ -647,12 +665,22 @@
       </div>
     </div>
   </div>
-  
+
   <!-- Toast Notification -->
   <div class="toast-container" id="toastContainer"></div>
-  
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="assets/js/admin-dashboard.js"></script>
+  <script src="core/admin-dashboard.js"></script>
+  <script>
+    (function () {
+      var s = window._adminSession || {};
+      var nameEl = document.getElementById('adminName');
+      var emailEl = document.getElementById('adminEmail');
+      if (nameEl) nameEl.textContent = s.full_name || s.name || 'User';
+      if (emailEl) emailEl.textContent = s.email || '';
+    })();
+  </script>
 </body>
+
 </html>
