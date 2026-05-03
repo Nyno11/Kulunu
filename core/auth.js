@@ -160,8 +160,16 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
             errorDiv.textContent = data.message;
             errorDiv.classList.remove("d-none");
         } else {
+            const userString = JSON.stringify(data.data);
+
+            // 2. Save to LocalStorage (Key, Value)
+            localStorage.setItem('user_session', userString);
+
+            // 3. Redirect to dashboard
+            window.location.href = "./index.html";
+            console.log(data);
             console.log(data.data['full_name'])
-            alert("Signup successful! Welcome " + data.data['full_name']);
+            alert("Login successful! Welcome " + data.data['full_name']);
             // redirect or save token/session here
         }
     } catch (err) {
