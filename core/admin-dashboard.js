@@ -1204,7 +1204,7 @@ function removeFilePreview() {
 }
 
 // Handle create/edit event form submission
-const BASE_URL = 'http://192.168.153.21:8080';
+const BASE_URL = 'http://192.168.164.21:8080';
 
 document.addEventListener('DOMContentLoaded', () => {
   const createEventForm = document.getElementById('createEventForm');
