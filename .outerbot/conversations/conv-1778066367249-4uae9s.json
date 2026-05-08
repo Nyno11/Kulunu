@@ -1,0 +1,31 @@
+{
+  "id": "conv-1778066367249-4uae9s",
+  "project": "kulu",
+  "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+  "timestamp": "2026-05-06T11:10:17.452Z",
+  "topic": "Development session (recovered)",
+  "summary": "Recovered from unexpected shutdown. 1 messages, 1 files tracked.",
+  "decisions": [],
+  "filesModified": [
+    ".vscode/extensions.json"
+  ],
+  "codeChanges": [],
+  "currentWork": null,
+  "waitingOn": null,
+  "tags": [
+    "recovered",
+    "auto-save"
+  ],
+  "messageCount": 1,
+  "messages": [
+    {
+      "type": "tool",
+      "content": "File modified: .vscode/extensions.json",
+      "timestamp": "2026-05-06T11:10:17.452Z",
+      "metadata": {
+        "tool": "Edit",
+        "file": ".vscode/extensions.json"
+      }
+    }
+  ]
+}

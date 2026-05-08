@@ -1,0 +1,95 @@
+[
+  {
+    "id": "conv-1778191147681-0956mk",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-07T19:23:53.749Z",
+    "topic": "Development session",
+    "summary": "Session before 149 min idle. 1 messages.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      "index.html"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  },
+  {
+    "id": "conv-1778104709778-vreled",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-06T13:09:51.652Z",
+    "topic": "Development session",
+    "summary": "Session before 428 min idle. 52 messages.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      "admin-user-dashboard.html",
+      "assets/css/admin-user-dashboard.css"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  },
+  {
+    "id": "conv-1778072915168-fu096p",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-06T11:40:28.760Z",
+    "topic": "Development session",
+    "summary": "Session before 43 min idle. 27 messages.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      "admin-user-dashboard.html",
+      "assets/css/admin-user-dashboard.css",
+      "core/admin-user-dashboard.js"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  },
+  {
+    "id": "conv-1778066367249-4uae9s",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-06T11:10:17.452Z",
+    "topic": "Development session (recovered)",
+    "summary": "Recovered from unexpected shutdown. 1 messages, 1 files tracked.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      ".vscode/extensions.json"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  },
+  {
+    "id": "conv-1778066344907-743yzs",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-06T11:19:04.907Z",
+    "topic": "Extension deactivated",
+    "summary": null,
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      ".vscode/extensions.json"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  }
+]

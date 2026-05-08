@@ -1,0 +1,19 @@
+{
+  "messages": [
+    {
+      "id": "user-1778065966984-47auzh",
+      "role": "user",
+      "content": "hello",
+      "timestamp": 1778065966984
+    },
+    {
+      "id": "assistant-1778065966986-n20ze9",
+      "role": "assistant",
+      "content": "No active models available. Add a provider API key in outer.bot Account > AI Settings.",
+      "timestamp": 1778065966986,
+      "toolEvents": [],
+      "error": true
+    }
+  ],
+  "savedAt": "2026-05-06T11:12:49.824Z"
+}
