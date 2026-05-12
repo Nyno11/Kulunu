@@ -912,7 +912,7 @@ body {
 
 .event-card-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
 }
 
 .btn-icon {

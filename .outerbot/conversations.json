@@ -1,0 +1,39 @@
+[
+  {
+    "id": "conv-1778530432605-0xn282",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-11T11:20:50.356Z",
+    "topic": "Development session",
+    "summary": "Session before 527 min idle. 2 messages.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      "core/admin-dashboard.js"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  },
+  {
+    "id": "conv-1778496890228-u9ud0n",
+    "project": "kulu",
+    "projectPath": "c:\\Users\\frank\\Downloads\\kulu",
+    "timestamp": "2026-05-11T09:49:47.228Z",
+    "topic": "Development session",
+    "summary": "Session before 52 min idle. 4 messages.",
+    "detailedSummary": null,
+    "keyPhrases": [],
+    "components": [],
+    "files": [
+      "core/admin-dashboard.js",
+      "assets/css/admin-dashboard.css"
+    ],
+    "features": [],
+    "decisions": [],
+    "technologies": [],
+    "patterns": []
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "messages": [
+    {
+      "id": "user-1778491513989-36wjov",
+      "role": "user",
+      "content": "access admin-dashboard, the event section looking at the events created there are options to view and edit event. I need you to include an option to delete event. using the delete icon",
+      "timestamp": 1778491513989
+    },
+    {
+      "id": "assistant-1778491513991-2hqw68",
+      "role": "assistant",
+      "content": "No active models available. Add a provider API key in outer.bot Account > AI Settings.",
+      "timestamp": 1778491513991,
+      "toolEvents": [],
+      "error": true
+    }
+  ],
+  "archivedAt": "2026-05-11T09:25:30.051Z"
+}
