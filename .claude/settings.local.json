@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/freelance/KULUNU/kulunuBackend/utils//**)",
+      "Read(//c/freelance/KULUNU/kulunuBackend/config//**)",
+      "Read(//c/freelance/KULUNU/kulunuBackend/**)",
+      "Bash(npm install *)"
+    ]
+  }
+}

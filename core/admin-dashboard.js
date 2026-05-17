@@ -68,54 +68,7 @@ const DataStore = {
         revenue: 1225000,
         createdAt: '2025-07-01'
       },
-      {
-        id: 'EVT-002',
-        title: 'Abuja Music Festival',
-        date: '2025-07-28',
-        venue: 'Eagle Square, Abuja',
-        type: 'physical',
-        status: 'live',
-        banner: 'assets/img/trend2.jpg',
-        ticketsSold: 1850,
-        revenue: 9250000,
-        createdAt: '2025-06-15'
-      },
-      {
-        id: 'EVT-003',
-        title: 'Virtual Business Summit',
-        date: '2025-09-10',
-        venue: 'Online',
-        type: 'virtual',
-        status: 'upcoming',
-        banner: 'assets/img/trend3.jpg',
-        ticketsSold: 520,
-        revenue: 2600000,
-        createdAt: '2025-07-10'
-      },
-      {
-        id: 'EVT-004',
-        title: 'Comedy Night Live',
-        date: '2025-06-20',
-        venue: 'National Theatre, Lagos',
-        type: 'physical',
-        status: 'completed',
-        banner: 'assets/img/trend4.jpg',
-        ticketsSold: 800,
-        revenue: 4000000,
-        createdAt: '2025-05-01'
-      },
-      {
-        id: 'EVT-005',
-        title: 'Startup Pitch Competition',
-        date: '2025-10-05',
-        venue: 'Tech Hub, Victoria Island',
-        type: 'physical',
-        status: 'draft',
-        banner: 'assets/img/trend5.jpg',
-        ticketsSold: 0,
-        revenue: 0,
-        createdAt: '2025-07-20'
-      }
+
     ];
   },
 
@@ -182,8 +135,8 @@ const DataStore = {
 // =========================
 // INITIALIZATION
 // =========================
-document.addEventListener('DOMContentLoaded', () => {
-  initializeData();
+document.addEventListener('DOMContentLoaded', async () => {
+  await initializeData();
   initializeSidebar();
   initializeCharts();
   renderDashboard();
@@ -195,11 +148,78 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeNotifications();
 });
 
-// Initialize data in localStorage if not present
-function initializeData() {
-  if (!localStorage.getItem('kulunu_events')) {
-    DataStore.saveEvents(DataStore.getDefaultEvents());
+const EVENTS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Derive a display status from the DB event
+function resolveEventStatus(dbStatus, dateStr) {
+  if (dbStatus !== 'active') return dbStatus; // pass through draft, cancelled, etc.
+  const today = new Date().toISOString().split('T')[0];
+  if (!dateStr || dateStr > today) return 'upcoming';
+  if (dateStr === today) return 'live';
+  return 'completed';
+}
+
+// Fetch events from /admin/events, merge with defaults, and cache in localStorage
+async function fetchAndMergeEvents() {
+  const session = window._adminSession || {};
+  if (!session.token) return DataStore.getDefaultEvents();
+
+  try {
+    const res = await fetch(`${BASE_URL}/admin/events`, {
+      headers: { 'Authorization': `Bearer ${session.token}` }
+    });
+
+    const data = await res.json();
+
+    if (!data.success || !Array.isArray(data.data)) {
+      console.log('Invalid API response for events');
+      console.log(data);
+      return DataStore.getDefaultEvents();
+    }
+
+    console.log(data);
+
+    const apiEvents = data.data.map(e => ({
+      id: String(e.id),
+      title: e.title || '',
+      date: e.date || '',
+      venue: e.venue || '',
+      type: e.type || 'physical',
+      status: resolveEventStatus(e.status, e.date),
+      banner: e.banner_url || 'assets/img/trend1.jpg',
+      ticketsSold: e.tickets_sold || 0,
+      revenue: e.revenue || 0,
+      description: e.description || '',
+      createdAt: e.created_at ? e.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
+    }));
+
+    // Merge: start with defaults, append DB events that aren't already present
+    const defaults = DataStore.getDefaultEvents();
+    const existingIds = new Set(defaults.map(e => e.id));
+    const merged = [...defaults];
+    for (const ev of apiEvents) {
+      if (!existingIds.has(ev.id)) merged.push(ev);
+    }
+
+    return merged;
+  } catch (err) {
+    console.error('Failed to fetch events from API:', err);
+    return DataStore.getDefaultEvents();
   }
+}
+
+// Initialize data in localStorage; refetch events from DB when cache is stale
+
+async function initializeData() {
+  const cachedAt = parseInt(localStorage.getItem('kulunu_events_fetched_at') || '0', 10);
+  const cacheStale = Date.now() - cachedAt > EVENTS_CACHE_TTL;
+
+  if (!localStorage.getItem('kulunu_events') || cacheStale) {
+    const events = await fetchAndMergeEvents();
+    DataStore.saveEvents(events);
+    localStorage.setItem('kulunu_events_fetched_at', String(Date.now()));
+  }
+
   if (!localStorage.getItem('kulunu_tickets')) {
     DataStore.saveTickets(DataStore.getDefaultTickets());
   }
@@ -482,6 +502,7 @@ function editEvent(eventId) {
   document.getElementById('newEventDate').value = event.date;
   document.getElementById('newEventVenue').value = event.venue;
   document.getElementById('newEventType').value = event.type;
+  document.getElementById('newEventCategory').value = event.category || '';
   document.getElementById('newEventStatus').value = event.status;
   document.getElementById('newEventDescription').value = event.description || '';
 
@@ -1115,7 +1136,7 @@ function logout() {
 // =========================
 // CREATE EVENT MODAL
 // =========================
-let uploadedBannerData = null; // Store base64 data from file upload
+let uploadedBannerData = null; // Firebase download URL after upload
 
 function openCreateEventModal() {
   const modal = document.getElementById('createEventModal');
@@ -1131,6 +1152,7 @@ function openCreateEventModal() {
   document.getElementById('filePreview').style.display = 'none';
   document.getElementById('newEventBannerFile').value = '';
   document.getElementById('newEventBanner').value = '';
+  hideCreateEventError();
   switchBannerTab('url'); // Default to URL tab
 }
 
@@ -1154,42 +1176,58 @@ function switchBannerTab(tab) {
   }
 }
 
-// Handle file upload
-function handleFileUpload(event) {
+// Handle file upload — preview immediately, send to backend for Firebase Storage upload
+async function handleFileUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Validate file size (5MB max)
   if (file.size > 5 * 1024 * 1024) {
     showToast('File size must be less than 5MB', 'error');
     event.target.value = '';
     return;
   }
 
-  // Validate file type
   if (!file.type.startsWith('image/')) {
     showToast('Please select a valid image file', 'error');
     event.target.value = '';
     return;
   }
 
-  // Read file and convert to base64
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    uploadedBannerData = e.target.result;
+  // Show local preview immediately
+  const previewImage = document.getElementById('previewImage');
+  const previewContainer = document.getElementById('filePreview');
+  previewImage.src = URL.createObjectURL(file);
+  previewContainer.style.display = 'block';
 
-    // Show preview
-    const previewImage = document.getElementById('previewImage');
-    const previewContainer = document.getElementById('filePreview');
-    previewImage.src = uploadedBannerData;
-    previewContainer.style.display = 'block';
+  const uploadArea = document.getElementById('fileUploadArea');
+  uploadArea.style.borderColor = '#F59E0B';
+  uploadArea.style.background = '#FEF3C7';
+  uploadArea.querySelector('p').textContent = 'Uploading…';
 
-    // Add hover effect to upload area
-    const uploadArea = document.getElementById('fileUploadArea');
+  uploadedBannerData = null;
+
+  try {
+    const session = window._adminSession || {};
+    const formData = new FormData();
+    formData.append('banner', file);
+
+    const res = await fetch(`${BASE_URL}/upload-banner`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${session.token}` },
+      body: formData,
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Upload failed');
+
+    uploadedBannerData = data.url;
     uploadArea.style.borderColor = '#10B981';
     uploadArea.style.background = '#D1FAE5';
-  };
-  reader.readAsDataURL(file);
+    uploadArea.querySelector('p').textContent = 'Upload complete';
+  } catch (err) {
+    console.error('Banner upload failed:', err);
+    showToast('Image upload failed. Please try again.', 'error');
+    removeFilePreview();
+  }
 }
 
 // Remove file preview
@@ -1201,10 +1239,13 @@ function removeFilePreview() {
   const uploadArea = document.getElementById('fileUploadArea');
   uploadArea.style.borderColor = '#E2E8F0';
   uploadArea.style.background = 'transparent';
+  const p = uploadArea.querySelector('p');
+  if (p) p.textContent = 'Click to upload or drag and drop';
 }
 
 // Handle create/edit event form submission
-const BASE_URL = 'http://192.168.164.21:8080';
+const BASE_URL = 'http://192.168.196.21:8080';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const createEventForm = document.getElementById('createEventForm');
@@ -1219,8 +1260,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = document.getElementById('newEventDate').value;
     const venue = document.getElementById('newEventVenue').value.trim();
     const type = document.getElementById('newEventType').value;
+    const category = document.getElementById('newEventCategory').value || null;
     const status = document.getElementById('newEventStatus').value;
     const description = document.getElementById('newEventDescription').value.trim();
+
+    // Block submit if a file was chosen but Firebase upload is still in progress
+    const fileInput = document.getElementById('newEventBannerFile');
+    const fileChosen = fileInput && fileInput.files.length > 0;
+    if (fileChosen && !uploadedBannerData) {
+      showCreateEventError('Please wait — image is still uploading.');
+      return;
+    }
 
     let banner;
     if (uploadedBannerData) {
@@ -1270,13 +1320,13 @@ document.addEventListener('DOMContentLoaded', () => {
           'Authorization': `Bearer ${session.token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title, date, venue, type, banner_url: banner }),
+        body: JSON.stringify({ title, date, venue, type, banner_url: banner, category }),
       });
 
       const data = await res.json();
 
       if (!data.success) {
-        showToast(data.message || 'Failed to create event.', 'error');
+        showCreateEventError(data.message || 'Failed to create event.');
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
         return;
@@ -1291,6 +1341,7 @@ document.addEventListener('DOMContentLoaded', () => {
         type: apiEvent.type || type,
         status: apiEvent.status || status,
         banner: apiEvent.banner_url || banner,
+        category: apiEvent.category || category,
         ticketsSold: 0,
         revenue: 0,
         description,
@@ -1310,18 +1361,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       console.error(err);
-      showToast('Server error. Please try again.', 'error');
+      showCreateEventError('Server error. Please check your connection and try again.');
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
     }
   });
 });
 
+function showCreateEventError(msg) {
+  const bar = document.getElementById('createEventError');
+  const msgEl = document.getElementById('createEventErrorMsg');
+  if (!bar || !msgEl) return;
+  msgEl.textContent = msg;
+  bar.style.display = 'flex';
+  bar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideCreateEventError() {
+  const bar = document.getElementById('createEventError');
+  if (bar) bar.style.display = 'none';
+}
+
 function resetCreateEventModal(form) {
   form.reset();
   delete form.dataset.editId;
   uploadedBannerData = null;
   document.getElementById('filePreview').style.display = 'none';
+  hideCreateEventError();
   document.querySelector('#createEventModal .modal-header h3').textContent = 'Create New Event';
   document.querySelector('#createEventModal button[type="submit"]').textContent = 'Create Event';
 }
@@ -1343,3 +1409,4 @@ window.markCheckedIn = markCheckedIn;
 window.exportAttendees = exportAttendees;
 window.logout = logout;
 window.resetCreateEventModal = resetCreateEventModal;
+window.hideCreateEventError = hideCreateEventError;

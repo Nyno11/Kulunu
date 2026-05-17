@@ -555,6 +555,10 @@
       </div>
       <div class="modal-body">
         <form id="createEventForm">
+          <div id="createEventError" style="display:none; background:#FEE2E2; color:#991B1B; border:1px solid #FECACA; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:14px; display:flex; align-items:center; gap:8px;">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span id="createEventErrorMsg"></span>
+          </div>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -585,6 +589,27 @@
                 </select>
               </div>
             </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Category</label>
+                <select id="newEventCategory">
+                  <option value="">— Select category —</option>
+                  <option value="music">Music</option>
+                  <option value="tech">Tech</option>
+                  <option value="comedy">Comedy</option>
+                  <option value="sports">Sports</option>
+                  <option value="business">Business</option>
+                  <option value="party">Party</option>
+                  <option value="festival">Festival</option>
+                  <option value="arts">Arts & Culture</option>
+                  <option value="food">Food & Drink</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label>Initial Status</label>

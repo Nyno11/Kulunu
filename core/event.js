@@ -1,6 +1,6 @@
 (function () {
   // const BASE_URL = 'https://api.kulunu.app';
-  const BASE_URL = 'http://192.168.164.21:8080';
+  const BASE_URL = 'http://192.168.196.21:8080';
 
   // Sync header with localStorage session
   const session = JSON.parse(localStorage.getItem('user_session') || 'null');
@@ -32,14 +32,21 @@
 
     // Authenticated: call the API
     if (session && session.token) {
-      // Read banner as base64 data URL if present
+      // Send banner to backend for Firebase Storage upload
       let banner_url = null;
       if (bannerFile) {
-        banner_url = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.readAsDataURL(bannerFile);
+        submitBtn.textContent = 'Uploading image…';
+        const formData = new FormData();
+        formData.append('banner', bannerFile);
+        const uploadRes = await fetch(`${BASE_URL}/upload-banner`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${session.token}` },
+          body: formData,
         });
+        const uploadData = await uploadRes.json();
+        if (!uploadData.success) throw new Error(uploadData.message || 'Image upload failed');
+        banner_url = uploadData.url;
+        submitBtn.textContent = 'Creating…';
       }
 
       try {
@@ -94,7 +101,7 @@
 
 (function () {
   // const BASE_URL = 'https://api.kulunu.app';
-  const BASE_URL = 'http://192.168.164.21:8080';
+  const BASE_URL = 'http://192.168.196.21:8080';
 
   // Only activate on pages that have the KYC modal
   if (!document.getElementById('kycForm')) return;

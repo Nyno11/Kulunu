@@ -164,41 +164,8 @@
       <h2>Just Added</h2>
       <span class="see-all">See All</span>
     </div>
-    <div class="event-scroll">
-      <div class="event-card" data-id="1" data-title="THE CAVEMEN"
-        data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
-        <img src="assets/img/trend4.jpg" />
-        <h3>THE CAVEMEN</h3>
-        <p>Explore the cave with The Cavemen and Staycavy.</p>
-      </div>
-
-      <div class="event-card" data-id="2" data-title="ABUJA TECH CONVERGE" data-desc="Innovation meets opportunity."
-        data-img="assets/img/trend3.jpg">
-        <img src="assets/img/trend3.jpg" />
-        <h3>ABUJA TECH CONVERGE</h3>
-        <p>Innovation meets opportunity.</p>
-      </div>
-
-      <div class="event-card" data-id="3" data-title="OBI's HOUSE"
-        data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
-        <img src="assets/img/trend2.jpg" />
-        <h3>OBI's HOUSE</h3>
-        <p>Party, music & unforgettable memories.</p>
-      </div>
-
-      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live."
-        data-img="assets/img/trend1.jpg">
-        <img src="assets/img/trend1.jpg" />
-        <h3>GRAND OPENING</h3>
-        <p>Experience Soundgod festival live.</p>
-      </div>
-
-      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party."
-        data-img="assets/img/trend5.jpg">
-        <img src="assets/img/trend5.jpg" />
-        <h3>CAPITAL MACHINE</h3>
-        <p>Capital Block Party.</p>
-      </div>
+    <div class="event-scroll" id="justAddedScroll">
+      <!-- populated by JS -->
     </div>
   </section>
 
@@ -207,41 +174,8 @@
       <h2>Upcoming Events</h2>
       <span class="see-all">See All</span>
     </div>
-    <div class="event-scroll">
-      <div class="event-card" data-id="1" data-title="THE CAVEMEN"
-        data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
-        <img src="assets/img/trend4.jpg" />
-        <h3>THE CAVEMEN</h3>
-        <p>Explore the cave with The Cavemen and Staycavy.</p>
-      </div>
-
-      <div class="event-card" data-id="2" data-title="ABUJA TECH CONVERGE" data-desc="Innovation meets opportunity."
-        data-img="assets/img/trend3.jpg">
-        <img src="assets/img/trend3.jpg" />
-        <h3>ABUJA TECH CONVERGE</h3>
-        <p>Innovation meets opportunity.</p>
-      </div>
-
-      <div class="event-card" data-id="3" data-title="OBI's HOUSE"
-        data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
-        <img src="assets/img/trend2.jpg" />
-        <h3>OBI's HOUSE</h3>
-        <p>Party, music & unforgettable memories.</p>
-      </div>
-
-      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live."
-        data-img="assets/img/trend1.jpg">
-        <img src="assets/img/trend1.jpg" />
-        <h3>GRAND OPENING</h3>
-        <p>Experience Soundgod festival live.</p>
-      </div>
-
-      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party."
-        data-img="assets/img/trend5.jpg">
-        <img src="assets/img/trend5.jpg" />
-        <h3>CAPITAL MACHINE</h3>
-        <p>Capital Block Party.</p>
-      </div>
+    <div class="event-scroll" id="upcomingScroll">
+      <!-- populated by JS -->
     </div>
   </section>
 
@@ -250,37 +184,46 @@
       <h2>Parties</h2>
       <span class="see-all">See All</span>
     </div>
-    <div class="event-scroll">
-      <div class="event-card" data-id="1" data-title="THE CAVEMEN"
-        data-desc="Explore the cave with The Cavemen and Staycavy." data-img="assets/img/trend4.jpg">
-        <img src="assets/img/trend4.jpg" />
-        <h3>THE CAVEMEN</h3>
-        <p>Explore the cave with The Cavemen and Staycavy.</p>
-      </div>
-
-      <div class="event-card" data-id="5" data-title="CAPITAL MACHINE" data-desc="Capital Block Party."
-        data-img="assets/img/trend5.jpg">
-        <img src="assets/img/trend5.jpg" />
-        <h3>CAPITAL MACHINE</h3>
-        <p>Capital Block Party.</p>
-      </div>
-
-      <div class="event-card" data-id="3" data-title="OBI's HOUSE"
-        data-desc="Party, music &amp; unforgettable memories." data-img="assets/img/trend2.jpg">
-        <img src="assets/img/trend2.jpg" />
-        <h3>OBI's HOUSE</h3>
-        <p>Party, music & unforgettable memories.</p>
-      </div>
-
-      <div class="event-card" data-id="4" data-title="GRAND OPENING" data-desc="Experience Soundgod festival live."
-        data-img="assets/img/trend1.jpg">
-        <img src="assets/img/trend1.jpg" />
-        <h3>GRAND OPENING</h3>
-        <p>Experience Soundgod festival live.</p>
-      </div>
+    <div class="event-scroll" id="partiesScroll">
+      <!-- populated by JS -->
     </div>
   </section>
 </div>
+
+<style>
+  .event-skeleton {
+    min-width: 160px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f1f5f9;
+    flex-shrink: 0;
+  }
+  .event-skeleton .sk-img {
+    width: 100%;
+    height: 110px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  .event-skeleton .sk-body { padding: 10px 12px; }
+  .event-skeleton .sk-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    margin-bottom: 8px;
+  }
+  .event-skeleton .sk-line.short { width: 65%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .events-empty {
+    color: #94a3b8;
+    font-size: 13px;
+    padding: 16px 4px;
+    white-space: nowrap;
+  }
+</style>
 
 <!-- Scan page -->
 <div id="scanPage" class="page-section">
@@ -1202,6 +1145,88 @@
   document.getElementById('kycModal').addEventListener('click', function (e) {
     if (e.target === this) closeKYC();
   });
+</script>
+
+<script>
+(function () {
+  const BASE_URL = 'http://192.168.196.21:8080';
+
+  function skeletons(n) {
+    return Array.from({ length: n }, () => `
+      <div class="event-skeleton">
+        <div class="sk-img"></div>
+        <div class="sk-body">
+          <div class="sk-line"></div>
+          <div class="sk-line short"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function formatEventDate(dateStr) {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function buildCards(events) {
+    if (!events || events.length === 0) {
+      return '<p class="events-empty">No events yet</p>';
+    }
+    return events.map(e => {
+      const img = e.banner_url || 'assets/img/trend1.jpg';
+      const title = e.title || '';
+      const desc = [e.venue, formatEventDate(e.date)].filter(Boolean).join(' · ');
+      return `
+        <div class="event-card" style="cursor:pointer" data-id="${e.id}" data-title="${title.replace(/"/g,'&quot;')}" data-desc="${desc.replace(/"/g,'&quot;')}" data-img="${img.replace(/"/g,'&quot;')}">
+          <img src="${img}" alt="${title.replace(/"/g,'&quot;')}" onerror="this.src='assets/img/trend1.jpg'"/>
+          <h3>${title}</h3>
+          <p>${desc}</p>
+        </div>`;
+    }).join('');
+  }
+
+  function attachClickHandlers(container) {
+    container.querySelectorAll('.event-card[data-id]').forEach(function (card) {
+      card.addEventListener('click', function () {
+        viewEvent(card.dataset.id, card.dataset.title, card.dataset.desc, card.dataset.img);
+      });
+    });
+  }
+
+  const sections = {
+    justAdded: document.getElementById('justAddedScroll'),
+    upcoming:  document.getElementById('upcomingScroll'),
+    parties:   document.getElementById('partiesScroll'),
+  };
+
+  // Show skeletons while loading
+  Object.values(sections).forEach(el => { if (el) el.innerHTML = skeletons(4); });
+
+  fetch(BASE_URL + '/events')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data.success || !data.data) throw new Error('bad response');
+
+      const { just_added, upcoming, parties } = data.data;
+
+      if (sections.justAdded) {
+        sections.justAdded.innerHTML = buildCards(just_added);
+        attachClickHandlers(sections.justAdded);
+      }
+      if (sections.upcoming) {
+        sections.upcoming.innerHTML = buildCards(upcoming);
+        attachClickHandlers(sections.upcoming);
+      }
+      if (sections.parties) {
+        sections.parties.innerHTML = buildCards(parties);
+        attachClickHandlers(sections.parties);
+      }
+    })
+    .catch(function () {
+      Object.values(sections).forEach(function (el) {
+        if (el) el.innerHTML = '<p class="events-empty">Could not load events</p>';
+      });
+    });
+})();
 </script>
 
 <script src="./core/event.js"></script>
