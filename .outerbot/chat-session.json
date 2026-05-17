@@ -1,0 +1,33 @@
+{
+  "messages": [
+    {
+      "id": "user-1778491905675-42clhc",
+      "role": "user",
+      "content": "hello",
+      "timestamp": 1778491905676
+    },
+    {
+      "id": "assistant-1778491905676-i28q9x",
+      "role": "assistant",
+      "content": "No active models available. Add a provider API key in outer.bot Account > AI Settings.",
+      "timestamp": 1778491905676,
+      "toolEvents": [],
+      "error": true
+    },
+    {
+      "id": "user-1778491952865-z7bpzp",
+      "role": "user",
+      "content": "hello",
+      "timestamp": 1778491952865
+    },
+    {
+      "id": "assistant-1778491952865-enez5v",
+      "role": "assistant",
+      "content": "No active models available. Add a provider API key in outer.bot Account > AI Settings.",
+      "timestamp": 1778491952865,
+      "toolEvents": [],
+      "error": true
+    }
+  ],
+  "savedAt": "2026-05-11T09:32:36.499Z"
+}

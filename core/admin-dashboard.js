@@ -380,6 +380,9 @@ function renderEvents(events) {
             <button class="btn-icon" onclick="editEvent('${event.id}')" title="Edit">
               <i class="bi bi-pencil"></i>
             </button>
+            <button class="btn-icon" onclick="deleteEvent('${event.id}')">
+      <i class="bi bi-trash"></i>
+   </button>
           </div>
         </div>
       </div>
@@ -521,6 +524,68 @@ function editEvent(eventId) {
 
   // Store the event ID for updating
   document.getElementById('createEventForm').dataset.editId = eventId;
+}
+
+function deleteEvent(eventId) {
+  // Find the event
+  const events = DataStore.getEvents();
+  const event = events.find(e => e.id === eventId);
+
+  if (!event) {
+    showToast('Event not found', 'error');
+    return;
+  }
+
+  // Confirmation popup
+  const confirmDelete = confirm(
+    `Are you sure you want to delete "${event.title}"?\n\nThis action cannot be undone.`
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    // Remove event from array
+    const updatedEvents = events.filter(e => e.id !== eventId);
+
+    // Save updated events
+    localStorage.setItem('kulunu_events', JSON.stringify(updatedEvents));
+
+    // Remove related tickets (optional but recommended)
+    const tickets = DataStore.getTickets();
+    const updatedTickets = tickets.filter(t => t.eventId !== eventId);
+    localStorage.setItem('kulunu_tickets', JSON.stringify(updatedTickets));
+
+    // Re-render events
+    renderEvents(updatedEvents);
+
+    // Update counts if available
+    const eventCount = document.getElementById('eventCount');
+    const totalEvents = document.getElementById('totalEvents');
+
+    if (eventCount) {
+      eventCount.textContent = updatedEvents.length;
+    }
+
+    if (totalEvents) {
+      totalEvents.textContent = updatedEvents.length;
+    }
+
+    // Show empty state if no events remain
+    const emptyState = document.getElementById('eventsEmpty');
+    const grid = document.getElementById('eventsGrid');
+
+    if (updatedEvents.length === 0) {
+      grid.innerHTML = '';
+      emptyState.classList.remove('d-none');
+    }
+
+    // Success message
+    showToast('Event deleted successfully', 'success');
+
+  } catch (error) {
+    console.error('Delete Event Error:', error);
+    showToast('Failed to delete event', 'error');
+  }
 }
 
 function closeModal(modalId) {
