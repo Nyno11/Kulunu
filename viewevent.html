@@ -7,121 +7,560 @@
 <link href="assets/css/concert.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="./core/config.js"></script>
+<style>
+  .tier-loading { text-align:center; padding:24px; color:#888; font-size:14px; }
+  .tier-info-box {
+    background:#f0f8ff; border-radius:10px; padding:12px 14px;
+    margin-bottom:16px; font-size:14px; line-height:1.6;
+  }
+  .total-row {
+    display:flex; justify-content:space-between;
+    font-weight:700; font-size:16px; margin-bottom:16px;
+  }
+  .payment-option.selected {
+    border-color:#0CA6EF; color:#0CA6EF; background:#f0f8ff;
+  }
+  .confirm-qr { display:flex; justify-content:center; margin:16px 0; }
+  .confirm-details {
+    background:#f8fafc; border-radius:10px; padding:14px;
+    text-align:left; font-size:14px; margin-bottom:16px; line-height:1.8;
+  }
+  .err-msg { color:#c0392b; font-size:13px; margin-bottom:10px; display:none; }
+  .sold-out-badge {
+    display:inline-block; font-size:11px; background:#fef2f2;
+    color:#c0392b; border-radius:4px; padding:2px 6px; margin-left:6px;
+  }
+  #buyBtn:disabled { background:#aaa; cursor:not-allowed; }
+</style>
 </head>
 
 <body>
 
+<!-- EVENT DETAIL PAGE -->
 <div id="ticketDetailsPage" class="page-section active-section">
-<header>
-  <button onclick="history.back()" style="background:none;border:none">
-    <i class="bi bi-arrow-left-circle"></i>
-  </button>
-  <h3>Event Details</h3>
-</header>
+  <header>
+    <button onclick="history.back()" style="background:none;border:none">
+      <i class="bi bi-arrow-left-circle"></i>
+    </button>
+    <h3>Event Details</h3>
+  </header>
 
-<div class="ticket-details">
-  <img id="detailsImage" class="details-img">
-  <h2 id="detailsTitle"></h2>
-  <p id="detailsDescription" style="padding-bottom:5px;"></p>
-  <button class="primary-btn" onclick="openTicketModal()">Buy Ticket</button>
-</div>
+  <div class="ticket-details">
+    <img id="detailsImage" class="details-img" src="" alt="Event" onerror="this.src='assets/img/trend1.jpg'">
+    <h2 id="detailsTitle" style="margin-bottom:8px;"></h2>
+    <p id="detailsDescription" style="padding-bottom:16px; color:#555; font-size:14px;"></p>
+    <button class="primary-btn" id="buyBtn" onclick="openTicketModal()">Buy Ticket</button>
+    <p id="noTicketsMsg" style="display:none; text-align:center; color:#888; margin-top:12px; font-size:14px;">
+      No tickets are currently available for this event.
+    </p>
+  </div>
 </div>
 
-<!-- MODAL 1: TICKET -->
+<!-- MODAL 1: TICKET SELECTION -->
 <div id="ticketModal" class="modal">
-<div class="modal-content">
-  <div class="modal-header">
-    <h3>Select Ticket</h3>
-    <button onclick="closeTicketModal()">✕</button>
-  </div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Select Ticket</h3>
+      <button onclick="closeTicketModal()">✕</button>
+    </div>
 
-  <div class="form-group">
-    <label>Ticket Type</label>
-    <select>
-      <option>Regular</option>
-      <option>VIP</option>
-    </select>
-  </div>
+    <div id="tierLoading" class="tier-loading">
+      <i class="bi bi-hourglass-split" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+      Loading available tickets…
+    </div>
 
-  <div class="form-group">
-    <label>Quantity</label>
-    <input type="number" min="1" value="1">
-  </div>
+    <div id="tierSelectSection" style="display:none;">
+      <div class="form-group">
+        <label>Ticket Type</label>
+        <select id="tierSelect" onchange="onTierChange()"></select>
+      </div>
 
-  <button class="primary-btn" onclick="openPaymentModal()">Continue</button>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" id="ticketQty" min="1" value="1" onchange="updateTotal()" oninput="updateTotal()">
+      </div>
+
+      <div id="tierInfoBox" class="tier-info-box"></div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span id="totalPrice">₦0</span>
+      </div>
+
+      <button class="primary-btn" onclick="continueToDetails()">Continue</button>
+    </div>
+
+    <div id="noTiersMsg" style="display:none; text-align:center; padding:24px; color:#888;">
+      <i class="bi bi-ticket-perforated" style="font-size:36px; display:block; margin-bottom:8px;"></i>
+      No tickets available for this event.
+    </div>
+  </div>
 </div>
+
+<!-- MODAL 2: BUYER DETAILS -->
+<div id="detailsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Your Details</h3>
+      <button onclick="closeDetailsModal()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Full Name *</label>
+      <input type="text" id="buyerName" placeholder="Enter your full name">
+    </div>
+    <div class="form-group">
+      <label>Email Address *</label>
+      <input type="email" id="buyerEmail" placeholder="Enter your email">
+    </div>
+    <div class="form-group">
+      <label>Phone Number *</label>
+      <input type="tel" id="buyerPhone" placeholder="e.g. 08012345678">
+    </div>
+
+    <p id="detailsError" class="err-msg"></p>
+    <button class="primary-btn" onclick="continueToPayment()">Continue to Payment</button>
+  </div>
 </div>
 
-<!-- MODAL 2: PAYMENT -->
+<!-- MODAL 3: PAYMENT METHOD -->
 <div id="paymentModal" class="modal">
-<div class="modal-content">
-  <div class="modal-header">
-    <h3>Payment Method</h3>
-    <button onclick="closePaymentModal()">✕</button>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Payment</h3>
+      <button onclick="closePaymentModal()">✕</button>
+    </div>
+
+    <div id="paymentSummary" class="tier-info-box"></div>
+
+    <div class="payment-option" onclick="selectPayment(this,'card')">
+      <i class="bi bi-credit-card" style="margin-right:8px;"></i>Pay with Card
+    </div>
+    <div class="payment-option" onclick="selectPayment(this,'transfer')">
+      <i class="bi bi-bank" style="margin-right:8px;"></i>Bank Transfer
+    </div>
+    <div class="payment-option" onclick="selectPayment(this,'ussd')">
+      <i class="bi bi-phone" style="margin-right:8px;"></i>USSD
+    </div>
+
+    <p id="payError" class="err-msg"></p>
+    <button class="primary-btn" id="payNowBtn" onclick="processPayment()" style="margin-top:8px;">
+      Pay Now
+    </button>
   </div>
-
-  <div class="payment-option">Pay with Card</div>
-  <div class="payment-option">Bank Transfer</div>
-  <div class="payment-option">USSD</div>
-
-  <button class="primary-btn" onclick="goToSuggestModal()">Pay Now</button>
-</div>
 </div>
 
-<!-- MODAL 3: SUGGESTION -->
+<!-- MODAL 4: CONFIRMATION -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content" style="text-align:center;">
+    <div style="font-size:52px; margin-bottom:4px;">🎉</div>
+    <h3 style="margin-bottom:4px;">Ticket Confirmed!</h3>
+    <p id="confirmSub" style="color:#666; font-size:14px; margin-bottom:16px;"></p>
+
+    <div id="confirmQR" class="confirm-qr"></div>
+
+    <div id="confirmDetails" class="confirm-details"></div>
+
+    <button class="primary-btn" onclick="closeConfirmModal()">Done</button>
+  </div>
+</div>
+
+<!-- MODAL 5: TRAVEL OPTIONS -->
 <div id="suggestModal" class="modal">
-<div class="modal-content">
-  <div class="modal-header">
-    <h3>Travel options</h3>
-    <button onclick="closeSuggestModal()">✕</button>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Travel Options</h3>
+      <button onclick="closeSuggestModal()">✕</button>
+    </div>
+    <div class="payment-option">Available Flights</div>
+    <div class="payment-option">Available Roadtrip</div>
   </div>
-
-  <div class="payment-option">Available Flights</div>
-  <div class="payment-option">Available Roadtrip</div>
-</div>
 </div>
 
 <script>
-// Populate page from localStorage
-(function () {
+// ── State ─────────────────────────────────────────────────────────────────────
+let _eventData    = null;   // { id, title, desc, img }
+let _tiers        = [];     // available tiers for this event
+let _selectedTier = null;   // full tier object
+let _selectedPayment = null;
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(function init() {
   const raw = localStorage.getItem('viewEventData');
   if (!raw) return;
-  const data = JSON.parse(raw);
-  document.getElementById('detailsTitle').textContent = data.title || '';
-  document.getElementById('detailsDescription').textContent = data.desc || '';
-  document.getElementById('detailsImage').src = data.img || '';
-  if (data.title) document.title = data.title + ' - Kulunu';
+  _eventData = JSON.parse(raw);
+
+  document.getElementById('detailsTitle').textContent       = _eventData.title || '';
+  document.getElementById('detailsDescription').textContent = _eventData.desc  || '';
+  document.getElementById('detailsImage').src               = _eventData.img   || '';
+  if (_eventData.title) document.title = _eventData.title + ' - Kulunu';
+
+  // Pre-load tiers silently while the user reads the event page
+  loadTiers(_eventData.id);
 })();
 
-const paymentModal = document.getElementById('paymentModal');
-const suggestModal = document.getElementById('suggestModal');
+// ── Tier loading ──────────────────────────────────────────────────────────────
+async function loadTiers(eventId) {
+  const eventIdStr = String(eventId);
 
-function openTicketModal() {
-  document.getElementById('ticketModal').classList.add('active');
+  // 1. Try backend first (user-facing endpoint, no /admin prefix)
+  try {
+    const res = await fetch(`${BASE_URL}/events/${eventIdStr}/tickets`);
+    const data = await res.json();
+
+    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+      _tiers = data.data
+        .filter(t => t.for_sale !== false)
+        .map(t => ({
+          id:            String(t.id),
+          name:          t.name || t.tier_name || 'Ticket',
+          price:         Number(t.price) || 0,
+          totalQuantity: Number(t.quantity || t.total_quantity) || 0,
+          available:     Number(t.quantity || t.total_quantity || 0) - Number(t.sold || t.tickets_sold || 0),
+        }))
+        .filter(t => t.available > 0);
+
+      // Merge into localStorage cache for offline fallback
+      _mergeTiersToCache(eventIdStr, _tiers);
+      return;
+    }
+  } catch (err) {
+    console.warn('Could not fetch tiers from API, falling back to cache:', err);
+  }
+
+  // 2. Fall back to localStorage cache (tiers created from admin dashboard)
+  const cached = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+  _tiers = cached
+    .filter(t => String(t.eventId) === eventIdStr && t.forSale !== false)
+    .map(t => ({
+      id:            t.id,
+      name:          t.name,
+      price:         Number(t.price) || 0,
+      totalQuantity: Number(t.totalQuantity) || 0,
+      available:     Number(t.totalQuantity) - Number(t.sold || 0),
+    }))
+    .filter(t => t.available > 0);
 }
+
+function _mergeTiersToCache(eventId, apiTiers) {
+  const all = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+  apiTiers.forEach(t => {
+    const idx = all.findIndex(c => c.id === t.id);
+    const entry = {
+      id:            t.id,
+      eventId,
+      name:          t.name,
+      price:         t.price,
+      totalQuantity: t.totalQuantity,
+      sold:          t.totalQuantity - t.available,
+      forSale:       true,
+    };
+    if (idx >= 0) all[idx] = { ...all[idx], ...entry };
+    else all.push(entry);
+  });
+  localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(all));
+}
+
+// ── Modal 1: Ticket selection ─────────────────────────────────────────────────
+async function openTicketModal() {
+  document.getElementById('ticketModal').classList.add('active');
+  document.getElementById('tierLoading').style.display       = 'block';
+  document.getElementById('tierSelectSection').style.display = 'none';
+  document.getElementById('noTiersMsg').style.display        = 'none';
+
+  // Ensure tiers are loaded (in case pre-fetch hadn't finished)
+  if (_tiers.length === 0 && _eventData) {
+    await loadTiers(_eventData.id);
+  }
+
+  document.getElementById('tierLoading').style.display = 'none';
+
+  if (_tiers.length === 0) {
+    document.getElementById('noTiersMsg').style.display = 'block';
+    return;
+  }
+
+  // Populate select
+  const sel = document.getElementById('tierSelect');
+  sel.innerHTML = _tiers.map(t =>
+    `<option value="${t.id}">
+      ${t.name} — ${t.price === 0 ? 'Free' : '₦' + t.price.toLocaleString()}
+      (${t.available} left)
+    </option>`
+  ).join('');
+
+  document.getElementById('ticketQty').value = '1';
+  document.getElementById('tierSelectSection').style.display = 'block';
+  onTierChange();
+}
+
 function closeTicketModal() {
   document.getElementById('ticketModal').classList.remove('active');
 }
 
-function openPaymentModal() {
+function onTierChange() {
+  const tierId = document.getElementById('tierSelect').value;
+  _selectedTier = _tiers.find(t => t.id === tierId) || null;
+
+  const maxQty = _selectedTier ? _selectedTier.available : 1;
+  const qtyInput = document.getElementById('ticketQty');
+  qtyInput.max = maxQty;
+  if (parseInt(qtyInput.value) > maxQty) qtyInput.value = maxQty;
+
+  if (_selectedTier) {
+    document.getElementById('tierInfoBox').innerHTML =
+      `<strong>${_selectedTier.name}</strong><br>
+       Price: <strong>${_selectedTier.price === 0 ? 'Free' : '₦' + _selectedTier.price.toLocaleString()}</strong> per ticket<br>
+       Available: <strong>${_selectedTier.available}</strong> of ${_selectedTier.totalQuantity}`;
+  }
+  updateTotal();
+}
+
+function updateTotal() {
+  if (!_selectedTier) return;
+  const qty   = Math.max(1, parseInt(document.getElementById('ticketQty').value) || 1);
+  const total = _selectedTier.price * qty;
+  document.getElementById('totalPrice').textContent =
+    total === 0 ? 'Free' : '₦' + total.toLocaleString();
+}
+
+function continueToDetails() {
+  const tierId = document.getElementById('tierSelect').value;
+  _selectedTier = _tiers.find(t => t.id === tierId) || null;
+  if (!_selectedTier) return;
+
+  const qty = parseInt(document.getElementById('ticketQty').value) || 1;
+  if (qty < 1 || qty > _selectedTier.available) {
+    alert(`Please choose between 1 and ${_selectedTier.available} tickets.`);
+    return;
+  }
+
   closeTicketModal();
-  paymentModal.classList.add('active');
+  openDetailsModal();
 }
+
+// ── Modal 2: Buyer details ────────────────────────────────────────────────────
+function openDetailsModal() {
+  // Pre-fill from session if available
+  try {
+    const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+    if (session) {
+      document.getElementById('buyerName').value  = session.full_name || session.name || '';
+      document.getElementById('buyerEmail').value = session.email || '';
+      document.getElementById('buyerPhone').value = session.phone || '';
+    }
+  } catch (e) {}
+
+  hideErr('detailsError');
+  document.getElementById('detailsModal').classList.add('active');
+}
+
+function closeDetailsModal() {
+  document.getElementById('detailsModal').classList.remove('active');
+}
+
+function continueToPayment() {
+  const name  = document.getElementById('buyerName').value.trim();
+  const email = document.getElementById('buyerEmail').value.trim();
+  const phone = document.getElementById('buyerPhone').value.trim();
+
+  if (!name)  { showErr('detailsError', 'Please enter your full name.'); return; }
+  if (!email || !email.includes('@')) { showErr('detailsError', 'Please enter a valid email.'); return; }
+  if (!phone) { showErr('detailsError', 'Please enter your phone number.'); return; }
+
+  closeDetailsModal();
+  openPaymentModal();
+}
+
+// ── Modal 3: Payment ──────────────────────────────────────────────────────────
+function openPaymentModal() {
+  _selectedPayment = null;
+  document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+  hideErr('payError');
+
+  const qty   = parseInt(document.getElementById('ticketQty').value) || 1;
+  const total = _selectedTier ? _selectedTier.price * qty : 0;
+
+  document.getElementById('paymentSummary').innerHTML =
+    `<strong>${_eventData ? _eventData.title : ''}</strong><br>
+     ${_selectedTier ? _selectedTier.name : ''} × ${qty}<br>
+     Total: <strong>${total === 0 ? 'Free' : '₦' + total.toLocaleString()}</strong>`;
+
+  document.getElementById('paymentModal').classList.add('active');
+}
+
 function closePaymentModal() {
-  paymentModal.classList.remove('active');
+  document.getElementById('paymentModal').classList.remove('active');
 }
 
-function goToSuggestModal() {
+function selectPayment(el, method) {
+  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  _selectedPayment = method;
+}
+
+async function processPayment() {
+  if (!_selectedPayment) {
+    showErr('payError', 'Please select a payment method.');
+    return;
+  }
+
+  const qty        = parseInt(document.getElementById('ticketQty').value) || 1;
+  const buyerName  = document.getElementById('buyerName').value.trim();
+  const buyerEmail = document.getElementById('buyerEmail').value.trim();
+  const buyerPhone = document.getElementById('buyerPhone').value.trim();
+
+  const btn = document.getElementById('payNowBtn');
+  btn.disabled    = true;
+  btn.textContent = 'Processing…';
+  hideErr('payError');
+
+  const session = JSON.parse(localStorage.getItem('user_session') || 'null');
+  const headers = { 'Content-Type': 'application/json' };
+  if (session && session.token) headers['Authorization'] = `Bearer ${session.token}`;
+
+  const payload = {
+    tier_id:        _selectedTier.id,
+    event_id:       _eventData.id,
+    quantity:       qty,
+    buyer_name:     buyerName,
+    buyer_email:    buyerEmail,
+    buyer_phone:    buyerPhone,
+    payment_method: _selectedPayment,
+  };
+
+  console.log('[Purchase] POST', `${BASE_URL}/tickets/purchase`, payload);
+
+  let res, data;
+  try {
+    res  = await fetch(`${BASE_URL}/tickets/purchase`, { method: 'POST', headers, body: JSON.stringify(payload) });
+    data = await res.json();
+    console.log('[Purchase] Response', res.status, data);
+  } catch (networkErr) {
+    console.error('[Purchase] Network / parse error:', networkErr);
+    showErr('payError', 'Could not reach the server. Please check your connection and try again.');
+    btn.disabled    = false;
+    btn.textContent = 'Pay Now';
+    return;
+  }
+
+  if (!res.ok || !data.success) {
+    showErr('payError', data.message || `Purchase failed (HTTP ${res.status}). Please try again.`);
+    btn.disabled    = false;
+    btn.textContent = 'Pay Now';
+    return;
+  }
+
+  // ── Success path — only reached when the server confirms the purchase ──────
+  const finalCode   = (data.data && data.data.ticket_code) ? data.data.ticket_code
+                    : 'TKT-' + Date.now() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
+  const finalQRData = (data.data && data.data.qr_data)     ? data.data.qr_data
+                    : `KULUNU-TICKET|${finalCode}|${_eventData.id}|${_selectedTier.name}|${buyerEmail}`;
+
+  _recordSoldTicket(finalCode, finalQRData, qty, buyerName, buyerEmail, buyerPhone);
+
+  // Bust the admin dashboard cache so sold counts refresh on next load
+  localStorage.removeItem('kulunu_events_fetched_at');
+
   closePaymentModal();
-  suggestModal.classList.add('active');
-}
-function closeSuggestModal() {
-  suggestModal.classList.remove('active');
+  showConfirmation(finalCode, finalQRData, qty, buyerName, buyerEmail);
+
+  btn.disabled    = false;
+  btn.textContent = 'Pay Now';
 }
 
+function _recordSoldTicket(ticketCode, qrData, qty, buyerName, buyerEmail, buyerPhone) {
+  const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
+  for (let i = 0; i < qty; i++) {
+    const code = qty > 1 ? ticketCode + '-' + (i + 1) : ticketCode;
+    all.push({
+      id:          code,
+      tierId:      _selectedTier.id,
+      eventId:     String(_eventData.id),
+      eventTitle:  _eventData.title || '',
+      tierName:    _selectedTier.name,
+      price:       _selectedTier.price,
+      buyerName,
+      buyerEmail,
+      buyerPhone,
+      purchasedAt: new Date().toISOString(),
+      status:      'active',
+      qrData:      qty > 1 ? qrData + '-' + (i + 1) : qrData,
+    });
+  }
+  localStorage.setItem('kulunu_sold_tickets', JSON.stringify(all));
+
+  // Update sold count in local tier cache
+  const tiers = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+  const tier  = tiers.find(t => t.id === _selectedTier.id);
+  if (tier) {
+    tier.sold = (tier.sold || 0) + qty;
+    localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(tiers));
+  }
+}
+
+// ── Modal 4: Confirmation ─────────────────────────────────────────────────────
+function showConfirmation(ticketCode, qrData, qty, buyerName, buyerEmail) {
+  const qty1 = qty > 1 ? qty + ' tickets' : '1 ticket';
+  document.getElementById('confirmSub').textContent =
+    `${qty1} for ${_eventData ? _eventData.title : ''} sent to ${buyerEmail}`;
+
+  document.getElementById('confirmDetails').innerHTML =
+    `<b>Ticket code:</b> ${ticketCode}<br>
+     <b>Buyer:</b> ${buyerName}<br>
+     <b>Event:</b> ${_eventData ? _eventData.title : ''}<br>
+     <b>Tier:</b> ${_selectedTier ? _selectedTier.name : ''}<br>
+     <b>Qty:</b> ${qty}<br>
+     <b>Total:</b> ${_selectedTier && _selectedTier.price > 0
+       ? '₦' + (_selectedTier.price * qty).toLocaleString()
+       : 'Free'}`;
+
+  // Generate QR code
+  const qrContainer = document.getElementById('confirmQR');
+  qrContainer.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    new QRCode(qrContainer, {
+      text:  qrData,
+      width: 180,
+      height: 180,
+      colorDark:  '#0b2030',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+  }
+
+  document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.remove('active');
+}
+
+// ── Modal 5: Travel options ───────────────────────────────────────────────────
+function closeSuggestModal() {
+  document.getElementById('suggestModal').classList.remove('active');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideErr(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+}
+
+// Close any modal when clicking its backdrop
 window.addEventListener('click', function (e) {
-  if (e.target === paymentModal) closePaymentModal();
-  if (e.target === suggestModal) closeSuggestModal();
+  ['ticketModal','detailsModal','paymentModal','confirmModal','suggestModal'].forEach(id => {
+    const modal = document.getElementById(id);
+    if (e.target === modal) modal.classList.remove('active');
+  });
 });
 </script>
 </body>

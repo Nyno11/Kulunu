@@ -1,7 +1,4 @@
 (function () {
-  // const BASE_URL = 'https://api.kulunu.app';
-  const BASE_URL = 'http://192.168.196.21:8080';
-
   // Sync header with localStorage session
   const session = JSON.parse(localStorage.getItem('user_session') || 'null');
   const nameEl = document.getElementById('headerUserName');
@@ -100,9 +97,6 @@
 // ─── ORGANISER VERIFICATION (kycModal in Ticket.html) ────────────────────────
 
 (function () {
-  // const BASE_URL = 'https://api.kulunu.app';
-  const BASE_URL = 'http://192.168.196.21:8080';
-
   // Only activate on pages that have the KYC modal
   if (!document.getElementById('kycForm')) return;
 

@@ -129,6 +129,48 @@ const DataStore = {
       { type: 'sale', text: '5 tickets sold in the last hour', time: '5 hours ago', unread: false },
       { type: 'event', text: 'Virtual Business Summit: 80% tickets sold', time: '1 day ago', unread: false }
     ];
+  },
+
+  // ── Ticket Tiers (pools per event) ──────────────────────────────────────────
+  getTicketTiers(eventId) {
+    const all = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+    return eventId ? all.filter(t => t.eventId === String(eventId)) : all;
+  },
+
+  saveTicketTier(tier) {
+    const all = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+    const idx = all.findIndex(t => t.id === tier.id);
+    if (idx >= 0) all[idx] = tier; else all.push(tier);
+    localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(all));
+  },
+
+  deleteTicketTier(tierId) {
+    const all = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+    localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(all.filter(t => t.id !== tierId)));
+  },
+
+  // ── Sold Tickets (individual purchases) ─────────────────────────────────────
+  getSoldTickets(eventId) {
+    const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
+    return eventId ? all.filter(t => t.eventId === String(eventId)) : all;
+  },
+
+  saveSoldTicket(ticket) {
+    const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
+    const idx = all.findIndex(t => t.id === ticket.id);
+    if (idx >= 0) all[idx] = ticket; else all.push(ticket);
+    localStorage.setItem('kulunu_sold_tickets', JSON.stringify(all));
+  },
+
+  updateSoldTicketStatus(ticketId, status) {
+    const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
+    const ticket = all.find(t => t.id === ticketId);
+    if (ticket) {
+      ticket.status = status;
+      if (status === 'checked-in') ticket.checkedInAt = new Date().toISOString();
+      localStorage.setItem('kulunu_sold_tickets', JSON.stringify(all));
+    }
+    return ticket;
   }
 };
 
@@ -146,6 +188,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeSettings();
   initializeSearch();
   initializeNotifications();
+
+  // Pull fresh sold tickets from backend in the background so attendee counts are live
+  fetchSoldTicketsFromAPI(null).then(() => renderDashboard());
 });
 
 const EVENTS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -159,10 +204,10 @@ function resolveEventStatus(dbStatus, dateStr) {
   return 'completed';
 }
 
-// Fetch events from /admin/events, merge with defaults, and cache in localStorage
+// Fetch events from /admin/events — returns API data only, no dummy fallback
 async function fetchAndMergeEvents() {
   const session = window._adminSession || {};
-  if (!session.token) return DataStore.getDefaultEvents();
+  if (!session.token) return [];
 
   try {
     const res = await fetch(`${BASE_URL}/admin/events`, {
@@ -172,15 +217,12 @@ async function fetchAndMergeEvents() {
     const data = await res.json();
 
     if (!data.success || !Array.isArray(data.data)) {
-      console.log('Invalid API response for events');
-      console.log(data);
-      return DataStore.getDefaultEvents();
+      console.warn('Invalid API response for events:', data);
+      return DataStore.getEvents(); // return whatever is cached
     }
 
-    console.log(data);
-
-    const apiEvents = data.data.map(e => ({
-      id: String(e.id),
+    return data.data.map(e => ({
+      id: String(e.id_event || e.id),
       title: e.title || '',
       date: e.date || '',
       venue: e.venue || '',
@@ -192,25 +234,34 @@ async function fetchAndMergeEvents() {
       description: e.description || '',
       createdAt: e.created_at ? e.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
     }));
-
-    // Merge: start with defaults, append DB events that aren't already present
-    const defaults = DataStore.getDefaultEvents();
-    const existingIds = new Set(defaults.map(e => e.id));
-    const merged = [...defaults];
-    for (const ev of apiEvents) {
-      if (!existingIds.has(ev.id)) merged.push(ev);
-    }
-
-    return merged;
   } catch (err) {
     console.error('Failed to fetch events from API:', err);
-    return DataStore.getDefaultEvents();
+    return DataStore.getEvents(); // return whatever is cached
   }
 }
 
-// Initialize data in localStorage; refetch events from DB when cache is stale
+// Wipe any previously cached dummy data so real backend data takes over
+function clearDummyData() {
+  const dummyEventIds = new Set(['EVT-001', 'EVT-002', 'EVT-003', 'EVT-004']);
+  const events = JSON.parse(localStorage.getItem('kulunu_events') || '[]');
+  const hadDummy = events.some(e => dummyEventIds.has(e.id));
+  const hadBadId = events.some(e => !e.id || e.id === 'undefined');
+  if (hadDummy || hadBadId) {
+    localStorage.removeItem('kulunu_events');
+    localStorage.removeItem('kulunu_events_fetched_at');
+    localStorage.removeItem('kulunu_tickets');
+    localStorage.removeItem('kulunu_ticket_tiers');
+    localStorage.removeItem('kulunu_sold_tickets');
+    localStorage.removeItem('kulunu_attendees');
+    localStorage.removeItem('kulunu_activities');
+    localStorage.removeItem('kulunu_notifications');
+  }
+}
 
+// Initialize data — always fetch fresh events from the backend; never seed dummy data
 async function initializeData() {
+  clearDummyData();
+
   const cachedAt = parseInt(localStorage.getItem('kulunu_events_fetched_at') || '0', 10);
   const cacheStale = Date.now() - cachedAt > EVENTS_CACHE_TTL;
 
@@ -220,17 +271,18 @@ async function initializeData() {
     localStorage.setItem('kulunu_events_fetched_at', String(Date.now()));
   }
 
+  // Never seed fake tickets or attendees — real data comes from the backend
   if (!localStorage.getItem('kulunu_tickets')) {
-    DataStore.saveTickets(DataStore.getDefaultTickets());
+    DataStore.saveTickets([]);
   }
   if (!localStorage.getItem('kulunu_attendees')) {
-    DataStore.saveAttendees(DataStore.getDefaultAttendees());
+    DataStore.saveAttendees([]);
   }
   if (!localStorage.getItem('kulunu_activities')) {
-    DataStore.getActivities(); // Creates default
+    localStorage.setItem('kulunu_activities', JSON.stringify([]));
   }
   if (!localStorage.getItem('kulunu_notifications')) {
-    localStorage.setItem('kulunu_notifications', JSON.stringify(DataStore.getDefaultNotifications()));
+    localStorage.setItem('kulunu_notifications', JSON.stringify([]));
   }
 }
 
@@ -380,9 +432,12 @@ function renderEvents(events) {
             <button class="btn-icon" onclick="editEvent('${event.id}')" title="Edit">
               <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn-icon" onclick="deleteEvent('${event.id}')">
-      <i class="bi bi-trash"></i>
-   </button>
+            <button class="btn-icon" onclick="openManageTicketsModal('${event.id}')" title="Manage Tickets" style="color: var(--primary);">
+              <i class="bi bi-ticket-perforated"></i>
+            </button>
+            <button class="btn-icon" onclick="deleteEvent('${event.id}')" title="Delete">
+              <i class="bi bi-trash"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -593,6 +648,529 @@ function closeModal(modalId) {
 }
 
 // =========================
+// TICKET MANAGEMENT (ADMIN)
+// =========================
+let _currentManageEventId = null;
+let _currentQRData = null;
+
+async function openManageTicketsModal(eventId) {
+  _currentManageEventId = String(eventId);
+  const events = DataStore.getEvents();
+  const event = events.find(e => e.id === _currentManageEventId);
+  if (!event) return;
+
+  document.getElementById('manageTicketsTitle').textContent = `Manage Tickets — ${event.title}`;
+  document.getElementById('manageTicketsModal').classList.add('open');
+  hideAddTierForm();
+  switchTicketMgmtTab('tiers');
+
+  // Try to pull latest tiers from API
+  await fetchTiersFromAPI(_currentManageEventId);
+  renderTiersList(_currentManageEventId);
+}
+
+async function fetchTiersFromAPI(eventId) {
+  const session = window._adminSession || {};
+  if (!session.token) return;
+  try {
+    const res = await fetch(`${BASE_URL}/admin/events/${eventId}/tickets`, {
+      headers: { 'Authorization': `Bearer ${session.token}` }
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      const legacyTickets = DataStore.getTickets();
+
+      data.data.forEach(t => {
+        const tier = {
+          id: String(t.id),
+          eventId: String(eventId),
+          eventTitle: t.event_title || '',
+          name: t.name || t.tier_name || '',
+          price: Number(t.price) || 0,
+          totalQuantity: Number(t.quantity || t.total_quantity) || 0,
+          sold: Number(t.sold || t.tickets_sold) || 0,
+          description: t.description || '',
+          forSale: t.for_sale !== undefined ? t.for_sale : true,
+          createdAt: t.created_at ? t.created_at.split('T')[0] : new Date().toISOString().split('T')[0]
+        };
+        DataStore.saveTicketTier(tier);
+
+        // Keep the legacy kulunu_tickets store in sync so renderTickets shows live counts
+        const legacyIdx = legacyTickets.findIndex(lt => lt.id === tier.id);
+        const legacyEntry = {
+          id: tier.id,
+          eventId: tier.eventId,
+          eventTitle: tier.eventTitle,
+          name: tier.name,
+          type: tier.price === 0 ? 'free' : 'paid',
+          price: tier.price,
+          quantity: tier.totalQuantity,
+          sold: tier.sold,
+        };
+        if (legacyIdx >= 0) legacyTickets[legacyIdx] = legacyEntry;
+        else legacyTickets.push(legacyEntry);
+      });
+
+      DataStore.saveTickets(legacyTickets);
+    }
+  } catch (err) {
+    console.warn('Could not fetch tiers from API:', err);
+  }
+}
+
+async function fetchSoldTicketsFromAPI(eventId) {
+  const session = window._adminSession || {};
+  if (!session.token) return;
+  try {
+    const url = eventId
+      ? `${BASE_URL}/admin/events/${eventId}/sold-tickets`
+      : `${BASE_URL}/admin/sold-tickets`;
+    const res = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${session.token}` }
+    });
+    const data = await res.json();
+    if (data.success && Array.isArray(data.data)) {
+      data.data.forEach(t => {
+        const sold = {
+          id: String(t.id || t.ticket_code),
+          tierId: String(t.tier_id || t.ticket_tier_id || ''),
+          eventId: String(t.event_id || eventId),
+          eventTitle: t.event_title || '',
+          tierName: t.tier_name || t.name || '',
+          price: t.price || 0,
+          buyerName: t.buyer_name || t.full_name || '',
+          buyerEmail: t.buyer_email || t.email || '',
+          buyerPhone: t.buyer_phone || t.phone || '',
+          purchasedAt: t.purchased_at || t.created_at || new Date().toISOString(),
+          status: t.status || 'active',
+          qrData: t.qr_data || `KULUNU-TICKET|${t.id}|${t.event_id}|${t.tier_name}|${t.email}`
+        };
+        DataStore.saveSoldTicket(sold);
+      });
+    }
+  } catch (err) {
+    console.warn('Could not fetch sold tickets from API:', err);
+  }
+}
+
+function switchTicketMgmtTab(tab) {
+  document.querySelectorAll('#manageTicketsModal .filter-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tab);
+  });
+  document.getElementById('tiersTab').style.display = tab === 'tiers' ? 'block' : 'none';
+  document.getElementById('soldTicketsTab').style.display = tab === 'sold' ? 'block' : 'none';
+
+  if (tab === 'sold') {
+    fetchSoldTicketsFromAPI(_currentManageEventId).then(() => {
+      renderSoldTicketsList(_currentManageEventId);
+    });
+  }
+}
+
+function renderTiersList(eventId) {
+  const tiers = DataStore.getTicketTiers(eventId);
+  const container = document.getElementById('tiersList');
+
+  if (tiers.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 40px 0; color: var(--text-muted);">
+        <i class="bi bi-ticket-perforated" style="font-size: 48px; display: block; margin-bottom: 12px;"></i>
+        <p style="margin: 0; font-size: 15px;">No ticket tiers yet. Add your first tier below.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Tier Name</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Sold</th>
+            <th>Available</th>
+            <th>On Sale</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tiers.map(tier => `
+            <tr>
+              <td>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="avatar">${tier.name.charAt(0)}</div>
+                  <div>
+                    <strong>${tier.name}</strong>
+                    ${tier.description ? `<br><small style="color:var(--text-muted);">${tier.description}</small>` : ''}
+                  </div>
+                </div>
+              </td>
+              <td>${tier.price === 0 ? '<span class="status-badge free">Free</span>' : '₦' + tier.price.toLocaleString()}</td>
+              <td>${tier.totalQuantity.toLocaleString()}</td>
+              <td>${tier.sold}</td>
+              <td>${(tier.totalQuantity - tier.sold).toLocaleString()}</td>
+              <td>
+                <label class="toggle" style="margin:0;">
+                  <input type="checkbox" ${tier.forSale ? 'checked' : ''} onchange="toggleTierSale('${tier.id}')">
+                  <span class="toggle-slider"></span>
+                </label>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <button class="action-btn view" onclick="showTierQR('${tier.id}')">
+                    <i class="bi bi-qr-code"></i> QR
+                  </button>
+                  <button class="action-btn" style="background:#FEE2E2;color:#991B1B;" onclick="deleteTier('${tier.id}')">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function renderSoldTicketsList(eventId) {
+  const soldTickets = DataStore.getSoldTickets(eventId);
+  const container = document.getElementById('soldTicketsTab');
+
+  if (soldTickets.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 40px 0; color: var(--text-muted);">
+        <i class="bi bi-receipt" style="font-size: 48px; display: block; margin-bottom: 12px;"></i>
+        <p style="margin: 0; font-size: 15px;">No tickets sold yet. Sold tickets appear here after user purchases.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Ticket Code</th>
+            <th>Buyer</th>
+            <th>Tier</th>
+            <th>Price</th>
+            <th>Purchase Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${soldTickets.map(ticket => `
+            <tr>
+              <td><code style="font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px;">${ticket.id}</code></td>
+              <td>
+                <strong>${ticket.buyerName}</strong>
+                <br><small style="color:var(--text-muted);">${ticket.buyerEmail}</small>
+                ${ticket.buyerPhone ? `<br><small style="color:var(--text-muted);">${ticket.buyerPhone}</small>` : ''}
+              </td>
+              <td>${ticket.tierName}</td>
+              <td>${ticket.price === 0 ? 'Free' : '₦' + ticket.price.toLocaleString()}</td>
+              <td>${formatDate(ticket.purchasedAt ? ticket.purchasedAt.split('T')[0] : '')}</td>
+              <td><span class="status-badge ${ticket.status}">${ticket.status.replace('-', ' ')}</span></td>
+              <td>
+                <div class="table-actions">
+                  <button class="action-btn view" onclick="showSoldTicketQR('${ticket.id}')">
+                    <i class="bi bi-qr-code"></i> QR
+                  </button>
+                  ${ticket.status !== 'checked-in' ? `
+                    <button class="action-btn edit" onclick="checkInTicket('${ticket.id}')">
+                      <i class="bi bi-check2"></i> Check-in
+                    </button>` : ''}
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function showAddTierForm() {
+  document.getElementById('addTierForm').style.display = 'block';
+  document.getElementById('addTierBtn').style.display = 'none';
+  document.getElementById('tierName').focus();
+}
+
+function hideAddTierForm() {
+  const form = document.getElementById('addTierForm');
+  if (form) form.style.display = 'none';
+  const btn = document.getElementById('addTierBtn');
+  if (btn) btn.style.display = 'inline-flex';
+  ['tierName', 'tierPrice', 'tierQuantity', 'tierDescription'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+async function saveTier() {
+  const name = document.getElementById('tierName').value.trim();
+  const price = parseFloat(document.getElementById('tierPrice').value) || 0;
+  const quantity = parseInt(document.getElementById('tierQuantity').value);
+  const description = document.getElementById('tierDescription').value.trim();
+
+  if (!name) { showToast('Please enter a tier name', 'error'); return; }
+  if (!quantity || quantity < 1) { showToast('Please enter a valid quantity (min 1)', 'error'); return; }
+  if (price < 0) { showToast('Price cannot be negative', 'error'); return; }
+
+  const eventId = _currentManageEventId;
+  const events = DataStore.getEvents();
+  const event = events.find(e => e.id === eventId);
+
+  const tier = {
+    id: 'TIER-' + Date.now(),
+    eventId,
+    eventTitle: event ? event.title : '',
+    name,
+    price,
+    totalQuantity: quantity,
+    sold: 0,
+    description,
+    forSale: true,
+    createdAt: new Date().toISOString().split('T')[0]
+  };
+
+  // Try API
+  const session = window._adminSession || {};
+  if (session.token) {
+    try {
+      const res = await fetch(`${BASE_URL}/admin/events/${eventId}/tickets`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, price, quantity, description })
+      });
+      const data = await res.json();
+      if (data.success && data.data && data.data.id) {
+        tier.id = String(data.data.id);
+      }
+    } catch (err) {
+      console.warn('API tier save failed, using localStorage:', err);
+    }
+  }
+
+  DataStore.saveTicketTier(tier);
+
+  // Keep legacy tickets store in sync for dashboard stats
+  const legacy = DataStore.getTickets();
+  legacy.push({
+    id: tier.id,
+    eventId: tier.eventId,
+    name: tier.name,
+    type: tier.price === 0 ? 'free' : 'paid',
+    price: tier.price,
+    quantity: tier.totalQuantity,
+    sold: 0,
+    eventTitle: tier.eventTitle
+  });
+  DataStore.saveTickets(legacy);
+
+  hideAddTierForm();
+  renderTiersList(eventId);
+  renderDashboard();
+  showToast(`Tier "${name}" created successfully!`, 'success');
+
+  DataStore.saveActivity({
+    type: 'event',
+    text: `New ticket tier <strong>${name}</strong> added to ${tier.eventTitle}`,
+    time: 'Just now'
+  });
+}
+
+async function deleteTier(tierId) {
+  if (!confirm('Delete this ticket tier? This cannot be undone.')) return;
+
+  const session = window._adminSession || {};
+  if (session.token) {
+    try {
+      const res = await fetch(`${BASE_URL}/admin/tickets/${tierId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${session.token}` }
+      });
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.message || 'Failed to delete tier', 'error');
+        return;
+      }
+    } catch (err) {
+      showToast('Server error — could not delete tier', 'error');
+      console.error('deleteTier API error:', err);
+      return;
+    }
+  }
+
+  DataStore.deleteTicketTier(tierId);
+  DataStore.saveTickets(DataStore.getTickets().filter(t => t.id !== tierId));
+  renderTiersList(_currentManageEventId);
+  renderDashboard();
+  showToast('Ticket tier deleted', 'success');
+}
+
+function toggleTierSale(tierId) {
+  const all = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
+  const tier = all.find(t => t.id === tierId);
+  if (!tier) return;
+  tier.forSale = !tier.forSale;
+  localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(all));
+  showToast(tier.forSale ? `"${tier.name}" is now on sale` : `"${tier.name}" hidden from sale`, tier.forSale ? 'success' : 'warning');
+
+  const session = window._adminSession || {};
+  if (session.token) {
+    fetch(`${BASE_URL}/admin/tickets/${tierId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${session.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ for_sale: tier.forSale })
+    }).catch(err => console.warn('toggleTierSale API failed:', err));
+  }
+}
+
+function showTierQR(tierId) {
+  const tiers = DataStore.getTicketTiers();
+  const tier = tiers.find(t => t.id === tierId);
+  if (!tier) return;
+
+  const qrData = `KULUNU-TIER|${tier.id}|${tier.eventId}|${tier.name}|${tier.price}`;
+  _currentQRData = qrData;
+
+  document.getElementById('qrModalTitle').textContent = `QR Code — ${tier.name}`;
+  document.getElementById('ticketQRDetails').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Tier</div>
+        <div style="font-weight:600;">${tier.name}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Price</div>
+        <div style="font-weight:600;">${tier.price === 0 ? 'Free' : '₦' + tier.price.toLocaleString()}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Total Qty</div>
+        <div style="font-weight:600;">${tier.totalQuantity.toLocaleString()}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Available</div>
+        <div style="font-weight:600;">${(tier.totalQuantity - tier.sold).toLocaleString()}</div>
+      </div>
+    </div>
+    ${tier.eventTitle ? `<div style="font-size:13px;color:var(--text-muted);">Event: <strong style="color:var(--text-primary);">${tier.eventTitle}</strong></div>` : ''}
+    <div style="margin-top:10px;font-size:11px;color:var(--text-muted);word-break:break-all;">
+      QR data: <code>${qrData}</code>
+    </div>`;
+
+  document.getElementById('ticketQRModal').classList.add('open');
+  generateQR(qrData, 'ticketQRContainer');
+}
+
+function showSoldTicketQR(ticketId) {
+  const ticket = DataStore.getSoldTickets().find(t => t.id === ticketId);
+  if (!ticket) return;
+
+  const qrData = ticket.qrData || `KULUNU-TICKET|${ticket.id}|${ticket.eventId}|${ticket.tierName}|${ticket.buyerEmail}`;
+  _currentQRData = qrData;
+
+  document.getElementById('qrModalTitle').textContent = `Ticket — ${ticket.id}`;
+  document.getElementById('ticketQRDetails').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Buyer</div>
+        <div style="font-weight:600;">${ticket.buyerName}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Email</div>
+        <div style="font-weight:600;font-size:13px;">${ticket.buyerEmail}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Tier</div>
+        <div style="font-weight:600;">${ticket.tierName}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Status</div>
+        <div><span class="status-badge ${ticket.status}">${ticket.status.replace('-', ' ')}</span></div>
+      </div>
+    </div>
+    ${ticket.buyerPhone ? `<div style="font-size:13px;color:var(--text-muted);">Phone: <strong style="color:var(--text-primary);">${ticket.buyerPhone}</strong></div>` : ''}
+    <div style="margin-top:10px;font-size:11px;color:var(--text-muted);word-break:break-all;">
+      QR data: <code>${qrData}</code>
+    </div>`;
+
+  document.getElementById('ticketQRModal').classList.add('open');
+  generateQR(qrData, 'ticketQRContainer');
+}
+
+function checkInTicket(ticketId) {
+  const ticket = DataStore.updateSoldTicketStatus(ticketId, 'checked-in');
+  if (!ticket) return;
+
+  renderSoldTicketsList(_currentManageEventId);
+  showToast(`${ticket.buyerName} checked in!`, 'success');
+
+  DataStore.saveActivity({
+    type: 'attendee',
+    text: `<strong>${ticket.buyerName}</strong> checked in at ${ticket.eventTitle}`,
+    time: 'Just now'
+  });
+
+  // Try API check-in
+  const session = window._adminSession || {};
+  if (session.token) {
+    fetch(`${BASE_URL}/admin/tickets/${ticketId}/check-in`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${session.token}` }
+    }).catch(err => console.warn('API check-in failed:', err));
+  }
+}
+
+function generateQR(data, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  if (typeof QRCode === 'undefined') {
+    container.innerHTML = `
+      <div style="width:200px;height:200px;background:#F1F5F9;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;border:2px dashed #CBD5E0;">
+        <i class="bi bi-qr-code" style="font-size:48px;color:var(--text-muted);"></i>
+        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">QR library not loaded</p>
+      </div>`;
+    return;
+  }
+
+  new QRCode(container, {
+    text: data,
+    width: 200,
+    height: 200,
+    colorDark: '#0B1E33',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+function downloadQRCode() {
+  const canvas = document.querySelector('#ticketQRContainer canvas');
+  const img = document.querySelector('#ticketQRContainer img');
+
+  if (canvas) {
+    const link = document.createElement('a');
+    link.download = `kulunu-qr-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } else if (img) {
+    const link = document.createElement('a');
+    link.download = `kulunu-qr-${Date.now()}.png`;
+    link.href = img.src;
+    link.click();
+  } else {
+    showToast('No QR code to download', 'error');
+  }
+}
+
+// =========================
 // TICKETS SECTION
 // =========================
 function renderTickets(tickets) {
@@ -679,15 +1257,119 @@ function populateEventFilter(selectId, tickets) {
 }
 
 function viewTicket(ticketId) {
-  showToast('Ticket details loaded', 'info');
+  const tickets = DataStore.getTickets();
+  const ticket = tickets.find(t => t.id === ticketId);
+  if (ticket) openManageTicketsModal(ticket.eventId);
 }
 
 function editTicket(ticketId) {
-  showToast('Opening ticket editor...', 'info');
+  const tickets = DataStore.getTickets();
+  const ticket = tickets.find(t => t.id === ticketId);
+  if (ticket) {
+    openManageTicketsModal(ticket.eventId);
+    showToast('Edit the tier from the Manage Tickets panel', 'info');
+  }
 }
 
 function exportTickets() {
   showToast('Exporting ticket data...', 'success');
+}
+
+function switchMainTicketsTab(tab) {
+  document.querySelectorAll('[data-tickets-tab]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.ticketsTab === tab);
+  });
+  document.getElementById('mainTiersTab').style.display = tab === 'tiers' ? 'block' : 'none';
+  document.getElementById('mainSoldTab').style.display = tab === 'sold' ? 'block' : 'none';
+
+  if (tab === 'sold') {
+    fetchSoldTicketsFromAPI(null).then(() => renderAllSoldTickets());
+  }
+}
+
+function renderAllSoldTickets(filter = {}) {
+  let soldTickets = DataStore.getSoldTickets();
+
+  if (filter.eventId) soldTickets = soldTickets.filter(t => t.eventId === filter.eventId);
+  if (filter.status) soldTickets = soldTickets.filter(t => t.status === filter.status);
+  if (filter.search) {
+    const q = filter.search.toLowerCase();
+    soldTickets = soldTickets.filter(t =>
+      t.buyerName.toLowerCase().includes(q) ||
+      t.buyerEmail.toLowerCase().includes(q) ||
+      t.id.toLowerCase().includes(q)
+    );
+  }
+
+  const tbody = document.getElementById('allSoldTicketsBody');
+
+  // Populate event filter
+  const events = DataStore.getEvents();
+  const eventFilter = document.getElementById('soldTicketEventFilter');
+  if (eventFilter && eventFilter.options.length <= 1) {
+    events.forEach(ev => {
+      eventFilter.innerHTML += `<option value="${ev.id}">${ev.title}</option>`;
+    });
+  }
+
+  if (soldTickets.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">
+      <i class="bi bi-receipt" style="font-size:32px;display:block;margin-bottom:8px;"></i>
+      No sold tickets found
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = soldTickets.map(ticket => `
+    <tr>
+      <td><code style="font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px;">${ticket.id}</code></td>
+      <td>
+        <div class="ticket-name">
+          <div class="avatar">${ticket.buyerName.charAt(0)}</div>
+          <div class="ticket-name-info">
+            <strong>${ticket.buyerName}</strong>
+            <small>${ticket.buyerEmail}</small>
+          </div>
+        </div>
+      </td>
+      <td>${ticket.eventTitle}</td>
+      <td>${ticket.tierName}</td>
+      <td>${ticket.price === 0 ? '<span class="status-badge free">Free</span>' : '₦' + ticket.price.toLocaleString()}</td>
+      <td>${formatDate(ticket.purchasedAt ? ticket.purchasedAt.split('T')[0] : '')}</td>
+      <td><span class="status-badge ${ticket.status}">${ticket.status.replace('-', ' ')}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="action-btn view" onclick="showSoldTicketQR('${ticket.id}')">
+            <i class="bi bi-qr-code"></i> QR
+          </button>
+          ${ticket.status !== 'checked-in' ? `
+            <button class="action-btn edit" onclick="_checkInFromMain('${ticket.id}')">
+              <i class="bi bi-check2"></i>
+            </button>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterAllSoldTickets() {
+  renderAllSoldTickets({
+    search: document.getElementById('soldTicketSearch')?.value || '',
+    eventId: document.getElementById('soldTicketEventFilter')?.value || '',
+    status: document.getElementById('soldTicketStatusFilter')?.value || ''
+  });
+}
+
+function _checkInFromMain(ticketId) {
+  const ticket = DataStore.updateSoldTicketStatus(ticketId, 'checked-in');
+  if (!ticket) return;
+  filterAllSoldTickets();
+  showToast(`${ticket.buyerName} checked in!`, 'success');
+  DataStore.saveActivity({
+    type: 'attendee',
+    text: `<strong>${ticket.buyerName}</strong> checked in at ${ticket.eventTitle}`,
+    time: 'Just now'
+  });
 }
 
 // =========================
@@ -1309,9 +1991,6 @@ function removeFilePreview() {
 }
 
 // Handle create/edit event form submission
-const BASE_URL = 'http://192.168.196.21:8080';
-
-
 document.addEventListener('DOMContentLoaded', () => {
   const createEventForm = document.getElementById('createEventForm');
 
@@ -1475,3 +2154,19 @@ window.exportAttendees = exportAttendees;
 window.logout = logout;
 window.resetCreateEventModal = resetCreateEventModal;
 window.hideCreateEventError = hideCreateEventError;
+window.openManageTicketsModal = openManageTicketsModal;
+window.switchTicketMgmtTab = switchTicketMgmtTab;
+window.showAddTierForm = showAddTierForm;
+window.hideAddTierForm = hideAddTierForm;
+window.saveTier = saveTier;
+window.deleteTier = deleteTier;
+window.toggleTierSale = toggleTierSale;
+window.showTierQR = showTierQR;
+window.showSoldTicketQR = showSoldTicketQR;
+window.checkInTicket = checkInTicket;
+window.downloadQRCode = downloadQRCode;
+window.deleteEvent = deleteEvent;
+window.switchMainTicketsTab = switchMainTicketsTab;
+window.renderAllSoldTickets = renderAllSoldTickets;
+window.filterAllSoldTickets = filterAllSoldTickets;
+window._checkInFromMain = _checkInFromMain;

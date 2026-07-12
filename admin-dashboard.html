@@ -304,42 +304,95 @@
           </div>
         </div>
 
-        <!-- Tickets Table -->
-        <div class="table-card">
-          <div class="table-header">
-            <div class="table-search">
-              <i class="bi bi-search"></i>
-              <input type="text" placeholder="Search tickets..." id="ticketSearch">
+        <!-- Ticket Section Tabs -->
+        <div class="filter-tabs" style="margin-bottom: 0;">
+          <button class="filter-tab active" data-tickets-tab="tiers" onclick="switchMainTicketsTab('tiers')">
+            <i class="bi bi-layers"></i> Ticket Tiers
+          </button>
+          <button class="filter-tab" data-tickets-tab="sold" onclick="switchMainTicketsTab('sold')">
+            <i class="bi bi-receipt"></i> Sold Tickets
+          </button>
+        </div>
+
+        <!-- Tiers Table -->
+        <div id="mainTiersTab">
+          <div class="table-card">
+            <div class="table-header">
+              <div class="table-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search tickets..." id="ticketSearch">
+              </div>
+              <div class="table-filters">
+                <select id="ticketEventFilter">
+                  <option value="">All Events</option>
+                </select>
+                <select id="ticketTypeFilter">
+                  <option value="">All Types</option>
+                  <option value="paid">Paid</option>
+                  <option value="free">Free</option>
+                </select>
+              </div>
             </div>
-            <div class="table-filters">
-              <select id="ticketEventFilter">
-                <option value="">All Events</option>
-              </select>
-              <select id="ticketTypeFilter">
-                <option value="">All Types</option>
-                <option value="paid">Paid</option>
-                <option value="free">Free</option>
-              </select>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ticket Tier</th>
+                    <th>Event</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Available</th>
+                    <th>Sold</th>
+                    <th>Revenue</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketsTableBody">
+                  <!-- Tickets will be injected by JS -->
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Ticket</th>
-                  <th>Event</th>
-                  <th>Type</th>
-                  <th>Price</th>
-                  <th>Available</th>
-                  <th>Sold</th>
-                  <th>Revenue</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="ticketsTableBody">
-                <!-- Tickets will be injected by JS -->
-              </tbody>
-            </table>
+        </div>
+
+        <!-- All Sold Tickets Table -->
+        <div id="mainSoldTab" style="display:none;">
+          <div class="table-card">
+            <div class="table-header">
+              <div class="table-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search by buyer name or email..." id="soldTicketSearch" oninput="filterAllSoldTickets()">
+              </div>
+              <div class="table-filters">
+                <select id="soldTicketEventFilter" onchange="filterAllSoldTickets()">
+                  <option value="">All Events</option>
+                </select>
+                <select id="soldTicketStatusFilter" onchange="filterAllSoldTickets()">
+                  <option value="">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="checked-in">Checked In</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ticket Code</th>
+                    <th>Buyer</th>
+                    <th>Event</th>
+                    <th>Tier</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="allSoldTicketsBody">
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -691,11 +744,111 @@
     </div>
   </div>
 
+  <!-- Manage Tickets Modal -->
+  <div class="modal" id="manageTicketsModal">
+    <div class="modal-overlay" onclick="closeModal('manageTicketsModal')"></div>
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 id="manageTicketsTitle">Manage Tickets</h3>
+        <button class="modal-close" onclick="closeModal('manageTicketsModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Tabs -->
+        <div class="filter-tabs" style="margin-bottom: 20px;">
+          <button class="filter-tab active" data-tab="tiers" onclick="switchTicketMgmtTab('tiers')">
+            <i class="bi bi-layers"></i> Ticket Tiers
+          </button>
+          <button class="filter-tab" data-tab="sold" onclick="switchTicketMgmtTab('sold')">
+            <i class="bi bi-receipt"></i> Sold Tickets
+          </button>
+        </div>
+
+        <!-- Tiers Tab -->
+        <div id="tiersTab">
+          <div id="tiersList"></div>
+
+          <button id="addTierBtn" class="btn-primary" onclick="showAddTierForm()" style="margin-top: 16px;">
+            <i class="bi bi-plus-lg"></i> Add Ticket Tier
+          </button>
+
+          <!-- Add Tier Form -->
+          <div id="addTierForm" style="display:none; margin-top: 16px; background: #F8FAFC; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color);">
+            <h4 style="margin-bottom: 16px; font-size: 15px; font-weight: 600;">New Ticket Tier</h4>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Tier Name *</label>
+                  <input type="text" id="tierName" placeholder="e.g. VIP, Regular, General Admission">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Price (₦) *</label>
+                  <input type="number" id="tierPrice" min="0" placeholder="0 for free">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Total Quantity *</label>
+                  <input type="number" id="tierQuantity" min="1" placeholder="e.g. 100">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Description (Optional)</label>
+                  <input type="text" id="tierDescription" placeholder="e.g. Includes backstage access">
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap: 10px; margin-top: 4px;">
+              <button class="btn-primary" onclick="saveTier()">
+                <i class="bi bi-check-lg"></i> Save Tier
+              </button>
+              <button class="btn-secondary" onclick="hideAddTierForm()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sold Tickets Tab -->
+        <div id="soldTicketsTab" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket QR Code Modal -->
+  <div class="modal" id="ticketQRModal">
+    <div class="modal-overlay" onclick="closeModal('ticketQRModal')"></div>
+    <div class="modal-content" style="max-width: 460px;">
+      <div class="modal-header">
+        <h3 id="qrModalTitle">Ticket QR Code</h3>
+        <button class="modal-close" onclick="closeModal('ticketQRModal')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div id="ticketQRContainer" style="display:flex; justify-content:center; margin: 20px 0;"></div>
+        <div id="ticketQRDetails" style="text-align:left; background:#F8FAFC; border-radius:10px; padding:16px; border:1px solid var(--border-color); font-size:14px;"></div>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+          <button class="btn-primary" onclick="downloadQRCode()">
+            <i class="bi bi-download"></i> Download PNG
+          </button>
+          <button class="btn-secondary" onclick="closeModal('ticketQRModal')">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="core/config.js"></script>
   <script src="core/admin-dashboard.js"></script>
   <script>
     (function () {
