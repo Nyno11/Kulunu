@@ -57,7 +57,7 @@
 <div id="homePage" class="page-section active-section">
   <section class="hero">
     <div class="search-box">
-      <input type="text" placeholder="Search events..." />
+      <input id="eventSearch" type="text" placeholder="Search events..." autocomplete="off" />
       <button><i class="ri-search-line"></i></button>
     </div>
     <!-- HERO: Trending Events Carousel -->
@@ -110,49 +110,51 @@
     </section>
   </section>
 
+  <!-- Search results — shown only when a query is active -->
+  <div id="searchResults" style="display:none; padding:0 16px 24px;"></div>
 
+  <div id="eventSections">
   <section class="categories-section">
     <h2>Categories</h2>
 
     <div class="categories-scroll">
 
-      <div class="category-item" onclick="goTo('Concert.html')">
+      <div class="category-item" onclick="openCategory('concert','Concerts','ri-music-2-fill')">
         <i class="ri-music-2-fill"></i>
         <span>Concerts</span>
       </div>
 
-
-      <div class="category-item" onclick="goTo('Sports.html')">
+      <div class="category-item" onclick="openCategory('sports','Sports','ri-football-fill')">
         <i class="ri-football-fill"></i>
         <span>Sports</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Comedy.html')">
+      <div class="category-item" onclick="openCategory('comedy','Comedy','ri-mic-fill')">
         <i class="ri-mic-fill"></i>
         <span>Comedy</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Movies.html')">
+      <div class="category-item" onclick="openCategory('movies','Movies','ri-movie-2-fill')">
         <i class="ri-movie-2-fill"></i>
         <span>Movies</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Festivals.html')">
+      <div class="category-item" onclick="openCategory('festival','Festivals','ri-map-pin-fill')">
         <i class="ri-map-pin-fill"></i>
         <span>Festivals</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Tech.html')">
+      <div class="category-item" onclick="openCategory('tech','Tech','ri-computer-fill')">
         <i class="ri-computer-fill"></i>
         <span>Tech</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Coummunity.html')">
+      <div class="category-item" onclick="openCategory('community','Community','ri-community-fill')">
         <i class="ri-community-fill"></i>
         <span>Community</span>
       </div>
 
-      <div class="category-item" onclick="goTo('Education.html')">
+      <div class="category-item" onclick="openCategory('education','Education','ri-graduation-cap-fill')">
         <i class="ri-graduation-cap-fill"></i>
         <span>Education</span>
       </div>
@@ -189,6 +191,7 @@
       <!-- populated by JS -->
     </div>
   </section>
+  </div><!-- #eventSections -->
 </div>
 
 <style>
@@ -1087,6 +1090,11 @@
     window.location.href = page;
   }
 
+  function openCategory(slug, label, icon) {
+    localStorage.setItem('selectedCategory', JSON.stringify({ slug, label, icon }));
+    window.location.href = 'category.html';
+  }
+
   function logout() {
     localStorage.removeItem('user_session');
     window.location.href = 'index.html';
@@ -1229,6 +1237,107 @@
 </script>
 
 <script src="./core/event.js"></script>
+
+<script>
+/* ── Event Search ────────────────────────────────────────────────── */
+(function () {
+  var searchInput   = document.getElementById('eventSearch');
+  var searchResults = document.getElementById('searchResults');
+  var eventSections = document.getElementById('eventSections');
+  if (!searchInput) return;
+
+  var searchBtn = searchInput.closest('.search-box').querySelector('button');
+  var LIMIT = 20;
+
+  function triggerSearch() {
+    var q = searchInput.value.trim();
+    if (!q) { resetSearch(); return; }
+    doSearch(q);
+  }
+
+  searchBtn.addEventListener('click', triggerSearch);
+
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') triggerSearch();
+  });
+
+  searchInput.addEventListener('input', function () {
+    if (!searchInput.value.trim()) resetSearch();
+  });
+
+  function resetSearch() {
+    searchResults.style.display = 'none';
+    searchResults.innerHTML     = '';
+    eventSections.style.display = '';
+  }
+
+  function doSearch(q) {
+    searchResults.style.display = '';
+    eventSections.style.display = 'none';
+    searchResults.innerHTML     = buildSkeletons(4);
+
+    fetch(BASE_URL + '/events/search?q=' + encodeURIComponent(q) + '&limit=' + LIMIT)
+      .then(function (r) { return r.json(); })
+      .then(function (json) {
+        if (!json.success) throw new Error(json.message || 'Search failed');
+
+        var events = json.data || [];
+        if (events.length === 0) {
+          searchResults.innerHTML = '<p style="color:#94a3b8;font-size:14px;padding:24px 4px">No events found for &ldquo;' + escHtml(q) + '&rdquo;</p>';
+          return;
+        }
+
+        searchResults.innerHTML = '<div class="search-results-grid">' +
+          events.map(function (e) {
+            var img      = escHtml(e.banner_url || e.banner || 'assets/img/trend1.jpg');
+            var title    = escHtml(e.title || '');
+            var dateStr  = e.date ? new Date(e.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+            var desc     = escHtml([e.venue, dateStr].filter(Boolean).join(' · '));
+            var id       = escHtml(String(e.id_event || e.id || ''));
+            return '<div class="event-card" style="cursor:pointer" data-id="' + id + '" data-title="' + title + '" data-desc="' + desc + '" data-img="' + img + '">' +
+              '<img src="' + img + '" alt="' + title + '" onerror="this.src=\'assets/img/trend1.jpg\'">' +
+              '<h3>' + title + '</h3>' +
+              '<p>' + desc + '</p>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+
+        searchResults.querySelectorAll('.event-card[data-id]').forEach(function (card) {
+          card.addEventListener('click', function () {
+            viewEvent(card.dataset.id, card.dataset.title, card.dataset.desc, card.dataset.img);
+          });
+        });
+      })
+      .catch(function () {
+        searchResults.innerHTML = '<p style="color:#94a3b8;font-size:14px;padding:24px 4px">Something went wrong. Please try again.</p>';
+      });
+  }
+
+  function buildSkeletons(n) {
+    var html = '<div class="search-results-grid">';
+    for (var i = 0; i < n; i++) {
+      html += '<div class="event-skeleton"><div class="sk-img"></div><div class="sk-body"><div class="sk-line"></div><div class="sk-line short"></div></div></div>';
+    }
+    return html + '</div>';
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+})();
+</script>
+
+<style>
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding-top: 10px;
+}
+@media (min-width: 600px) {
+  .search-results-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
 </body>
 
 </html>

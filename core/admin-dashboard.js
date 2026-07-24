@@ -189,8 +189,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   initializeSearch();
   initializeNotifications();
 
-  // Pull fresh sold tickets from backend in the background so attendee counts are live
-  fetchSoldTicketsFromAPI(null).then(() => renderDashboard());
+  // Pull fresh data from backend in the background then re-render with live numbers
+  Promise.all([
+    fetchSoldTicketsFromAPI(null),
+    fetchAllTiersFromAPI(),
+  ]).then(() => renderDashboard());
 });
 
 const EVENTS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -244,9 +247,10 @@ async function fetchAndMergeEvents() {
 function clearDummyData() {
   const dummyEventIds = new Set(['EVT-001', 'EVT-002', 'EVT-003', 'EVT-004']);
   const events = JSON.parse(localStorage.getItem('kulunu_events') || '[]');
-  const hadDummy = events.some(e => dummyEventIds.has(e.id));
-  const hadBadId = events.some(e => !e.id || e.id === 'undefined');
-  if (hadDummy || hadBadId) {
+  const hadDummy    = events.some(e => dummyEventIds.has(e.id));
+  const hadBadId    = events.some(e => !e.id || e.id === 'undefined');
+  const missingStats = events.some(e => e.tickets_sold === undefined && e.ticketsSold === undefined);
+  if (hadDummy || hadBadId || missingStats) {
     localStorage.removeItem('kulunu_events');
     localStorage.removeItem('kulunu_events_fetched_at');
     localStorage.removeItem('kulunu_tickets');
@@ -352,20 +356,25 @@ function switchSection(sectionId) {
 // DASHBOARD RENDERING
 // =========================
 function renderDashboard() {
-  const events = DataStore.getEvents();
-  const tickets = DataStore.getTickets();
+  const events   = DataStore.getEvents();
+  const tickets  = DataStore.getTickets();
+  const sold     = DataStore.getSoldTickets(); // source of truth from backend
   const attendees = DataStore.getAttendees();
   const activities = DataStore.getActivities();
 
+  // Total sold — count individual purchase records (each row = 1 sale of qty)
+  const totalSold    = sold.reduce((sum, s) => sum + (Number(s.quantity) || 1), 0);
+  const totalRevenue = sold.reduce((sum, s) => sum + (Number(s.price) || 0) * (Number(s.quantity) || 1), 0);
+
   // Update stats
-  document.getElementById('totalEvents').textContent = events.length;
-  document.getElementById('ticketsSold').textContent = tickets.reduce((sum, t) => sum + t.sold, 0).toLocaleString();
-  document.getElementById('totalRevenue').textContent = '₦' + tickets.reduce((sum, t) => sum + (t.price * t.sold), 0).toLocaleString();
+  document.getElementById('totalEvents').textContent    = events.length;
+  document.getElementById('ticketsSold').textContent    = totalSold.toLocaleString();
+  document.getElementById('totalRevenue').textContent   = '₦' + totalRevenue.toLocaleString();
   document.getElementById('totalAttendees').textContent = attendees.length.toLocaleString();
 
   // Update badges
-  document.getElementById('eventCount').textContent = events.length;
-  document.getElementById('ticketCount').textContent = tickets.reduce((sum, t) => sum + t.sold, 0);
+  document.getElementById('eventCount').textContent  = events.length;
+  document.getElementById('ticketCount').textContent = totalSold;
 
   // Render events
   renderEvents(events);
@@ -718,6 +727,13 @@ async function fetchTiersFromAPI(eventId) {
   }
 }
 
+// Refresh tier sold/available counts for every event the admin owns
+async function fetchAllTiersFromAPI() {
+  const events = DataStore.getEvents();
+  if (!events.length) return;
+  await Promise.all(events.map(e => fetchTiersFromAPI(e.id)));
+}
+
 async function fetchSoldTicketsFromAPI(eventId) {
   const session = window._adminSession || {};
   if (!session.token) return;
@@ -730,23 +746,32 @@ async function fetchSoldTicketsFromAPI(eventId) {
     });
     const data = await res.json();
     if (data.success && Array.isArray(data.data)) {
-      data.data.forEach(t => {
-        const sold = {
-          id: String(t.id || t.ticket_code),
-          tierId: String(t.tier_id || t.ticket_tier_id || ''),
-          eventId: String(t.event_id || eventId),
-          eventTitle: t.event_title || '',
-          tierName: t.tier_name || t.name || '',
-          price: t.price || 0,
-          buyerName: t.buyer_name || t.full_name || '',
-          buyerEmail: t.buyer_email || t.email || '',
-          buyerPhone: t.buyer_phone || t.phone || '',
-          purchasedAt: t.purchased_at || t.created_at || new Date().toISOString(),
-          status: t.status || 'active',
-          qrData: t.qr_data || `KULUNU-TICKET|${t.id}|${t.event_id}|${t.tier_name}|${t.email}`
-        };
-        DataStore.saveSoldTicket(sold);
-      });
+      const mapped = data.data.map(t => ({
+        id:          String(t.id),                  // DB row id — used for check-in API
+        ticketCode:  t.ticket_code || String(t.id), // human-readable code shown in UI
+        tierId:      String(t.tier_id || ''),
+        eventId:     String(t.event_id || eventId || ''),
+        eventTitle:  t.event_title || '',
+        tierName:    t.tier_name  || t.name || '',
+        price:       Number(t.tier_price || t.price) || 0,
+        quantity:    Number(t.quantity) || 1,
+        buyerName:   t.buyer_name  || '',
+        buyerEmail:  t.buyer_email || '',
+        buyerPhone:  t.buyer_phone || '',
+        purchasedAt: t.purchased_at || t.created_at || new Date().toISOString(),
+        status:      t.check_in_status ? 'checked-in' : 'active',
+        qrData:      t.qr_data || `KULUNU-TICKET|${t.ticket_code}|${t.event_id}|${t.tier_name}|${t.buyer_email}`
+      }));
+
+      if (eventId) {
+        // Upsert: merge with existing records for other events
+        const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
+        const others = all.filter(s => s.eventId !== String(eventId));
+        localStorage.setItem('kulunu_sold_tickets', JSON.stringify([...others, ...mapped]));
+      } else {
+        // Full replace: backend is the source of truth for the global list
+        localStorage.setItem('kulunu_sold_tickets', JSON.stringify(mapped));
+      }
     }
   } catch (err) {
     console.warn('Could not fetch sold tickets from API:', err);
@@ -863,7 +888,7 @@ function renderSoldTicketsList(eventId) {
         <tbody>
           ${soldTickets.map(ticket => `
             <tr>
-              <td><code style="font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px;">${ticket.id}</code></td>
+              <td><code style="font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px;">${ticket.ticketCode || ticket.id}</code></td>
               <td>
                 <strong>${ticket.buyerName}</strong>
                 <br><small style="color:var(--text-muted);">${ticket.buyerEmail}</small>

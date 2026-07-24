@@ -21,11 +21,12 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Creating...';
 
-    const titleVal = document.getElementById('title').value.trim();
-    const dateVal = document.getElementById('date').value;
-    const venueVal = document.getElementById('venue').value.trim();
-    const typeVal = document.getElementById('type').value;
-    const bannerFile = document.getElementById('banner').files[0];
+    const titleVal    = document.getElementById('title').value.trim();
+    const dateVal     = document.getElementById('date').value;
+    const venueVal    = document.getElementById('venue').value.trim();
+    const typeVal     = document.getElementById('type').value;
+    const categoryVal = (document.getElementById('category') || {}).value || '';
+    const bannerFile  = document.getElementById('banner').files[0];
 
     // Authenticated: call the API
     if (session && session.token) {
@@ -53,7 +54,7 @@
             'Authorization': `Bearer ${session.token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ title: titleVal, date: dateVal, venue: venueVal, type: typeVal, banner_url }),
+          body: JSON.stringify({ title: titleVal, date: dateVal, venue: venueVal, type: typeVal, category: categoryVal || undefined, banner_url }),
         });
 
         const data = await res.json();
@@ -83,6 +84,7 @@
         date: dateVal,
         venue: venueVal,
         type: typeVal,
+        category: categoryVal || '',
         banner: previewImg ? previewImg.src : '',
         status: 'draft',
         tickets: [],

@@ -305,7 +305,7 @@
         </div>
 
         <!-- Ticket Section Tabs -->
-        <div class="filter-tabs" style="margin-bottom: 0;">
+        <div class="filter-tabs" style="margin-bottom: 20px;">
           <button class="filter-tab active" data-tickets-tab="tiers" onclick="switchMainTicketsTab('tiers')">
             <i class="bi bi-layers"></i> Ticket Tiers
           </button>
@@ -361,7 +361,8 @@
             <div class="table-header">
               <div class="table-search">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search by buyer name or email..." id="soldTicketSearch" oninput="filterAllSoldTickets()">
+                <input type="text" placeholder="Search by buyer name or email..." id="soldTicketSearch"
+                  oninput="filterAllSoldTickets()">
               </div>
               <div class="table-filters">
                 <select id="soldTicketEventFilter" onchange="filterAllSoldTickets()">
@@ -608,7 +609,8 @@
       </div>
       <div class="modal-body">
         <form id="createEventForm">
-          <div id="createEventError" style="display:none; background:#FEE2E2; color:#991B1B; border:1px solid #FECACA; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:14px; display:flex; align-items:center; gap:8px;">
+          <div id="createEventError"
+            style="display:none; background:#FEE2E2; color:#991B1B; border:1px solid #FECACA; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:14px; display:flex; align-items:center; gap:8px;">
             <i class="bi bi-exclamation-circle-fill"></i>
             <span id="createEventErrorMsg"></span>
           </div>
@@ -774,7 +776,8 @@
           </button>
 
           <!-- Add Tier Form -->
-          <div id="addTierForm" style="display:none; margin-top: 16px; background: #F8FAFC; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color);">
+          <div id="addTierForm"
+            style="display:none; margin-top: 16px; background: #F8FAFC; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color);">
             <h4 style="margin-bottom: 16px; font-size: 15px; font-weight: 600;">New Ticket Tier</h4>
             <div class="row">
               <div class="col-md-6">
@@ -831,7 +834,9 @@
       </div>
       <div class="modal-body" style="text-align: center;">
         <div id="ticketQRContainer" style="display:flex; justify-content:center; margin: 20px 0;"></div>
-        <div id="ticketQRDetails" style="text-align:left; background:#F8FAFC; border-radius:10px; padding:16px; border:1px solid var(--border-color); font-size:14px;"></div>
+        <div id="ticketQRDetails"
+          style="text-align:left; background:#F8FAFC; border-radius:10px; padding:16px; border:1px solid var(--border-color); font-size:14px;">
+        </div>
         <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
           <button class="btn-primary" onclick="downloadQRCode()">
             <i class="bi bi-download"></i> Download PNG

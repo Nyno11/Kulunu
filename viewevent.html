@@ -213,13 +213,21 @@ async function loadTiers(eventId) {
     if (data.success && Array.isArray(data.data) && data.data.length > 0) {
       _tiers = data.data
         .filter(t => t.for_sale !== false)
-        .map(t => ({
-          id:            String(t.id),
-          name:          t.name || t.tier_name || 'Ticket',
-          price:         Number(t.price) || 0,
-          totalQuantity: Number(t.quantity || t.total_quantity) || 0,
-          available:     Number(t.quantity || t.total_quantity || 0) - Number(t.sold || t.tickets_sold || 0),
-        }))
+        .map(t => {
+          const qty  = Number(t.quantity  || t.total_quantity) || 0;
+          const sold = Number(t.sold      || t.tickets_sold)   || 0;
+          const avail = t.available !== undefined && t.available !== null
+            ? Number(t.available)
+            : qty - sold;
+          return {
+            id:            String(t.id),
+            name:          t.name || t.tier_name || 'Ticket',
+            price:         Number(t.price) || 0,
+            totalQuantity: qty,
+            sold,
+            available:     avail,
+          };
+        })
         .filter(t => t.available > 0);
 
       // Merge into localStorage cache for offline fallback
@@ -454,61 +462,67 @@ async function processPayment() {
   }
 
   // ── Success path — only reached when the server confirms the purchase ──────
-  const finalCode   = (data.data && data.data.ticket_code) ? data.data.ticket_code
-                    : 'TKT-' + Date.now() + '-' + Math.random().toString(36).slice(2,6).toUpperCase();
-  const finalQRData = (data.data && data.data.qr_data)     ? data.data.qr_data
-                    : `KULUNU-TICKET|${finalCode}|${_eventData.id}|${_selectedTier.name}|${buyerEmail}`;
+  // Backend returns one row per ticket: { tickets: [...], ticket_codes: [...] }
+  const apiTickets  = (data.data && Array.isArray(data.data.tickets))      ? data.data.tickets      : [];
+  const ticketCodes = (data.data && Array.isArray(data.data.ticket_codes)) ? data.data.ticket_codes : [];
 
-  _recordSoldTicket(finalCode, finalQRData, qty, buyerName, buyerEmail, buyerPhone);
+  _recordSoldTicketsBatch(apiTickets, buyerPhone);
 
   // Bust the admin dashboard cache so sold counts refresh on next load
   localStorage.removeItem('kulunu_events_fetched_at');
 
   closePaymentModal();
-  showConfirmation(finalCode, finalQRData, qty, buyerName, buyerEmail);
+  showConfirmation(ticketCodes, apiTickets, qty, buyerName, buyerEmail);
 
   btn.disabled    = false;
   btn.textContent = 'Pay Now';
 }
 
-function _recordSoldTicket(ticketCode, qrData, qty, buyerName, buyerEmail, buyerPhone) {
+// Each apiTicket is one row from ticket_sales — one per individual ticket
+function _recordSoldTicketsBatch(apiTickets, buyerPhone) {
   const all = JSON.parse(localStorage.getItem('kulunu_sold_tickets') || '[]');
-  for (let i = 0; i < qty; i++) {
-    const code = qty > 1 ? ticketCode + '-' + (i + 1) : ticketCode;
+  apiTickets.forEach(t => {
     all.push({
-      id:          code,
-      tierId:      _selectedTier.id,
-      eventId:     String(_eventData.id),
-      eventTitle:  _eventData.title || '',
+      id:          String(t.id),
+      ticketCode:  t.ticket_code || String(t.id),
+      tierId:      String(t.tier_id  || _selectedTier.id),
+      eventId:     String(t.event_id || _eventData.id),
+      eventTitle:  _eventData.title  || '',
       tierName:    _selectedTier.name,
       price:       _selectedTier.price,
-      buyerName,
-      buyerEmail,
-      buyerPhone,
-      purchasedAt: new Date().toISOString(),
+      quantity:    1,
+      buyerName:   t.buyer_name  || '',
+      buyerEmail:  t.buyer_email || '',
+      buyerPhone:  buyerPhone    || t.buyer_phone || '',
+      purchasedAt: t.purchased_at || new Date().toISOString(),
       status:      'active',
-      qrData:      qty > 1 ? qrData + '-' + (i + 1) : qrData,
+      qrData:      t.qr_data || '',
     });
-  }
+  });
   localStorage.setItem('kulunu_sold_tickets', JSON.stringify(all));
 
   // Update sold count in local tier cache
   const tiers = JSON.parse(localStorage.getItem('kulunu_ticket_tiers') || '[]');
-  const tier  = tiers.find(t => t.id === _selectedTier.id);
+  const tier  = tiers.find(t => t.id === String(_selectedTier.id));
   if (tier) {
-    tier.sold = (tier.sold || 0) + qty;
+    tier.sold = (tier.sold || 0) + apiTickets.length;
     localStorage.setItem('kulunu_ticket_tiers', JSON.stringify(tiers));
   }
 }
 
 // ── Modal 4: Confirmation ─────────────────────────────────────────────────────
-function showConfirmation(ticketCode, qrData, qty, buyerName, buyerEmail) {
+// ticketCodes — array of code strings; apiTickets — array of ticket_sales rows
+function showConfirmation(ticketCodes, apiTickets, qty, buyerName, buyerEmail) {
   const qty1 = qty > 1 ? qty + ' tickets' : '1 ticket';
   document.getElementById('confirmSub').textContent =
     `${qty1} for ${_eventData ? _eventData.title : ''} sent to ${buyerEmail}`;
 
+  const codesHtml = ticketCodes.length === 1
+    ? `<b>Ticket code:</b> ${ticketCodes[0]}`
+    : `<b>Ticket codes:</b><br>${ticketCodes.map((c, i) => `<span style="font-family:monospace">#${i + 1}: ${c}</span>`).join('<br>')}`;
+
   document.getElementById('confirmDetails').innerHTML =
-    `<b>Ticket code:</b> ${ticketCode}<br>
+    `${codesHtml}<br>
      <b>Buyer:</b> ${buyerName}<br>
      <b>Event:</b> ${_eventData ? _eventData.title : ''}<br>
      <b>Tier:</b> ${_selectedTier ? _selectedTier.name : ''}<br>
@@ -517,10 +531,15 @@ function showConfirmation(ticketCode, qrData, qty, buyerName, buyerEmail) {
        ? '₦' + (_selectedTier.price * qty).toLocaleString()
        : 'Free'}`;
 
-  // Generate QR code
+  // Show QR for the first ticket
+  const firstTicket = apiTickets[0];
+  const qrData = firstTicket
+    ? firstTicket.qr_data
+    : (ticketCodes[0] ? `KULUNU-TICKET|${ticketCodes[0]}|${_eventData.id}|${_selectedTier.name}|${buyerEmail}` : '');
+
   const qrContainer = document.getElementById('confirmQR');
   qrContainer.innerHTML = '';
-  if (typeof QRCode !== 'undefined') {
+  if (typeof QRCode !== 'undefined' && qrData) {
     new QRCode(qrContainer, {
       text:  qrData,
       width: 180,
@@ -529,6 +548,13 @@ function showConfirmation(ticketCode, qrData, qty, buyerName, buyerEmail) {
       colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.H,
     });
+  }
+
+  if (qty > 1) {
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:12px;color:#888;text-align:center;margin-top:6px;';
+    note.textContent = `Showing QR for ticket #1. All ${qty} codes sent to ${buyerEmail}.`;
+    qrContainer.appendChild(note);
   }
 
   document.getElementById('confirmModal').classList.add('active');
