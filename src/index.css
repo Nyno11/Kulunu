@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { @apply font-body bg-surface text-gray-900; }
+  h1,h2,h3,h4,h5,h6 { @apply font-heading font-bold tracking-tight; }
+  [data-theme="dark"] body { @apply bg-gray-900 text-gray-100; }
+}
+
+@layer components {
+  .blueprint {
+    @apply relative border border-gray-200 rounded-2xl bg-card shadow-sm;
+  }
+  [data-theme="dark"] .blueprint {
+    @apply border-gray-700 bg-gray-800;
+  }
+  .tag {
+    @apply inline-flex items-center text-xs px-3 py-1 rounded-pill font-medium;
+  }
+  .tag-accent { @apply bg-blue-50 text-blue-800; }
+  .tag-neutral { @apply bg-gray-100 text-gray-700; }
+  .tag-outline { @apply border border-brand text-brand; }
+  .tag-gold { @apply bg-yellow-100 text-yellow-800; }
+  .ds-input {
+    @apply w-full min-h-[36px] px-3 py-1.5 text-sm bg-card border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400
+           focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand;
+  }
+  .ds-btn {
+    @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 text-sm font-heading font-bold
+           rounded-full border border-transparent cursor-pointer transition-colors;
+  }
+  .ds-btn-primary { @apply ds-btn bg-brand text-white hover:bg-brand-dark border-brand; }
+  .ds-btn-secondary { @apply ds-btn border-gray-200 hover:bg-gray-100; }
+  .ds-btn-ghost { @apply ds-btn text-brand hover:bg-blue-50; }
+}
