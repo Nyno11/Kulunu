@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin } from 'lucide-react';
+import { formatEventDate } from '../utils/formatDate';
 
 export default function EventCard({ event }) {
   return (
@@ -14,7 +15,7 @@ export default function EventCard({ event }) {
       <div className="p-3 flex flex-col gap-1.5">
         <div className="flex justify-between items-start gap-2">
           <span className="tag tag-neutral">{event.type || event.category || 'Event'}</span>
-          <span className="text-xs text-gray-400">{event.date}</span>
+          <span className="text-xs text-gray-400">{formatEventDate(event.date)}</span>
         </div>
         <div className="font-heading font-bold text-sm leading-snug">{event.title}</div>
         <div className="flex justify-between items-center">

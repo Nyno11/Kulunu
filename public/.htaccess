@@ -1,0 +1,15 @@
+# Serve the SPA's index.html for any route that isn't a real file/folder,
+# so React Router can handle client-side paths (e.g. /tickets, /event/12)
+# instead of Apache 404ing on them.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Let real files and directories (assets, images, etc.) be served as-is
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else falls back to index.html
+  RewriteRule ^ index.html [L]
+</IfModule>

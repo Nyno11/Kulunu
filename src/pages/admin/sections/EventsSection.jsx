@@ -5,6 +5,7 @@ import { BASE_URL } from '../../../config';
 import { useToast } from '../../../components/Toast';
 import ImageUpload from '../../../components/ImageUpload';
 import { uploadImage } from '../../../utils/uploadImage';
+import { formatEventDate } from '../../../utils/formatDate';
 
 const EMPTY_FORM = {
   title: '', category: 'Conference', date: '', time: '', venue: '',
@@ -231,7 +232,7 @@ export default function EventsSection() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{ev.date}</td>
+                  <td className="px-4 py-3 text-gray-500">{formatEventDate(ev.date)}</td>
                   <td className="px-4 py-3 text-gray-500 max-w-[160px] truncate">{ev.venue}</td>
                   <td className="px-4 py-3">
                     <span className={`tag ${statusColor[ev.status] || 'tag-neutral'}`}>

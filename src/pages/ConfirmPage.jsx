@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import { BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/Toast';
+import { formatEventDate, formatEventTime } from '../utils/formatDate';
 
 export default function ConfirmPage() {
   const { state } = useLocation();
@@ -94,7 +95,7 @@ export default function ConfirmPage() {
               <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-gray-400 mb-3">Event Details</h3>
               <div className="font-heading font-black text-lg mb-2">{event.title}</div>
               <div className="flex flex-col gap-1.5 text-sm text-gray-500">
-                <span className="flex items-center gap-2"><Calendar size={13}/>{event.date}{event.time ? ` · ${event.time}` : ''}</span>
+                <span className="flex items-center gap-2"><Calendar size={13}/>{formatEventDate(event.date)}{event.time ? ` · ${formatEventTime(event.time)}` : ''}</span>
                 <span className="flex items-center gap-2"><MapPin size={13}/>{event.venue}</span>
               </div>
               <div className="mt-3 flex gap-2">

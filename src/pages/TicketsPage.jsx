@@ -5,6 +5,7 @@ import { QrCode, Calendar, MapPin, X } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
+import { formatEventDate } from '../utils/formatDate';
 
 function QRModal({ ticket, onClose }) {
   // Encode a real link so scanning with any camera (not just the in-app scanner)
@@ -29,6 +30,7 @@ function QRModal({ ticket, onClose }) {
           <div>
             <h3 className="font-heading font-black text-lg">{ticket.event_title}</h3>
             <p className="text-sm text-gray-400">{ticket.tier_name} · x{ticket.quantity || 1}</p>
+            <p className="text-xs text-gray-400 mt-1">{ticket.buyer_name}{ticket.buyer_email ? ` · ${ticket.buyer_email}` : ''}</p>
           </div>
           <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg"><X size={18}/></button>
         </div>
@@ -62,8 +64,12 @@ function TicketRow({ ticket, onViewQR }) {
       <div className="flex-1 min-w-0">
         <div className="font-heading font-bold text-sm truncate">{ticket.event_title}</div>
         <div className="text-xs text-gray-400 flex flex-wrap items-center gap-2 mt-0.5">
-          <span className="flex items-center gap-1"><Calendar size={11}/>{ticket.event_date}</span>
-          {ticket.venue && <span className="flex items-center gap-1"><MapPin size={11}/>{ticket.venue}</span>}
+          <span className="flex items-center gap-1"><Calendar size={11}/>{formatEventDate(ticket.event_date)}</span>
+          {ticket.event_venue && <span className="flex items-center gap-1"><MapPin size={11}/>{ticket.event_venue}</span>}
+        </div>
+        <div className="text-xs text-gray-500 mt-1 truncate">
+          <span className="font-medium">{ticket.buyer_name}</span>
+          {ticket.buyer_email && <span className="text-gray-400"> · {ticket.buyer_email}</span>}
         </div>
         <div className="flex gap-2 mt-1.5">
           <span className="tag tag-neutral">{ticket.tier_name}</span>

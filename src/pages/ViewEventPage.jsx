@@ -4,6 +4,7 @@ import { MapPin, Calendar, ArrowLeft } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import { BASE_URL } from '../config';
 import { useAuth } from '../contexts/AuthContext';
+import { formatEventDate, formatEventTime } from '../utils/formatDate';
 
 export default function ViewEventPage() {
   const { id } = useParams();
@@ -79,7 +80,7 @@ export default function ViewEventPage() {
             </div>
             <h1 className="font-heading text-2xl md:text-3xl font-black mb-2">{event.title}</h1>
             <p className="text-gray-400 text-sm mb-5 flex flex-wrap items-center gap-3">
-              <span className="flex items-center gap-1"><Calendar size={13}/>{event.date}{event.time ? ` · ${event.time}` : ''}</span>
+              <span className="flex items-center gap-1"><Calendar size={13}/>{formatEventDate(event.date)}{event.time ? ` · ${formatEventTime(event.time)}` : ''}</span>
               <span className="flex items-center gap-1"><MapPin size={13}/>{event.venue}</span>
             </p>
             {event.description && (
